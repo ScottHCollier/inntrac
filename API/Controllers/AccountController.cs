@@ -33,7 +33,7 @@ namespace API.Controllers
             user = await _context.Users
                 .Include(user => user.Sites)
                 .Include(user => user.Groups)
-                .FirstOrDefaultAsync(user => user.UserName == User.Identity.Name);
+                .FirstOrDefaultAsync(user => user.Email == loginDto.Email);
 
             if (user != null)
             {
