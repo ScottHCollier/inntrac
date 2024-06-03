@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20231202121856_PostgresInitial")]
-    partial class PostgresInitial
+    [Migration("20240524070551_AddAccountStatus")]
+    partial class AddAccountStatus
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,10 +43,10 @@ namespace API.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("DateSent")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("From")
                         .HasColumnType("text");
@@ -64,7 +64,7 @@ namespace API.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -98,7 +98,7 @@ namespace API.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("EndTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("GroupId")
                         .HasColumnType("text");
@@ -110,7 +110,7 @@ namespace API.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("StartTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("UserId")
                         .HasColumnType("text");
@@ -145,6 +145,9 @@ namespace API.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<int>("AccessFailedCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("AccountStatus")
                         .HasColumnType("integer");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -258,13 +261,13 @@ namespace API.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "89e666a5-41ae-4436-b01a-3ed165fe4dc8",
+                            Id = "e661da5d-8ef4-4c77-b0aa-916141d67f46",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "2a1cf3fb-7878-4c7c-b3e7-3663db381834",
+                            Id = "71caedc9-c149-4a85-9dd4-cf6a9ff2568c",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         });

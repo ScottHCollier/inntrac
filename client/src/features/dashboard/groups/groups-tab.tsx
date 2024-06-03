@@ -1,18 +1,30 @@
-import { Outlet } from 'react-router-dom';
-import PageHeader from '@/components/page-header';
-import { Button } from '@/components/ui/button';
-import DashboardNav from '../components/dashboard-nav';
+import { Icons } from '../../../components/icons';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from '../../../components/ui/card';
+import GroupsTable from './groups-table';
 
 export function GroupsTab() {
   return (
     <>
-      <PageHeader title='Dashboard'>
-        <Button>Add Group</Button>
-      </PageHeader>
-      <div className='flex flex-col space-y-4'>
-        <DashboardNav />
-        <Outlet />
-      </div>
+      <Card>
+        <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+          <CardTitle className='text-sm font-medium'>Groups</CardTitle>
+          <Icons.users className='h-4 w-4 text-muted-foreground' />
+        </CardHeader>
+        <CardContent>
+          <div className='text-2xl font-bold'>All Groups</div>
+          <p className='text-xs text-muted-foreground'>
+            Select group to edit name, colour etc.
+          </p>
+        </CardContent>
+      </Card>
+      <Card className='p-6'>
+        <GroupsTable />
+      </Card>
     </>
   );
 }

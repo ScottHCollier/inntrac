@@ -1,4 +1,3 @@
-import Overview from '@/components/overview';
 import {
   Card,
   CardHeader,
@@ -8,92 +7,77 @@ import {
 } from '@/components/ui/card';
 import { Icons } from '@/components/icons';
 import RecentNotifications from '@/components/recent-notifications';
-import PageHeader from '@/components/page-header';
-import DashboardNav from '../components/dashboard-nav';
+import { useAppSelector } from '../../../store/configure-store';
+import { parseISO, addHours, format } from 'date-fns';
+import { Shift } from '../../../models';
 
 export function OverviewTab() {
+  const { user } = useAppSelector((state) => state.account);
+
+  const formattedShiftTime = (shift: Shift) => {
+    const timeZoneOffset =
+      (parseISO(shift.startTime).getTimezoneOffset() / 60) * -1;
+    const startTime = addHours(parseISO(shift.startTime), timeZoneOffset);
+    const endTime = addHours(parseISO(shift.endTime), timeZoneOffset);
+    return `${format(startTime, 'HH:mm')} - ${format(endTime, 'HH:mm')}`;
+  };
+
   return (
     <>
-      <PageHeader title='Dashboard'></PageHeader>
-      <div className='flex flex-col space-y-4'>
-        <DashboardNav />
-        <div className='space-y-4'>
-          <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
-            <Card>
-              <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                <CardTitle className='text-sm font-medium'>
-                  Last Weeks Sales
-                </CardTitle>
-                <Icons.pound className='h-4 w-4 text-muted-foreground' />
-              </CardHeader>
-              <CardContent>
-                <div className='text-2xl font-bold'>£5,231.89</div>
-                <p className='text-xs text-muted-foreground'>
-                  +20.1% from last year
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                <CardTitle className='text-sm font-medium'>
-                  Last Weeks Labour
-                </CardTitle>
-                <Icons.users className='h-4 w-4 text-muted-foreground' />
-              </CardHeader>
-              <CardContent>
-                <div className='text-2xl font-bold'>190 Hours</div>
-                <p className='text-xs text-muted-foreground'>
-                  +180.1% from last year
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                <CardTitle className='text-sm font-medium'>
-                  Last Weeks Gross Profit
-                </CardTitle>
-                <Icons.chart className='h-4 w-4 text-muted-foreground' />
-              </CardHeader>
-              <CardContent>
-                <div className='text-2xl font-bold'>72.3%</div>
-                <p className='text-xs text-muted-foreground'>
-                  +19% from last month
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                <CardTitle className='text-sm font-medium'>Employees</CardTitle>
-                <Icons.users className='h-4 w-4 text-muted-foreground' />
-              </CardHeader>
-              <CardContent>
-                <div className='text-2xl font-bold'>17</div>
-                <p className='text-xs text-muted-foreground'></p>
-              </CardContent>
-            </Card>
-          </div>
-          <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-7'>
-            <Card className='col-span-4'>
-              <CardHeader>
-                <CardTitle>Overview</CardTitle>
-              </CardHeader>
-              <CardContent className='pl-2'>
-                <Overview />
-              </CardContent>
-            </Card>
-            <Card className='col-span-3'>
-              <CardHeader>
-                <CardTitle>Recent Notifications</CardTitle>
-                <CardDescription>
-                  The following items need your attention
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <RecentNotifications />
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+      <div className='space-y-4'>
+        <Card
+          style={{
+            backgroundColor:
+              user?.groups.find((group) => group.id === user.shifts[0]?.groupId)
+                ?.color || '#999',
+          }}
+        >
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>Upcoming</CardTitle>
+            <Icons.users className='h-4 w-4 text-muted-foreground' />
+          </CardHeader>
+          <CardContent>
+            {user?.shifts.length ? (
+              <>
+                <div className='flex justify-between items-center h-[24px]'>
+                  <p className='text-sm font-bold'>
+                    {formattedShiftTime(user?.shifts[0])}
+                  </p>
+                </div>
+                <div className='flex justify-between items-center h-[24px]'>
+                  <p></p>
+                  <div className='w-[16px] h-[16px] rounded-full' />
+                </div>
+              </>
+            ) : (
+              <div className='text-2xl font-bold'>
+                You do have any shifts scheduled
+              </div>
+            )}
+            {/* <p className='text-xs text-muted-foreground'>
+                +20.1% from last year
+              </p> */}
+          </CardContent>
+        </Card>
+        {/* <Card className='col-span-4'>
+            <CardHeader>
+              <CardTitle>Overview</CardTitle>
+            </CardHeader>
+            <CardContent className='pl-2'>
+              <Overview />
+            </CardContent>
+          </Card> */}
+        <Card className=''>
+          <CardHeader>
+            <CardTitle>Notifications</CardTitle>
+            <CardDescription>
+              The following items need your attention
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <RecentNotifications />
+          </CardContent>
+        </Card>
       </div>
     </>
   );

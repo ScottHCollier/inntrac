@@ -13,8 +13,17 @@ export interface User {
   shifts: Shift[];
   groups: Group[];
   isAdmin: boolean;
+  accountStatus: number;
   defaultSite: string;
   defaultGroup: string;
+}
+
+export interface RegisterAccount {
+  id: string;
+  firstName: string;
+  surname: string;
+  email: string;
+  phoneNumber: string;
 }
 
 export interface UserShift {

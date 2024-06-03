@@ -120,6 +120,8 @@ const Groups = {
 };
 
 const Sites = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  addSite: (values: any) => requests.post('sites', values),
   getSites: () => requests.get(`sites`),
 };
 

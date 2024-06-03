@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/configure-store';
 import { fetchCurrentUser } from '../store/account-slice';
 import Loading from './loading';
-import Login from '../features/login/login';
 import Header from './header';
 import { Toaster } from '../components/ui/toaster';
 
@@ -30,7 +29,7 @@ function App() {
         <Toaster />
         {loading ? (
           <Loading />
-        ) : user ? (
+        ) : user && user.accountStatus === 6 ? (
           <>
             <div className='flex flex-col'>
               <Header />
@@ -40,7 +39,7 @@ function App() {
             </div>
           </>
         ) : (
-          <Login />
+          <Outlet />
         )}
       </ThemeProvider>
     </>

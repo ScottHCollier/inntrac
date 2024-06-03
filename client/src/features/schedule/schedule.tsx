@@ -29,6 +29,7 @@ import { ConfirmDialog } from './dialogs/confirm-dialog';
 import { toast } from '@/components/ui/use-toast';
 import UserSkeleton from './components/user-skeleton';
 import Select from '@/components/custom/select';
+import { fetchUsersAsync, userSelectors } from '../../store/users-slice';
 
 export function Schedule() {
   const groups = useAppSelector(groupsSelectors.selectAll);
@@ -44,6 +45,14 @@ export function Schedule() {
   const dispatch = useAppDispatch();
   const { shiftsLoaded } = useAppSelector((state) => state.shifts);
   const { selectedSite } = useAppSelector((state) => state.account);
+
+  const users = useAppSelector(userSelectors.selectAll);
+
+  useEffect(() => {
+    if (selectedSite && !users.length) {
+      dispatch(fetchUsersAsync(selectedSite?.id));
+    }
+  }, [dispatch, selectedSite, users]);
 
   useEffect(() => {
     if (!shiftsLoaded && selectedSite) {

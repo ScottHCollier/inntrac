@@ -4,37 +4,42 @@ import * as z from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { signInUser } from '../store/account-slice';
+import { registerUser, signInUser } from '../store/account-slice';
 import { useAppDispatch } from '../store/configure-store';
 import { Icons } from './icons';
 import Input from './custom/input';
 
 const FormSchema = z.object({
+  firstName: z.string().min(1, { message: 'This field has to be filled.' }),
+  surname: z.string().min(1, { message: 'This field has to be filled.' }),
   email: z
     .string()
     .min(1, { message: 'This field has to be filled.' })
     .email('This is not a valid email.'),
+  phoneNumber: z
+    .string()
+    .regex(
+      /^(((\+44\s?\d{4}|\(?0\d{4}\)?)\s?\d{3}\s?\d{3})|((\+44\s?\d{3}|\(?0\d{3}\)?)\s?\d{3}\s?\d{4})|((\+44\s?\d{2}|\(?0\d{2}\)?)\s?\d{4}\s?\d{4}))(\s?#(\d{4}|\d{3}))?$/,
+      'Invalid Phone Number'
+    ),
   password: z.string(),
   // .regex(
   //   /(?=^.{6,10}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/
   // ),
 });
 
-const UserAuthForm = () => {
+const UserRegisterForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
 
   const defaultValues = {
+    firstName: '',
+    surname: '',
     email: '',
+    phoneNumber: '',
     password: '',
   };
-  // curl https://api.stripe.com/v1/checkout/sessions \
-  // -u "sk_test_...Y9nO:" \
-  // --data-urlencode success_url="https://dashboard.stripe.com/test/billing/starter-guide/checkout-success" \
-  // -d "line_items[0][price]"=price_1P9pfYDTJCjsckLdDzwIYKvV \
-  // -d "line_items[0][quantity]"=1 \
-  // -d mode=subscription
 
   const {
     handleSubmit,
@@ -48,8 +53,9 @@ const UserAuthForm = () => {
 
   async function onSubmit(data: FieldValues) {
     try {
+      await dispatch(registerUser(data));
       await dispatch(signInUser(data));
-      navigate(location.state?.from || '/dashboard');
+      navigate('/setup');
     } catch (error) {
       console.log(error);
     }
@@ -58,11 +64,38 @@ const UserAuthForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Input
+        onChange={(e) => setValue('firstName', e.target.value)}
+        type='text'
+        fieldName='firstName'
+        placeholder='First Name'
+        defaultValue={defaultValues.firstName}
+        errors={errors}
+      />
+
+      <Input
+        onChange={(e) => setValue('surname', e.target.value)}
+        type='text'
+        fieldName='surname'
+        placeholder='Surname'
+        defaultValue={defaultValues.surname}
+        errors={errors}
+      />
+
+      <Input
         onChange={(e) => setValue('email', e.target.value)}
         type='text'
         fieldName='email'
         placeholder='Email'
         defaultValue={defaultValues.email}
+        errors={errors}
+      />
+
+      <Input
+        onChange={(e) => setValue('phoneNumber', e.target.value)}
+        type='text'
+        fieldName='phoneNumber'
+        placeholder='Phone Number'
+        defaultValue={defaultValues.phoneNumber}
         errors={errors}
       />
 
@@ -82,11 +115,11 @@ const UserAuthForm = () => {
           ) : (
             <Icons.users className='mr-2 h-4 w-4' />
           )}
-          Login
+          Register
         </Button>
       </div>
     </form>
   );
 };
 
-export default UserAuthForm;
+export default UserRegisterForm;

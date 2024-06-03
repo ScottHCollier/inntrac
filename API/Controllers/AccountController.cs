@@ -32,9 +32,17 @@ namespace API.Controllers
 
             user = await _context.Users
                 .Include(user => user.Sites)
-                .Include(user => user.Shifts)
                 .Include(user => user.Groups)
-                .FirstOrDefaultAsync(user => user.Email == loginDto.Email);
+                .FirstOrDefaultAsync(user => user.UserName == User.Identity.Name);
+
+            if (user != null)
+            {
+                user.Shifts = await _context.Shifts
+                    .Where(shift => shift.UserId == user.Id && shift.StartTime > DateTime.Today)
+                    .OrderBy(shift => shift.StartTime)
+                    .Take(5)
+                    .ToListAsync();
+            }
 
             var token = await _tokenService.GenerateUserToken(user);
             var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
@@ -58,7 +66,15 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> Register(RegisterDto registerDto)
         {
-            var user = new User { UserName = registerDto.Email, Email = registerDto.Email };
+            var user = new User
+            {
+                FirstName = registerDto.FirstName,
+                Surname = registerDto.Surname,
+                UserName = registerDto.Email,
+                Email = registerDto.Email,
+                PhoneNumber = registerDto.PhoneNumber,
+                AccountStatus = 1
+            };
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
 
@@ -72,7 +88,7 @@ namespace API.Controllers
                 return ValidationProblem();
             }
 
-            await _userManager.AddToRoleAsync(user, "Member");
+            await _userManager.AddToRoleAsync(user, "Admin");
 
             return StatusCode(201);
         }
@@ -168,9 +184,17 @@ namespace API.Controllers
         {
             var user = await _context.Users
                 .Include(user => user.Sites)
-                .Include(user => user.Shifts)
                 .Include(user => user.Groups)
                 .FirstOrDefaultAsync(user => user.UserName == User.Identity.Name);
+
+            if (user != null)
+            {
+                user.Shifts = await _context.Shifts
+                    .Where(shift => shift.UserId == user.Id && shift.StartTime > DateTime.Today)
+                    .OrderBy(shift => shift.StartTime)
+                    .Take(5)
+                    .ToListAsync();
+            }
 
             var token = await _tokenService.GenerateUserToken(user);
             var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
@@ -183,6 +207,7 @@ namespace API.Controllers
                 Surname = user.Surname,
                 Token = token,
                 IsAdmin = isAdmin,
+                AccountStatus = user.AccountStatus,
                 Sites = user.Sites.Select(site => site.MapSiteToDto()).ToList(),
                 DefaultSite = user.DefaultSite,
                 Groups = user.Groups.Select(group => group.MapGroupToDto()).ToList(),

@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using OpenAI_API.Chat;
+using OpenAI_API.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -138,5 +140,22 @@ catch (Exception ex)
 {
     logger.LogError(ex, "A problem occurred during migration");
 }
+
+// var api = new OpenAI_API.OpenAIAPI(builder.Configuration.GetConnectionString("OpenAI"));
+
+// ChatRequest chatRequest = new ChatRequest()
+// {
+//     Model = Model.ChatGPTTurbo,
+//     Temperature = 0.0,
+//     MaxTokens = 500,
+//     ResponseFormat = ChatRequest.ResponseFormats.JsonObject,
+//     Messages = new ChatMessage[] {
+//         new ChatMessage(ChatMessageRole.System, "You are a helpful assistant designed to output JSON."),
+//         new ChatMessage(ChatMessageRole.User, "Who won the world series in 2020?  Return JSON of a 'wins' dictionary with the year as the numeric key and the winning team as the string value.")
+//     }
+// };
+
+// var results = await api.Chat.CreateChatCompletionAsync(chatRequest);
+// Console.WriteLine(results);
 
 app.Run();

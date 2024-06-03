@@ -9,6 +9,8 @@ namespace API.Data
     {
         public StoreContext(DbContextOptions options) : base(options)
         {
+            // Need to migrate to new timestamp behavior
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         public DbSet<Site> Sites { get; set; }

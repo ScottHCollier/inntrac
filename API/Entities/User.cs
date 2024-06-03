@@ -8,6 +8,7 @@ namespace API.Entities
         public string FirstName { get; set; }
         public string Surname { get; set; }
         public string DefaultSite { get; set; }
+        public int AccountStatus { get; set; }
         public List<Site> Sites { get; set; } = new();
         public List<Shift> Shifts { get; set; } = new();
         public string DefaultGroup { get; set; }

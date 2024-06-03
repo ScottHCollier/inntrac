@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { NavLink } from 'react-router-dom';
+import MainNavLink from './main-nav-link';
 
 const MainNav = ({
   className,
@@ -10,46 +10,10 @@ const MainNav = ({
       className={cn('flex items-center space-x-4 lg:space-x-6', className)}
       {...props}
     >
-      <NavLink
-        to='/dashboard'
-        className={({ isActive }) =>
-          isActive
-            ? 'text-sm font-medium transition-colors hover:text-primary'
-            : 'text-sm font-medium text-muted-foreground transition-colors hover:text-primary'
-        }
-      >
-        Dashboard
-      </NavLink>
-      <NavLink
-        to='/schedule'
-        className={({ isActive }) =>
-          isActive
-            ? 'text-sm font-medium transition-colors hover:text-primary'
-            : 'text-sm font-medium text-muted-foreground transition-colors hover:text-primary'
-        }
-      >
-        Schedule
-      </NavLink>
-      <NavLink
-        to='/assistant'
-        className={({ isActive }) =>
-          isActive
-            ? 'text-sm font-medium transition-colors hover:text-primary'
-            : 'text-sm font-medium text-muted-foreground transition-colors hover:text-primary'
-        }
-      >
-        Assistant
-      </NavLink>
-      <NavLink
-        to='/admin'
-        className={({ isActive }) =>
-          isActive
-            ? 'text-sm font-medium transition-colors hover:text-primary'
-            : 'text-sm font-medium text-muted-foreground transition-colors hover:text-primary'
-        }
-      >
-        Admin
-      </NavLink>
+      <MainNavLink title='Dashboard' to={'/'} />
+      <MainNavLink title='Schedule' to={'/schedule'} />
+      <MainNavLink title='Assistant' to={'/assistant'} />
+      <MainNavLink title='Admin' to={'/admin'} />
     </nav>
   );
 };

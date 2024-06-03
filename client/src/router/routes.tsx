@@ -22,6 +22,10 @@ import Employee from '../features/dashboard/employees/employee';
 import { EmployeesTab } from '../features/dashboard/employees/employees-tab';
 import Sites from '../features/dashboard/sites/sites';
 import Site from '../features/dashboard/sites/site';
+import Login from '../features/login/login';
+import Register from '../features/register/register';
+import Setup from '../features/register/setup';
+import AddUsers from '../features/register/add-users';
 
 export const router = createBrowserRouter([
   {
@@ -29,15 +33,27 @@ export const router = createBrowserRouter([
     element: <App />,
     children: [
       {
+        path: 'login',
+        element: <Login />,
+      },
+      {
+        path: 'register',
+        element: <Register />,
+      },
+      {
+        path: 'setup',
+        element: <Setup />,
+      },
+      {
+        path: 'setup/add-users',
+        element: <AddUsers />,
+      },
+      {
         element: <RequireAuth />,
         children: [
           {
             path: '',
             element: <Home />,
-          },
-          {
-            path: 'dashboard',
-            element: <Dashboard />,
             children: [
               {
                 path: '',
