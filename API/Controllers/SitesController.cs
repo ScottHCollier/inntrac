@@ -45,9 +45,8 @@ namespace API.Controllers
 
             _context.Sites.Add(siteToAdd);
 
-            user.Sites.Add(siteToAdd);
-            user.DefaultSite ??= siteToAdd.Id;
-            user.AccountStatus = 6;
+            user.Site = siteToAdd;
+            user.Status = 6;
 
             var manager = new Group
             {
@@ -57,8 +56,7 @@ namespace API.Controllers
                 Site = siteToAdd,
             };
 
-            user.Groups.Add(manager);
-            user.DefaultGroup ??= manager.Id;
+            user.Group = manager;
 
             var bar = new Group
             {

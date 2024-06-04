@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
 namespace API.Entities
@@ -7,11 +6,11 @@ namespace API.Entities
     {
         public string FirstName { get; set; }
         public string Surname { get; set; }
-        public string DefaultSite { get; set; }
-        public int AccountStatus { get; set; }
-        public List<Site> Sites { get; set; } = new();
-        public List<Shift> Shifts { get; set; } = new();
-        public string DefaultGroup { get; set; }
-        public List<Group> Groups { get; set; } = new();
+        public int Status { get; set; }
+        public string SiteId { get; set; }
+        public Site Site { get; set; }
+        public string GroupId { get; set; }
+        public Group Group { get; set; } = new();
+        public List<Shift> Shifts { get; set; } = [];
     }
 }

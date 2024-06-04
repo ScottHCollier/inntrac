@@ -43,7 +43,7 @@ const Home = () => {
   const [selectedTab, setSelectedTab] = useState(0);
 
   useEffect(() => {
-    if (account?.user?.accountStatus === 1) {
+    if (account?.user?.status === 1) {
       navigate('/setup');
     }
   }, [account, navigate]);

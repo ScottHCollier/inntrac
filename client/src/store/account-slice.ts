@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit';
-import { User, Site } from '@/models';
+import { User } from '@/models';
 import { FieldValues } from 'react-hook-form';
 import agent from '../api/agent';
 import { router } from '../router/routes';
@@ -8,12 +8,10 @@ import { RegisterAccount } from '../models/user';
 
 interface AccountState {
   user: User | null;
-  selectedSite: Site | null;
 }
 
 const initialState: AccountState = {
   user: null,
-  selectedSite: null,
 };
 
 export const signInUser = createAsyncThunk<User, FieldValues>(
@@ -89,14 +87,10 @@ export const accountSlice = createSlice({
     setUser: (state, action) => {
       state.user = action.payload;
     },
-    setSelectedSite: (state, action) => {
-      state.selectedSite = action.payload;
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCurrentUser.rejected, (state) => {
       state.user = null;
-      state.selectedSite = null;
       localStorage.removeItem('user');
       toast({
         title: 'Error',
@@ -112,10 +106,6 @@ export const accountSlice = createSlice({
       ),
       (state, action) => {
         state.user = action.payload;
-        state.selectedSite =
-          action.payload.sites?.find(
-            (site) => site.id === action.payload.defaultSite
-          ) || null;
       }
     );
     builder.addMatcher(
@@ -127,4 +117,4 @@ export const accountSlice = createSlice({
   },
 });
 
-export const { signOut, setUser, setSelectedSite } = accountSlice.actions;
+export const { signOut, setUser } = accountSlice.actions;

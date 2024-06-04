@@ -16,28 +16,20 @@ interface UsersState {
 
 const usersAdapter = createEntityAdapter<User>();
 
-function getAxiosParams(siteId: string | null, userParams: UserParams) {
+function getAxiosParams(userParams: UserParams) {
   const params = new URLSearchParams();
   if (userParams.searchTerm) params.append('searchTerm', userParams.searchTerm);
   if (userParams.groupId) params.append('groupId', userParams.groupId);
-  if (userParams.siteId) {
-    params.append('siteId', userParams.siteId);
-  } else if (siteId) {
-    params.append('siteId', siteId);
-  }
   if (userParams.userId) params.append('userId', userParams.userId);
   return params;
 }
 
 export const fetchUsersAsync = createAsyncThunk<
   User[],
-  string,
+  void,
   { state: RootState }
 >('users/fetchUsersAsync', async (_, thunkAPI) => {
-  const params = getAxiosParams(
-    thunkAPI.getState().account.selectedSite?.id || null,
-    thunkAPI.getState().users.userParams
-  );
+  const params = getAxiosParams(thunkAPI.getState().users.userParams);
   try {
     const response = await agent.Users.getUsers(params);
     thunkAPI.dispatch(setMetaData(response.metaData));
@@ -52,7 +44,6 @@ function initParams() {
   return {
     searchTerm: null,
     groupId: null,
-    siteId: null,
     userId: null,
   };
 }

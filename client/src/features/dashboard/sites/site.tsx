@@ -10,16 +10,16 @@ import { Site } from '@/models';
 const Sites = () => {
   const sites = useAppSelector(sitesSelectors.selectAll);
   const [site, setSite] = useState<Site | null>(null);
-  const { selectedSite } = useAppSelector((state) => state.account);
+  const { user } = useAppSelector((state) => state.account);
   const dispatch = useAppDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (selectedSite && !sites.length) {
+    if (user && !sites.length) {
       dispatch(fetchSitesAsync());
     }
-  }, [dispatch, selectedSite, sites.length]);
+  }, [dispatch, user, sites.length]);
 
   useEffect(() => {
     if (id) {

@@ -29,7 +29,7 @@ function App() {
         <Toaster />
         {loading ? (
           <Loading />
-        ) : user && user.accountStatus === 6 ? (
+        ) : user && user.status === 6 ? (
           <>
             <div className='flex flex-col'>
               <Header />

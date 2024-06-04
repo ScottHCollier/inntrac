@@ -17,31 +17,23 @@ interface UserShiftsState {
 
 const shiftsAdapter = createEntityAdapter<UserShift>();
 
-function getAxiosParams(siteId: string | null, shiftParams: UserShiftsParams) {
+function getAxiosParams(shiftParams: UserShiftsParams) {
   const params = new URLSearchParams();
   params.append('weekStart', shiftParams.weekStart);
   params.append('weekEnd', shiftParams.weekEnd);
   if (shiftParams.searchTerm)
     params.append('searchTerm', shiftParams.searchTerm);
   if (shiftParams.groupId) params.append('groupId', shiftParams.groupId);
-  if (shiftParams.siteId) {
-    params.append('siteId', shiftParams.siteId);
-  } else if (siteId) {
-    params.append('siteId', siteId);
-  }
   if (shiftParams.userId) params.append('userId', shiftParams.userId);
   return params;
 }
 
 export const fetchShiftsAsync = createAsyncThunk<
   UserShift[],
-  string,
+  void,
   { state: RootState }
 >('users/fetchShiftsAsync', async (_, thunkAPI) => {
-  const params = getAxiosParams(
-    thunkAPI.getState().account.selectedSite?.id || null,
-    thunkAPI.getState().shifts.shiftParams
-  );
+  const params = getAxiosParams(thunkAPI.getState().shifts.shiftParams);
   try {
     const response = await agent.Users.getUserShifts(params);
     thunkAPI.dispatch(setMetaData(response.metaData));
@@ -59,7 +51,6 @@ function initParams() {
     weekEnd: addDays(weekStartDate, 7).toISOString(),
     searchTerm: null,
     groupId: null,
-    siteId: null,
     userId: null,
   };
 }

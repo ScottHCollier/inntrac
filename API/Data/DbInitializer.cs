@@ -1,6 +1,5 @@
 using API.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
 {
@@ -17,14 +16,7 @@ namespace API.Data
                     Name = "The Kings Head",
                 };
 
-                var redLion = new Site
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "The Red Lion",
-                };
-
                 context.Sites.Add(kingsHead);
-                context.Sites.Add(redLion);
 
                 var kingsHeadManager = new Group
                 {
@@ -63,53 +55,15 @@ namespace API.Data
                 context.Groups.Add(kingsHeadKitchen);
                 context.Groups.Add(kingsHeadEvents);
 
-                var redLionManager = new Group
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "Manager",
-                    Color = "#FF006E",
-                    Site = redLion,
-                };
-
-                var redLionBar = new Group
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "Bar",
-                    Color = "#FB5607",
-                    Site = redLion,
-                };
-
-                var redLionKitchen = new Group
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "Kitchen",
-                    Color = "#FFBE0B",
-                    Site = redLion,
-                };
-
-                var redLionEvents = new Group
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "Events",
-                    Color = "#3A86FF",
-                    Site = redLion,
-                };
-
-                context.Groups.Add(redLionManager);
-                context.Groups.Add(redLionBar);
-                context.Groups.Add(redLionKitchen);
-                context.Groups.Add(redLionEvents);
-
                 var scott = new User
                 {
                     Email = "scott@test.com",
                     UserName = "scott@test.com",
                     FirstName = "Scott",
                     Surname = "Collier",
-                    Sites = new List<Site>() { kingsHead },
-                    DefaultSite = kingsHead.Id,
-                    Groups = new List<Group>() { kingsHeadKitchen },
-                    DefaultGroup = kingsHeadKitchen.Id
+                    Site = kingsHead,
+                    Group = kingsHeadKitchen,
+                    Status = 6
                 };
 
                 await userManager.CreateAsync(scott, "Pa$$w0rd");
@@ -121,10 +75,9 @@ namespace API.Data
                     UserName = "ben@test.com",
                     FirstName = "Ben",
                     Surname = "Potts",
-                    Sites = new List<Site>() { kingsHead, redLion },
-                    DefaultSite = redLion.Id,
-                    Groups = new List<Group>() { kingsHeadKitchen, redLionKitchen },
-                    DefaultGroup = redLionKitchen.Id
+                    Site = kingsHead,
+                    Group = kingsHeadKitchen,
+                    Status = 6
                 };
 
                 await userManager.CreateAsync(ben, "Pa$$w0rd");
@@ -136,10 +89,9 @@ namespace API.Data
                     UserName = "victor@test.com",
                     FirstName = "Victor",
                     Surname = "Wright",
-                    Sites = new List<Site>() { kingsHead, redLion },
-                    DefaultSite = redLion.Id,
-                    Groups = new List<Group>() { kingsHeadBar, redLionBar },
-                    DefaultGroup = redLionBar.Id
+                    Site = kingsHead,
+                    Group = kingsHeadBar,
+                    Status = 6
                 };
 
                 await userManager.CreateAsync(victor, "Pa$$w0rd");
@@ -151,10 +103,9 @@ namespace API.Data
                     UserName = "kevin@test.com",
                     FirstName = "Kevin",
                     Surname = "Marsh",
-                    Sites = new List<Site>() { kingsHead },
-                    DefaultSite = kingsHead.Id,
-                    Groups = new List<Group>() { kingsHeadBar },
-                    DefaultGroup = kingsHeadBar.Id
+                    Site = kingsHead,
+                    Group = kingsHeadBar,
+                    Status = 6
                 };
 
                 await userManager.CreateAsync(kevin, "Pa$$w0rd");
@@ -166,10 +117,9 @@ namespace API.Data
                     UserName = "jane@test.com",
                     FirstName = "Jane",
                     Surname = "Smith",
-                    Sites = new List<Site>() { kingsHead },
-                    DefaultSite = kingsHead.Id,
-                    Groups = new List<Group>() { kingsHeadManager },
-                    DefaultGroup = kingsHeadManager.Id
+                    Site = kingsHead,
+                    Group = kingsHeadManager,
+                    Status = 6
                 };
 
                 await userManager.CreateAsync(jane, "Pa$$w0rd");
@@ -181,10 +131,9 @@ namespace API.Data
                     UserName = "sarah@test.com",
                     FirstName = "Sarah",
                     Surname = "James",
-                    Sites = new List<Site>() { kingsHead, redLion },
-                    DefaultSite = redLion.Id,
-                    Groups = new List<Group>() { kingsHeadManager, redLionManager },
-                    DefaultGroup = redLionManager.Id
+                    Site = kingsHead,
+                    Group = kingsHeadKitchen,
+                    Status = 6
                 };
 
                 await userManager.CreateAsync(sarah, "Pa$$w0rd");
@@ -196,10 +145,9 @@ namespace API.Data
                     UserName = "aubrey@test.com",
                     FirstName = "Aubrey",
                     Surname = "Adams",
-                    Sites = new List<Site>() { kingsHead, redLion },
-                    DefaultSite = kingsHead.Id,
-                    Groups = new List<Group>() { kingsHeadEvents, redLionEvents },
-                    DefaultGroup = kingsHeadEvents.Id
+                    Site = kingsHead,
+                    Group = kingsHeadEvents,
+                    Status = 6
                 };
 
                 await userManager.CreateAsync(aubrey, "Pa$$w0rd");

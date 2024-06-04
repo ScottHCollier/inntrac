@@ -8,15 +8,15 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const EmployeesTable = () => {
   const users = useAppSelector(userSelectors.selectAll);
-  const { selectedSite } = useAppSelector((state) => state.account);
+  const { user } = useAppSelector((state) => state.account);
   const { usersLoaded } = useAppSelector((state) => state.users);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (selectedSite && !users.length) {
-      dispatch(fetchUsersAsync(selectedSite?.id));
+    if (user && !users.length) {
+      dispatch(fetchUsersAsync(user?.site.id));
     }
-  }, [dispatch, selectedSite, users]);
+  }, [dispatch, user, users]);
   return (
     <div className='space-y-8'>
       {usersLoaded

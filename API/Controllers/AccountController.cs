@@ -31,8 +31,8 @@ namespace API.Controllers
                 return Unauthorized();
 
             user = await _context.Users
-                .Include(user => user.Sites)
-                .Include(user => user.Groups)
+                .Include(user => user.Site)
+                .Include(user => user.Group)
                 .FirstOrDefaultAsync(user => user.Email == loginDto.Email);
 
             if (user != null)
@@ -55,11 +55,10 @@ namespace API.Controllers
                 Surname = user.Surname,
                 Token = token,
                 IsAdmin = isAdmin,
-                Sites = user.Sites.Select(site => site.MapSiteToDto()).ToList(),
-                DefaultSite = user.DefaultSite,
-                Groups = user.Groups.Select(group => group.MapGroupToDto()).ToList(),
-                DefaultGroup = user.DefaultGroup,
-                Shifts = user.Shifts.Select(shift => shift.MapShiftToDto()).ToList()
+                Site = user.Site.MapSiteToDto(),
+                Group = user.Group.MapGroupToDto(),
+                Shifts = user.Shifts.Select(shift => shift.MapShiftToDto()).ToList(),
+                Status = user.Status
             };
         }
 
@@ -73,7 +72,7 @@ namespace API.Controllers
                 UserName = registerDto.Email,
                 Email = registerDto.Email,
                 PhoneNumber = registerDto.PhoneNumber,
-                AccountStatus = 1
+                Status = 1
             };
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
@@ -134,9 +133,8 @@ namespace API.Controllers
                 Surname = newUser.Surname.FirstCharToUpper(),
                 Email = newUser.Email,
                 UserName = newUser.Email,
-                Sites = new List<Site>() { site },
-                DefaultSite = site.Id,
-                Groups = new List<Group>() { group },
+                Site = site,
+                Group = group,
             };
 
             var result = await _userManager.CreateAsync(user);
@@ -183,8 +181,8 @@ namespace API.Controllers
         public async Task<ActionResult<AccountDto>> GetCurrentUser()
         {
             var user = await _context.Users
-                .Include(user => user.Sites)
-                .Include(user => user.Groups)
+                .Include(user => user.Site)
+                .Include(user => user.Group)
                 .FirstOrDefaultAsync(user => user.UserName == User.Identity.Name);
 
             if (user != null)
@@ -207,13 +205,11 @@ namespace API.Controllers
                 Surname = user.Surname,
                 Token = token,
                 IsAdmin = isAdmin,
-                AccountStatus = user.AccountStatus,
-                Sites = user.Sites.Select(site => site.MapSiteToDto()).ToList(),
-                DefaultSite = user.DefaultSite,
-                Groups = user.Groups.Select(group => group.MapGroupToDto()).ToList(),
-                DefaultGroup = user.DefaultGroup,
+                Status = user.Status,
+                Site = user.Site.MapSiteToDto(),
+                Group = user.Group.MapGroupToDto(),
                 Shifts = user.Shifts.Select(shift => shift.MapShiftToDto()).ToList()
-            }; ;
+            };
         }
     }
 }

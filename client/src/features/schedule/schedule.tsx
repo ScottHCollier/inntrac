@@ -44,27 +44,27 @@ export function Schedule() {
 
   const dispatch = useAppDispatch();
   const { shiftsLoaded } = useAppSelector((state) => state.shifts);
-  const { selectedSite } = useAppSelector((state) => state.account);
+  const { user } = useAppSelector((state) => state.account);
 
   const users = useAppSelector(userSelectors.selectAll);
 
   useEffect(() => {
-    if (selectedSite && !users.length) {
-      dispatch(fetchUsersAsync(selectedSite?.id));
+    if (!users.length) {
+      dispatch(fetchUsersAsync());
     }
-  }, [dispatch, selectedSite, users]);
+  }, [dispatch, users]);
 
   useEffect(() => {
-    if (!shiftsLoaded && selectedSite) {
-      dispatch(fetchShiftsAsync(selectedSite?.id));
+    if (!shiftsLoaded) {
+      dispatch(fetchShiftsAsync());
     }
-  }, [dispatch, shiftsLoaded, selectedSite]);
+  }, [dispatch, shiftsLoaded]);
 
   useEffect(() => {
-    if (selectedSite && !groups.length) {
-      dispatch(fetchGroupsAsync(selectedSite?.id));
+    if (user && !groups.length) {
+      dispatch(fetchGroupsAsync(user?.site.id));
     }
-  }, [dispatch, selectedSite, groups]);
+  }, [dispatch, user, groups]);
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);

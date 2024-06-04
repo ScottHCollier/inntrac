@@ -9,23 +9,23 @@ import { fetchUsersAsync, userSelectors } from '@/store/users-slice';
 
 const Employee = () => {
   const users = useAppSelector(userSelectors.selectAll);
-  const [user, setUser] = useState<User | null>(null);
-  const { selectedSite } = useAppSelector((state) => state.account);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const { user } = useAppSelector((state) => state.account);
   const dispatch = useAppDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (selectedSite && !users.length) {
-      dispatch(fetchUsersAsync(selectedSite?.id));
+    if (user?.site.id && !users.length) {
+      dispatch(fetchUsersAsync(user?.site.id));
     }
-  }, [dispatch, selectedSite, users]);
+  }, [dispatch, user, users]);
 
   useEffect(() => {
     if (id) {
-      const user = users.find((user) => user.id === id);
-      if (user) {
-        setUser(user);
+      const selectedUser = users.find((selectedUser) => selectedUser.id === id);
+      if (selectedUser) {
+        setSelectedUser(selectedUser);
       } else {
         navigate('/dashboard/employees');
       }
@@ -34,7 +34,7 @@ const Employee = () => {
 
   return (
     <>
-      {user && (
+      {selectedUser && (
         <>
           <Card>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
@@ -42,9 +42,9 @@ const Employee = () => {
               <Icons.users className='h-4 w-4 text-muted-foreground' />
             </CardHeader>
             <CardContent>
-              <div className='text-2xl font-bold'>Edit {user.name}</div>
+              <div className='text-2xl font-bold'>Edit {selectedUser.name}</div>
               <p className='text-xs text-muted-foreground'>
-                Select user to edit details
+                Select selectedUser to edit details
               </p>
             </CardContent>
           </Card>
@@ -52,8 +52,10 @@ const Employee = () => {
             <div className='space-y-6'>
               <div className='flex items-center justify-between'>
                 <div>
-                  <h3 className='text-lg font-medium'>{user.name}</h3>
-                  <p className='text-sm text-muted-foreground'>Edit user</p>
+                  <h3 className='text-lg font-medium'>{selectedUser.name}</h3>
+                  <p className='text-sm text-muted-foreground'>
+                    Edit selectedUser
+                  </p>
                 </div>
               </div>
               <AccountForm />

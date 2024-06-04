@@ -57,7 +57,7 @@ const AddShift = ({
   handleClose,
   handleChangeUser,
 }: Props) => {
-  const { selectedSite } = useAppSelector((state) => state.account);
+  const { user } = useAppSelector((state) => state.account);
   const users = useAppSelector(userSelectors.selectAll);
   const groups = useAppSelector(groupsSelectors.selectAll);
   const dispatch = useAppDispatch();
@@ -106,7 +106,7 @@ const AddShift = ({
     et.setMilliseconds(0);
 
     const body = {
-      siteId: selectedSite?.id,
+      siteId: user?.site.id,
       groupId,
       userId,
       pending: false,
@@ -176,19 +176,14 @@ const AddShift = ({
         end: format(parseISO(selectedShift.endTime), 'HH:mm'),
       };
     }
-    const defaultGroup =
-      groups.find((group) => group.id === selectedUser?.defaultGroup) ||
-      selectedUser?.groups.filter(
-        (group) => group.siteId === selectedSite?.id
-      )[0];
     return {
       userId: selectedUser?.id || '',
-      groupId: defaultGroup?.id || '',
+      groupId: selectedUser?.group.id || '',
       date: selectedDate || new Date(),
       start: getTimeString(new Date().getHours()),
       end: getTimeString(new Date().getHours() + 4),
     };
-  }, [groups, selectedDate, selectedShift, selectedSite, selectedUser]);
+  }, [selectedDate, selectedShift, selectedUser]);
 
   useEffect(() => {
     reset(getInitialValues());
@@ -217,11 +212,7 @@ const AddShift = ({
           />
 
           <Select
-            items={
-              selectedUser?.groups.filter(
-                (group) => group.siteId === selectedSite?.id
-              ) || []
-            }
+            items={groups}
             handleChange={(groupId) => {
               setValue('groupId', groupId);
               setTouched(true);

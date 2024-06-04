@@ -7,6 +7,6 @@ namespace API.Entities
         public string Color { get; set; }
         public string SiteId { get; set; }
         public Site Site { get; set; }
-        public List<User> Users { get; set; }
+        public List<User> Users { get; set; } = [];
     }
 }

@@ -91,10 +91,7 @@ export default function UserWeek({
         return day.shift ? (
           <ShiftCard
             key={day.shift.id}
-            backgroundColor={
-              user.groups.find((group) => group.id === day.shift?.groupId)
-                ?.color || '#999'
-            }
+            backgroundColor={user.group.color || '#999'}
             shift={day.shift}
             handleEditShift={(shift) => handleEditShift(user, shift)}
             handleSelect={(shift) => handleSelectShift(shift)}

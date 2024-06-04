@@ -27,9 +27,7 @@ export function OverviewTab() {
       <div className='space-y-4'>
         <Card
           style={{
-            backgroundColor:
-              user?.groups.find((group) => group.id === user.shifts[0]?.groupId)
-                ?.color || '#999',
+            backgroundColor: user?.group?.color || '#999',
           }}
         >
           <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>

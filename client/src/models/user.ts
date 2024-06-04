@@ -9,13 +9,11 @@ export interface User {
   name: string;
   email: string;
   token: string;
-  sites: Site[];
+  site: Site;
   shifts: Shift[];
-  groups: Group[];
+  group: Group;
   isAdmin: boolean;
-  accountStatus: number;
-  defaultSite: string;
-  defaultGroup: string;
+  status: number;
 }
 
 export interface RegisterAccount {
@@ -33,18 +31,15 @@ export interface UserShift {
   name: string;
   email: string;
   token: string;
-  sites: Site[];
+  site: Site;
   shifts: Shift[];
-  groups: Group[];
+  group: Group;
   isAdmin: boolean;
-  defaultSite: string;
-  defaultGroup: string;
 }
 
 export interface UserParams {
   searchTerm: string | null;
   groupId: string | null;
-  siteId: string | null;
   userId: string | null;
 }
 
@@ -53,6 +48,5 @@ export interface UserShiftsParams {
   weekEnd: string;
   searchTerm: string | null;
   groupId: string | null;
-  siteId: string | null;
   userId: string | null;
 }

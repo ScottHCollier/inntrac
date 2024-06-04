@@ -22,10 +22,16 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<UserDto>>> GetUsers([FromQuery] UserParams userParams)
         {
-            var site = await _context.Sites.FindAsync(userParams.SiteId);
+            var user = await _context.Users
+                .Include(user => user.Site)
+                .Include(user => user.Group)
+                .FirstOrDefaultAsync(user => user.UserName == User.Identity.Name);
+
+
+            var site = await _context.Sites.FindAsync(user.Site.Id);
             if (site == null) return BadRequest(new ProblemDetails { Title = "Invalid site" });
 
-            var users = await _context.Users.Where(user => user.Sites.Contains(site)).ToListAsync();
+            var users = await _context.Users.Where(user => user.Site == site).ToListAsync();
 
             return users.Select(user => user.MapUserToDto()).ToList();
         }
@@ -34,7 +40,12 @@ namespace API.Controllers
         [HttpGet("shifts")]
         public async Task<ActionResult<PagedList<UserShiftDto>>> GetUserShifts([FromQuery] ShiftParams shiftParams)
         {
-            var site = await _context.Sites.FindAsync(shiftParams.SiteId);
+            var user = await _context.Users
+                .Include(user => user.Site)
+                .Include(user => user.Group)
+                .FirstOrDefaultAsync(user => user.UserName == User.Identity.Name);
+
+            var site = await _context.Sites.FindAsync(user.Site.Id);
             if (site == null) return BadRequest(new ProblemDetails { Title = "Invalid site" });
 
             var group = (Group)null;
@@ -45,16 +56,16 @@ namespace API.Controllers
             }
 
             var query = _context.Users
-                .Where(user => user.Sites.Contains(site))
+                .Where(user => user.Site == site)
                 .Where(user => shiftParams.UserId.IsNullOrEmpty() || user.Id == shiftParams.UserId)
-                .Include(user => user.Sites)
+                .Include(user => user.Site)
                 .Include(user => user.Shifts
                     .Where(shift =>
                         DateTimeOffset.Compare(shift.StartTime, DateTime.Parse(shiftParams.WeekStart)) >= 0
                         && DateTimeOffset.Compare(shift.EndTime, DateTime.Parse(shiftParams.WeekEnd)) < 0
                     ))
-                .Where(user => shiftParams.GroupId.IsNullOrEmpty() || user.Groups.Contains(group))
-                .Include(user => user.Groups)
+                .Where(user => shiftParams.GroupId.IsNullOrEmpty() || user.Group == group)
+                .Include(user => user.Group)
                 .AsQueryable();
 
             var count = await query.CountAsync();

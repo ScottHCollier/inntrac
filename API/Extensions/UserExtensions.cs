@@ -64,11 +64,9 @@ namespace API.Extensions
                 Id = user.Id,
                 Name = $"{user.FirstName} {user.Surname}",
                 Email = user.Email,
-                DefaultGroup = user.DefaultGroup,
-                Groups = user.Groups.Select(group => group.MapGroupToDto()).ToList(),
+                Group = user.Group.MapGroupToDto(),
                 Shifts = user.Shifts.Select(shift => shift.MapShiftToDto()).ToList(),
-                DefaultSite = user.DefaultSite,
-                Sites = user.Sites.Select(site => site.MapSiteToDto()).ToList()
+                Site = user.Site.MapSiteToDto()
             };
         }
 
@@ -82,10 +80,8 @@ namespace API.Extensions
                 Surname = user.Surname,
                 Token = token,
                 IsAdmin = true,
-                Sites = user.Sites.Select(site => site.MapSiteToDto()).ToList(),
-                DefaultSite = user.DefaultSite,
-                Groups = user.Groups.Select(group => group.MapGroupToDto()).ToList(),
-                DefaultGroup = user.DefaultGroup,
+                Site = user.Site.MapSiteToDto(),
+                Group = user.Group.MapGroupToDto(),
                 Shifts = user.Shifts.Select(shift => shift.MapShiftToDto()).ToList()
             };
         }
