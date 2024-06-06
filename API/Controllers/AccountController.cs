@@ -1,65 +1,51 @@
 using API.Data;
 using API.DTO;
-using API.Entities;
-using API.Extensions;
-using API.Services;
+using API.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using API.Services;
+using API.Extensions;
 
 namespace API.Controllers
 {
-    public class AccountController : BaseApiController
+    public class AccountController(IUnitOfWork unitOfWork, TokenService tokenService, IMapper mapper) : BaseApiController
     {
-        private readonly UserManager<User> _userManager;
-        private readonly TokenService _tokenService;
-        private readonly StoreContext _context;
-        public AccountController(UserManager<User> userManager, TokenService tokenService, StoreContext context)
-        {
-            _context = context;
-            _userManager = userManager;
-            _tokenService = tokenService;
-        }
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly TokenService _tokenService = tokenService;
+        private readonly IMapper _mapper = mapper;
 
         [HttpPost("login")]
-        public async Task<ActionResult<AccountDto>> Login(LoginDto loginDto)
+        public async Task<ActionResult<Session>> Login(LoginDto loginDto)
         {
-            var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            var user = await _unitOfWork.Users.GetUserByEmailAsync(loginDto.Email);
 
-            if (user == null || !await _userManager.CheckPasswordAsync(user, loginDto.Password))
+            if (user == null || !await _unitOfWork.Users.CheckUserPasswordAsync(user, loginDto.Password))
                 return Unauthorized();
 
-            user = await _context.Users
-                .Include(user => user.Site)
-                .Include(user => user.Group)
-                .FirstOrDefaultAsync(user => user.Email == loginDto.Email);
+            user = await _unitOfWork.Users.GetByIdAsync(user.Id);
+            var token = await _tokenService.GenerateUserToken(user);
 
-            if (user != null)
+            var session = new Session
             {
-                user.Shifts = await _context.Shifts
-                    .Where(shift => shift.UserId == user.Id && shift.StartTime > DateTime.Today)
-                    .OrderBy(shift => shift.StartTime)
-                    .Take(5)
-                    .ToListAsync();
+                Id = Guid.NewGuid().ToString(),
+                Token = token
+            };
+
+            return session;
+        }
+
+        [HttpGet("{id}", Name = "GetUserById")]
+        public async Task<ActionResult<User>> GetUserById(string id)
+        {
+            var user = await _unitOfWork.Users.GetByIdAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
             }
 
-            var token = await _tokenService.GenerateUserToken(user);
-            var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
-
-            return new AccountDto
-            {
-                Id = user.Id,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                Surname = user.Surname,
-                Token = token,
-                IsAdmin = isAdmin,
-                Site = user.Site.MapSiteToDto(),
-                Group = user.Group.MapGroupToDto(),
-                Shifts = user.Shifts.Select(shift => shift.MapShiftToDto()).ToList(),
-                Status = user.Status
-            };
+            return Ok(user);
         }
 
         [HttpPost("register")]
@@ -75,7 +61,7 @@ namespace API.Controllers
                 Status = 1
             };
 
-            var result = await _userManager.CreateAsync(user, registerDto.Password);
+            var result = await _unitOfWork.Users.CreateAccountAsync(user, registerDto.Password);
 
             if (!result.Succeeded)
             {
@@ -87,22 +73,24 @@ namespace API.Controllers
                 return ValidationProblem();
             }
 
-            await _userManager.AddToRoleAsync(user, "Admin");
+            await _unitOfWork.Users.SetAdminAsync(user);
 
-            return StatusCode(201);
+            var locationHeader = new Uri(Url.Link("GetUserById", new { id = user.Id }));
+
+            return Created(locationHeader, user);
         }
 
         [HttpPost("setPassword")]
-        public async Task<ActionResult<AccountDto>> SetPassword(SetPasswordDto setPasswordDto)
+        public async Task<ActionResult<Session>> SetPassword(SetPasswordDto setPasswordDto)
         {
             var validatedToken = _tokenService.ValidateToken(setPasswordDto.Token);
             var userEmail = validatedToken.Claims.First(c => c.Type.Equals("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")).Value;
 
-            var user = await _context.Users.FirstOrDefaultAsync(user => user.Email == userEmail);
+            var user = await _unitOfWork.Users.GetUserByEmailAsync(userEmail);
 
             if (user == null) return BadRequest();
 
-            var result = await _userManager.AddPasswordAsync(user, setPasswordDto.Password);
+            var result = await _unitOfWork.Users.SetPasswordAsync(user, setPasswordDto.Password);
 
             if (!result.Succeeded)
             {
@@ -121,10 +109,10 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult> AddUser(AddUserDto newUser)
         {
-            var site = await _context.Sites.FindAsync(newUser.SiteId);
+            var site = await _unitOfWork.Sites.GetByIdAsync(newUser.SiteId);
             if (site == null) return BadRequest(new ProblemDetails { Title = "Invalid site" });
 
-            var group = await _context.Groups.FindAsync(newUser.GroupId);
+            var group = await _unitOfWork.Groups.GetByIdAsync(newUser.GroupId);
             if (group == null) return BadRequest(new ProblemDetails { Title = "Invalid group" });
 
             var user = new User
@@ -137,7 +125,7 @@ namespace API.Controllers
                 Group = group,
             };
 
-            var result = await _userManager.CreateAsync(user);
+            var result = await _unitOfWork.Users.CreateAccountAsync(user);
 
             if (!result.Succeeded)
             {
@@ -149,67 +137,28 @@ namespace API.Controllers
                 return ValidationProblem();
             }
 
-            await _userManager.AddToRoleAsync(user, "Member");
+            if (newUser.IsAdmin) await _unitOfWork.Users.SetAdminAsync(user);
 
-            if (newUser.IsAdmin) await _userManager.AddToRoleAsync(user, "Admin");
+            _unitOfWork.Emails.SendWelcomeEmail(newUser.Email);
+            await _unitOfWork.CompleteAsync();
 
-            var email = new Email
-            {
-                Id = Guid.NewGuid().ToString(),
-                From = "no-reply@inntrac.com",
-                To = newUser.Email,
-                Template = "Welcome",
-                Subject = "Welcome to Inntrac",
-                Status = 0,
-                CreatedAt = DateTime.UtcNow,
-            };
+            var locationHeader = new Uri(Url.Link("GetUserById", new { id = user.Id }));
 
-            _context.Emails.Add(email);
-            await _context.SaveChangesAsync();
-
-            return StatusCode(201);
-
-            // // Get the location header
-            // var locationHeader = new Uri(Url.Link("GetUserById", new { id = user.Id }));
-
-            // // Return the result
-            // return Created(locationHeader, user);
+            return Created(locationHeader, user);
         }
 
         [Authorize]
         [HttpGet]
         public async Task<ActionResult<AccountDto>> GetCurrentUser()
         {
-            var user = await _context.Users
-                .Include(user => user.Site)
-                .Include(user => user.Group)
-                .FirstOrDefaultAsync(user => user.UserName == User.Identity.Name);
+            var user = await _unitOfWork.Users.GetCurrentUserAsync(User.Identity.Name);
 
-            if (user != null)
-            {
-                user.Shifts = await _context.Shifts
-                    .Where(shift => shift.UserId == user.Id && shift.StartTime > DateTime.Today)
-                    .OrderBy(shift => shift.StartTime)
-                    .Take(5)
-                    .ToListAsync();
-            }
+            var isAdmin = await _unitOfWork.Users.IsAdminAsync(user);
 
-            var token = await _tokenService.GenerateUserToken(user);
-            var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+            var accountDto = _mapper.Map<AccountDto>(user);
+            accountDto.IsAdmin = isAdmin;
 
-            return new AccountDto
-            {
-                Id = user.Id,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                Surname = user.Surname,
-                Token = token,
-                IsAdmin = isAdmin,
-                Status = user.Status,
-                Site = user.Site.MapSiteToDto(),
-                Group = user.Group.MapGroupToDto(),
-                Shifts = user.Shifts.Select(shift => shift.MapShiftToDto()).ToList()
-            };
+            return accountDto;
         }
     }
 }

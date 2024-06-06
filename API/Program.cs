@@ -1,7 +1,8 @@
 using System.Text;
 using API.Data;
-using API.Entities;
+using API.Models;
 using API.Middleware;
+using API.Profiles;
 using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -15,6 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+
 builder.Services.AddHostedService<MailService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -73,6 +76,7 @@ builder.Services.AddDbContext<StoreContext>(opt =>
     opt.UseNpgsql(connString);
 });
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddCors();
 builder.Services.AddIdentityCore<User>(opt =>

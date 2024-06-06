@@ -26,14 +26,12 @@ const EmployeesTable = () => {
                 <Avatar>
                   <AvatarImage src='/avatars/01.png' alt={user?.name} />
                   <AvatarFallback>
-                    {`${user.name.split(' ')[0].charAt(0)}${user.name
-                      .split(' ')[1]
-                      .charAt(0)}`}
+                    {`${user.firstName.charAt(0)}${user.surname.charAt(0)}`}
                   </AvatarFallback>
                 </Avatar>
                 <div className='ml-4 space-y-1'>
                   <p className='text-sm font-medium leading-none'>
-                    {user.name}
+                    {`${user.firstName} ${user.surname}`}
                   </p>
                   <p className='text-sm text-muted-foreground'>{user.email}</p>
                 </div>

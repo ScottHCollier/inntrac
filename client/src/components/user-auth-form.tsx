@@ -4,7 +4,7 @@ import * as z from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { signInUser } from '../store/account-slice';
+import { fetchCurrentUser, signInUser } from '../store/account-slice';
 import { useAppDispatch } from '../store/configure-store';
 import { Icons } from './icons';
 import Input from './custom/input';
@@ -49,6 +49,7 @@ const UserAuthForm = () => {
   async function onSubmit(data: FieldValues) {
     try {
       await dispatch(signInUser(data));
+      await dispatch(fetchCurrentUser());
       navigate(location.state?.from || '/dashboard');
     } catch (error) {
       console.log(error);

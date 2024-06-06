@@ -1,31 +1,28 @@
 using API.Data;
 using API.DTO;
-using API.Entities;
-using API.Extensions;
+using API.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    public class SitesController : BaseApiController
+    public class SitesController(IUnitOfWork unitOfWork, IMapper mapper) : BaseApiController
     {
-        private readonly UserManager<User> _userManager;
-        private readonly StoreContext _context;
-        public SitesController(UserManager<User> userManager, StoreContext context)
-        {
-            _userManager = userManager;
-            _context = context;
-        }
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
-        [HttpGet]
-        public async Task<ActionResult<List<SiteDto>>> GetSites()
+        [HttpGet("{id}", Name = "GetSiteById")]
+        public async Task<ActionResult<Site>> GetSiteById(string id)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(user => user.UserName == User.Identity.Name);
+            var site = await _unitOfWork.Sites.GetByIdAsync(id);
 
-            var sites = await _context.Sites.Where(site => site.Users.Contains(user)).ToListAsync();
-            return sites.Select(site => site.MapSiteToDto()).ToList();
+            if (site == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(site);
         }
 
         [Authorize]
@@ -33,7 +30,7 @@ namespace API.Controllers
         public async Task<ActionResult> AddSite(AddSiteDto newSite)
         {
 
-            var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == newSite.UserId);
+            var user = await _unitOfWork.Users.GetByIdAsync(newSite.UserId);
 
             if (user == null) return BadRequest();
 
@@ -43,7 +40,7 @@ namespace API.Controllers
                 Name = newSite.TeamName,
             };
 
-            _context.Sites.Add(siteToAdd);
+            await _unitOfWork.Sites.AddAsync(siteToAdd);
 
             user.Site = siteToAdd;
             user.Status = 6;
@@ -74,58 +71,19 @@ namespace API.Controllers
                 Site = siteToAdd,
             };
 
-            _context.Groups.Add(manager);
-            _context.Groups.Add(bar);
-            _context.Groups.Add(kitchen);
+            await _unitOfWork.Groups.AddAsync(manager);
+            await _unitOfWork.Groups.AddAsync(bar);
+            await _unitOfWork.Groups.AddAsync(kitchen);
 
-            // var user = new User
-            // {
-            //     FirstName = newUser.FirstName.FirstCharToUpper(),
-            //     Surname = newUser.Surname.FirstCharToUpper(),
-            //     Email = newUser.Email,
-            //     UserName = newUser.Email,
-            //     Sites = new List<Site>() { site },
-            //     DefaultSite = site.Id,
-            //     Groups = new List<Group>() { group },
-            // };
+            await _unitOfWork.CompleteAsync();
 
-            // var result = await _userManager.CreateAsync(user);
+            var site = await _unitOfWork.Sites.GetByIdAsync(siteToAdd.Id);
 
-            // if (!result.Succeeded)
-            // {
-            //     foreach (var error in result.Errors)
-            //     {
-            //         ModelState.AddModelError(error.Code, error.Description);
-            //     }
+            // Get the location header
+            var locationHeader = new Uri(Url.Link("GetSiteById", new { id = site.Id }));
 
-            //     return ValidationProblem();
-            // }
-
-            // await _userManager.AddToRoleAsync(user, "Member");
-
-            // if (newUser.IsAdmin) await _userManager.AddToRoleAsync(user, "Admin");
-
-            // var email = new Email
-            // {
-            //     Id = Guid.NewGuid().ToString(),
-            //     From = "no-reply@inntrac.com",
-            //     To = newUser.Email,
-            //     Template = "Welcome",
-            //     Subject = "Welcome to Inntrac",
-            //     Status = 0,
-            //     CreatedAt = DateTime.UtcNow,
-            // };
-
-            // _context.Emails.Add(email);
-            await _context.SaveChangesAsync();
-
-            return StatusCode(201);
-
-            // // Get the location header
-            // var locationHeader = new Uri(Url.Link("GetUserById", new { id = user.Id }));
-
-            // // Return the result
-            // return Created(locationHeader, user);
+            // Return the result
+            return Created(locationHeader, site);
         }
     }
 }

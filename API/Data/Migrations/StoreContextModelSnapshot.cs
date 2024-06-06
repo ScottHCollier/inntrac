@@ -22,7 +22,7 @@ namespace API.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("API.Entities.Email", b =>
+            modelBuilder.Entity("API.Models.Email", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -68,7 +68,7 @@ namespace API.Data.Migrations
                     b.ToTable("Emails");
                 });
 
-            modelBuilder.Entity("API.Entities.Group", b =>
+            modelBuilder.Entity("API.Models.Group", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -89,7 +89,7 @@ namespace API.Data.Migrations
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("API.Entities.Shift", b =>
+            modelBuilder.Entity("API.Models.Shift", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -123,7 +123,7 @@ namespace API.Data.Migrations
                     b.ToTable("Shifts");
                 });
 
-            modelBuilder.Entity("API.Entities.Site", b =>
+            modelBuilder.Entity("API.Models.Site", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -136,7 +136,7 @@ namespace API.Data.Migrations
                     b.ToTable("Sites");
                 });
 
-            modelBuilder.Entity("API.Entities.User", b =>
+            modelBuilder.Entity("API.Models.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -247,13 +247,13 @@ namespace API.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "bb23d31b-271b-4fe7-9eeb-3146b828b0b6",
+                            Id = "6dd64e85-65f9-4fec-8fa8-0a2fe558c57f",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "cf6d730e-d618-4437-bbb0-d0b6c33b6199",
+                            Id = "fdd37619-4b96-467a-97fe-d8cb51edd38d",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         });
@@ -365,26 +365,26 @@ namespace API.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("API.Entities.Group", b =>
+            modelBuilder.Entity("API.Models.Group", b =>
                 {
-                    b.HasOne("API.Entities.Site", "Site")
+                    b.HasOne("API.Models.Site", "Site")
                         .WithMany("Groups")
                         .HasForeignKey("SiteId");
 
                     b.Navigation("Site");
                 });
 
-            modelBuilder.Entity("API.Entities.Shift", b =>
+            modelBuilder.Entity("API.Models.Shift", b =>
                 {
-                    b.HasOne("API.Entities.Group", "Group")
+                    b.HasOne("API.Models.Group", "Group")
                         .WithMany()
                         .HasForeignKey("GroupId");
 
-                    b.HasOne("API.Entities.Site", "Site")
+                    b.HasOne("API.Models.Site", "Site")
                         .WithMany("Shifts")
                         .HasForeignKey("SiteId");
 
-                    b.HasOne("API.Entities.User", "User")
+                    b.HasOne("API.Models.User", "User")
                         .WithMany("Shifts")
                         .HasForeignKey("UserId");
 
@@ -395,13 +395,13 @@ namespace API.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("API.Entities.User", b =>
+            modelBuilder.Entity("API.Models.User", b =>
                 {
-                    b.HasOne("API.Entities.Group", "Group")
+                    b.HasOne("API.Models.Group", "Group")
                         .WithMany("Users")
                         .HasForeignKey("GroupId");
 
-                    b.HasOne("API.Entities.Site", "Site")
+                    b.HasOne("API.Models.Site", "Site")
                         .WithMany("Users")
                         .HasForeignKey("SiteId");
 
@@ -421,7 +421,7 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("API.Entities.User", null)
+                    b.HasOne("API.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -430,7 +430,7 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("API.Entities.User", null)
+                    b.HasOne("API.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -445,7 +445,7 @@ namespace API.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Entities.User", null)
+                    b.HasOne("API.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -454,19 +454,19 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("API.Entities.User", null)
+                    b.HasOne("API.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("API.Entities.Group", b =>
+            modelBuilder.Entity("API.Models.Group", b =>
                 {
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("API.Entities.Site", b =>
+            modelBuilder.Entity("API.Models.Site", b =>
                 {
                     b.Navigation("Groups");
 
@@ -475,7 +475,7 @@ namespace API.Data.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("API.Entities.User", b =>
+            modelBuilder.Entity("API.Models.User", b =>
                 {
                     b.Navigation("Shifts");
                 });

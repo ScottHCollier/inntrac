@@ -3,7 +3,6 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { accountSlice } from './account-slice';
 import { usersSlice } from './users-slice';
 import { groupsSlice } from './groups-slice';
-import { sitesSlice } from './sites-slice';
 import { shiftsSlice } from './shifts-slice';
 
 export const store = configureStore({
@@ -12,7 +11,6 @@ export const store = configureStore({
     users: usersSlice.reducer,
     shifts: shiftsSlice.reducer,
     groups: groupsSlice.reducer,
-    sites: sitesSlice.reducer,
   },
 });
 

@@ -20,10 +20,6 @@ const tabs = [
     href: '/dashboard/groups',
   },
   {
-    title: 'Sites',
-    href: '/dashboard/sites',
-  },
-  {
     title: 'Notifications',
     href: '/dashboard/notifications',
   },

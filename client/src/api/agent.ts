@@ -12,7 +12,7 @@ axios.defaults.withCredentials = true;
 const responseBody = (response: AxiosResponse) => response.data;
 
 axios.interceptors.request.use((config) => {
-  const token = store.getState().account.user?.token;
+  const token = store.getState().account.session?.token;
 
   if (token) config.headers.Authorization = `Bearer ${token}`;
 
@@ -106,23 +106,21 @@ const Shifts = {
   delete: (id: string) => requests.delete(`shifts/${id}`),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateShift: (values: any) => requests.put('shifts', values),
+  getShifts: (params: URLSearchParams) => requests.get('shifts', params),
 };
 
 const Users = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getUsers: (params: URLSearchParams) => requests.get('users', params),
-  getUserShifts: (params: URLSearchParams) =>
-    requests.get('users/shifts', params),
 };
 
 const Groups = {
-  getGroups: (siteId: string) => requests.get(`groups?siteId=${siteId}`),
+  getGroups: () => requests.get('groups'),
 };
 
 const Sites = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   addSite: (values: any) => requests.post('sites', values),
-  getSites: () => requests.get(`sites`),
 };
 
 const agent = {

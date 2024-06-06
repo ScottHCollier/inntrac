@@ -6,21 +6,29 @@ import { router } from '../router/routes';
 import { toast } from '../components/ui/use-toast';
 import { RegisterAccount } from '../models/user';
 
+interface Session {
+  id: string;
+  token: string;
+}
+
 interface AccountState {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  session: Session | null;
   user: User | null;
 }
 
 const initialState: AccountState = {
+  session: null,
   user: null,
 };
 
-export const signInUser = createAsyncThunk<User, FieldValues>(
+export const signInUser = createAsyncThunk<Session, FieldValues>(
   'account/signInUser',
   async (data, thunkAPI) => {
     try {
-      const accountDto = await agent.Account.login(data);
-      localStorage.setItem('user', JSON.stringify(accountDto));
-      return accountDto;
+      const session = await agent.Account.login(data);
+      localStorage.setItem('session', JSON.stringify(session));
+      return session;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return thunkAPI.rejectWithValue({ error: error.data });
@@ -41,13 +49,13 @@ export const registerUser = createAsyncThunk<RegisterAccount, FieldValues>(
   }
 );
 
-export const setPassword = createAsyncThunk<User, FieldValues>(
+export const setPassword = createAsyncThunk<Session, FieldValues>(
   'account/setPassword',
   async (data, thunkAPI) => {
     try {
-      const accountDto = await agent.Account.setPassword(data);
-      localStorage.setItem('user', JSON.stringify(accountDto));
-      return accountDto;
+      const session = await agent.Account.setPassword(data);
+      localStorage.setItem('session', JSON.stringify(session));
+      return session;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return thunkAPI.rejectWithValue({ error: error.data });
@@ -58,11 +66,11 @@ export const setPassword = createAsyncThunk<User, FieldValues>(
 export const fetchCurrentUser = createAsyncThunk<User>(
   'account/fetchCurrentUser',
   async (_, thunkAPI) => {
-    thunkAPI.dispatch(setUser(JSON.parse(localStorage.getItem('user')!)));
+    thunkAPI.dispatch(setSession(JSON.parse(localStorage.getItem('session')!)));
     try {
-      const accountDto = await agent.Account.currentUser();
-      localStorage.setItem('user', JSON.stringify(accountDto));
-      return accountDto;
+      const account = await agent.Account.currentUser();
+      localStorage.setItem('user', JSON.stringify(account));
+      return account;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return thunkAPI.rejectWithValue({ error: error.data });
@@ -70,7 +78,7 @@ export const fetchCurrentUser = createAsyncThunk<User>(
   },
   {
     condition: () => {
-      if (!localStorage.getItem('user')) return false;
+      if (!localStorage.getItem('session')) return false;
     },
   }
 );
@@ -81,11 +89,15 @@ export const accountSlice = createSlice({
   reducers: {
     signOut: (state) => {
       state.user = null;
+      localStorage.removeItem('session');
       localStorage.removeItem('user');
       router.navigate('/');
     },
     setUser: (state, action) => {
       state.user = action.payload;
+    },
+    setSession: (state, action) => {
+      state.session = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -98,14 +110,13 @@ export const accountSlice = createSlice({
       });
       router.navigate('/');
     });
+    builder.addMatcher(isAnyOf(fetchCurrentUser.fulfilled), (state, action) => {
+      state.user = action.payload;
+    });
     builder.addMatcher(
-      isAnyOf(
-        signInUser.fulfilled,
-        fetchCurrentUser.fulfilled,
-        setPassword.fulfilled
-      ),
+      isAnyOf(signInUser.fulfilled, setPassword.fulfilled),
       (state, action) => {
-        state.user = action.payload;
+        state.session = action.payload;
       }
     );
     builder.addMatcher(
@@ -117,4 +128,4 @@ export const accountSlice = createSlice({
   },
 });
 
-export const { signOut, setUser } = accountSlice.actions;
+export const { signOut, setUser, setSession } = accountSlice.actions;

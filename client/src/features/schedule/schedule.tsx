@@ -44,7 +44,6 @@ export function Schedule() {
 
   const dispatch = useAppDispatch();
   const { shiftsLoaded } = useAppSelector((state) => state.shifts);
-  const { user } = useAppSelector((state) => state.account);
 
   const users = useAppSelector(userSelectors.selectAll);
 
@@ -61,10 +60,10 @@ export function Schedule() {
   }, [dispatch, shiftsLoaded]);
 
   useEffect(() => {
-    if (user && !groups.length) {
-      dispatch(fetchGroupsAsync(user?.site.id));
+    if (!groups.length) {
+      dispatch(fetchGroupsAsync());
     }
-  }, [dispatch, user, groups]);
+  }, [dispatch, groups]);
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);

@@ -7,15 +7,14 @@ import { groupsSelectors, fetchGroupsAsync } from '@/store/groups-slice';
 
 const GroupsTable = () => {
   const groups = useAppSelector(groupsSelectors.selectAll);
-  const { user } = useAppSelector((state) => state.account);
   const { groupsLoaded } = useAppSelector((state) => state.groups);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (user && !groups.length) {
-      dispatch(fetchGroupsAsync(user?.site.id));
+    if (!groups.length) {
+      dispatch(fetchGroupsAsync());
     }
-  }, [dispatch, user, groups]);
+  }, [dispatch, groups]);
   return (
     <div className='space-y-8'>
       {groupsLoaded

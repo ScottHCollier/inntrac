@@ -7,7 +7,6 @@ import { cn } from '../lib/utils';
 import { DetailsTab } from '../features/dashboard/details/details-tab';
 import { EmployeesTab } from '../features/dashboard/employees/employees-tab';
 import { GroupsTab } from '../features/dashboard/groups/groups-tab';
-import SitesTab from '../features/dashboard/sites/sites-tab';
 import { NotificationsTab } from '../features/dashboard/notifications/notifications-tab';
 
 const tabs = [
@@ -26,10 +25,6 @@ const tabs = [
   {
     title: 'Groups',
     index: 3,
-  },
-  {
-    title: 'Sites',
-    index: 4,
   },
   {
     title: 'Notifications',
@@ -77,8 +72,7 @@ const Home = () => {
         {selectedTab === 1 && <DetailsTab />}
         {selectedTab === 2 && <EmployeesTab />}
         {selectedTab === 3 && <GroupsTab />}
-        {selectedTab === 4 && <SitesTab />}
-        {selectedTab === 5 && <NotificationsTab />}
+        {selectedTab === 4 && <NotificationsTab />}
       </div>
     </>
   );

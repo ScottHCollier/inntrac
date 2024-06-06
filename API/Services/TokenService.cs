@@ -1,22 +1,16 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Text;
-using API.Entities;
+using API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace API.Services
 {
-    public class TokenService
+    public class TokenService(UserManager<User> userManager, IConfiguration config)
     {
-        private readonly UserManager<User> _userManager;
-        private readonly IConfiguration _config;
-        public TokenService(UserManager<User> userManager, IConfiguration config)
-        {
-            _userManager = userManager;
-            _config = config;
-        }
+        private readonly UserManager<User> _userManager = userManager;
+        private readonly IConfiguration _config = config;
 
         public async Task<string> GenerateUserToken(User user)
         {
@@ -82,8 +76,7 @@ namespace API.Services
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWTSettings:NewUserTokenKey"]))
             };
 
-            SecurityToken validatedToken;
-            return tokenHandler.ValidateToken(authToken, validationParameters, out validatedToken);
+            return tokenHandler.ValidateToken(authToken, validationParameters, out SecurityToken validatedToken);
         }
     }
 }

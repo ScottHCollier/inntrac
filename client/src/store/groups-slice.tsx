@@ -15,18 +15,17 @@ interface GroupsState {
 
 const groupsAdapter = createEntityAdapter<Group>();
 
-export const fetchGroupsAsync = createAsyncThunk<
-  Group[],
-  string,
-  { state: RootState }
->('groups/fetchGroupsAsync', async (siteId, thunkAPI) => {
-  try {
-    return await agent.Groups.getGroups(siteId);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    return thunkAPI.rejectWithValue({ error: error.data });
+export const fetchGroupsAsync = createAsyncThunk<Group[]>(
+  'groups/fetchGroupsAsync',
+  async (_, thunkAPI) => {
+    try {
+      return await agent.Groups.getGroups();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue({ error: error.data });
+    }
   }
-});
+);
 
 export const groupsSlice = createSlice({
   name: 'groups',

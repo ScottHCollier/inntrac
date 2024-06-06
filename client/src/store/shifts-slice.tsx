@@ -35,7 +35,7 @@ export const fetchShiftsAsync = createAsyncThunk<
 >('users/fetchShiftsAsync', async (_, thunkAPI) => {
   const params = getAxiosParams(thunkAPI.getState().shifts.shiftParams);
   try {
-    const response = await agent.Users.getUserShifts(params);
+    const response = await agent.Shifts.getShifts(params);
     thunkAPI.dispatch(setMetaData(response.metaData));
     return response.items;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

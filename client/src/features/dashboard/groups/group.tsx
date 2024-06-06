@@ -10,16 +10,15 @@ import { Icons } from '@/components/icons';
 const Groups = () => {
   const groups = useAppSelector(groupsSelectors.selectAll);
   const [group, setGroup] = useState<Group | null>(null);
-  const { user } = useAppSelector((state) => state.account);
   const dispatch = useAppDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user && !groups.length) {
-      dispatch(fetchGroupsAsync(user?.site.id));
+    if (!groups.length) {
+      dispatch(fetchGroupsAsync());
     }
-  }, [dispatch, user, groups]);
+  }, [dispatch, groups]);
 
   useEffect(() => {
     if (id) {

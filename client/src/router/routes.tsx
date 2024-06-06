@@ -4,7 +4,6 @@ import App from '@/layout/app';
 // import NotFound from '../errors/NotFound';
 import RequireAuth from './require-auth';
 import { Schedule } from '@/features/schedule/schedule';
-import { Dashboard } from '@/features/dashboard/dashboard';
 import { Admin } from '@/features/admin/admin';
 import { Profile } from '@/features/admin/components/profile';
 import { Account } from '@/features/admin/components/account';
@@ -12,7 +11,6 @@ import { Assistant } from '@/features/assistant/assistant';
 import Group from '../features/dashboard/groups/group';
 import { OverviewTab } from '../features/dashboard/overview/overview-tab';
 import { DetailsTab } from '../features/dashboard/details/details-tab';
-import SitesTab from '../features/dashboard/sites/sites-tab';
 import { NotificationsTab } from '../features/dashboard/notifications/notifications-tab';
 import { GroupsTab } from '../features/dashboard/groups/groups-tab';
 import Home from '../layout/home';
@@ -20,8 +18,6 @@ import Groups from '../features/dashboard/groups/groups';
 import Employees from '../features/dashboard/employees/employees';
 import Employee from '../features/dashboard/employees/employee';
 import { EmployeesTab } from '../features/dashboard/employees/employees-tab';
-import Sites from '../features/dashboard/sites/sites';
-import Site from '../features/dashboard/sites/site';
 import Login from '../features/login/login';
 import Register from '../features/register/register';
 import Setup from '../features/register/setup';
@@ -62,20 +58,6 @@ export const router = createBrowserRouter([
               {
                 path: 'details',
                 element: <DetailsTab />,
-              },
-              {
-                path: 'sites',
-                element: <SitesTab />,
-                children: [
-                  {
-                    path: '',
-                    element: <Sites />,
-                  },
-                  {
-                    path: ':id',
-                    element: <Site />,
-                  },
-                ],
               },
               {
                 path: 'groups',

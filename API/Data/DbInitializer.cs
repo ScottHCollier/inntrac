@@ -1,4 +1,4 @@
-using API.Entities;
+using API.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace API.Data

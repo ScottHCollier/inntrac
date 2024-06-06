@@ -83,7 +83,7 @@ export default function UserWeek({
     <div key={user.id} className='grid grid-cols-8 gap-1'>
       <Card className='flex'>
         <CardContent className='py-1 px-2 flex flex-col justify-around'>
-          <p className='text-sm font-bold'>{user.name}</p>
+          <p className='text-sm font-bold'>{`${user.firstName} ${user.surname}`}</p>
           <div className='text-xs text-muted-foreground'>{totalHours}h</div>
         </CardContent>
       </Card>

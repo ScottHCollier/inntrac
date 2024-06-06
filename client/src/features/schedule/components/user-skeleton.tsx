@@ -11,7 +11,7 @@ export default function UserSkeleton({ user }: Props) {
     <div key={user.id} className='grid grid-cols-8 gap-1'>
       <Card>
         <CardContent className='py-1 px-2'>
-          <p className='text-sm font-bold'>{user.name}</p>
+          <p className='text-sm font-bold'>{`${user.firstName} ${user.surname}`}</p>
           <Skeleton className='w-[16px] h-[16px] rounded-full my-0.5' />
         </CardContent>
       </Card>

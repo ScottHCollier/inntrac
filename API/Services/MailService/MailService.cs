@@ -2,22 +2,16 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using API.Data;
-using API.Entities;
+using API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Services
 {
-    public class MailService : BackgroundService
+    public class MailService(IServiceScopeFactory serviceProviderFactory, IConfiguration config, ILogger<MailService> logger) : BackgroundService
     {
-        private readonly IConfiguration _config;
-        private readonly ILogger<BackgroundService> _logger;
-        private readonly IServiceScopeFactory _serviceProviderFactory;
-        public MailService(IServiceScopeFactory serviceProviderFactory, IConfiguration config, ILogger<MailService> logger)
-        {
-            _serviceProviderFactory = serviceProviderFactory;
-            _logger = logger;
-            _config = config;
-        }
+        private readonly IConfiguration _config = config;
+        private readonly ILogger<BackgroundService> _logger = logger;
+        private readonly IServiceScopeFactory _serviceProviderFactory = serviceProviderFactory;
         public IServiceProvider Services { get; }
         public async Task SendMail(Email email)
         {
@@ -27,7 +21,7 @@ namespace API.Services
                 EnableSsl = true
             };
 
-            MailMessage message = new MailMessage(email.From, email.To);
+            MailMessage message = new(email.From, email.To);
 
             string html = File.ReadAllText($"./Services/MailService/Templates/{email.Template}.html");
 

@@ -6,9 +6,7 @@ export interface User {
   id: string;
   firstName: string;
   surname: string;
-  name: string;
   email: string;
-  token: string;
   site: Site;
   shifts: Shift[];
   group: Group;

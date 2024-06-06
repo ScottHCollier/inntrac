@@ -1,20 +1,40 @@
 using API.Data;
 using API.DTO;
-using API.Entities;
-using API.Extensions;
+using API.Models;
 using API.RequestHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using API.Extensions;
+using AutoMapper;
 
 namespace API.Controllers
 {
-    public class ShiftsController : BaseApiController
+    public class ShiftsController(IUnitOfWork unitOfWork, IMapper mapper) : BaseApiController
     {
-        private readonly StoreContext _context;
-        public ShiftsController(StoreContext context)
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
+
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult<PagedList<UserShiftDto>>> GetShifts([FromQuery] ShiftParams shiftParams)
         {
-            _context = context;
+            var currentUser = await _unitOfWork.Users.GetCurrentUserAsync(User.Identity.Name);
+
+            var query = _unitOfWork.Users.GetShiftsQueryable(currentUser, shiftParams);
+
+            var count = await query.CountAsync();
+            var shifts = await query.Skip((shiftParams.PageNumber - 1) * shiftParams.PageSize).Take(shiftParams.PageSize).ToListAsync();
+
+            var shiftsDto = new PagedList<UserShiftDto>
+            (
+                _mapper.Map<List<UserShiftDto>>(shifts),
+                count, shiftParams.PageNumber, shiftParams.PageSize
+            );
+
+            Response.AddPaginationHeader(shiftsDto.MetaData);
+
+            return shiftsDto;
         }
 
         [HttpPost]
@@ -26,38 +46,21 @@ namespace API.Controllers
                 return ValidationProblem();
             }
 
-            // var shiftClash = await _context.Shifts
-            //     .Where(shift =>
-            //         shift.UserId == addShiftDto.UserId &&
-            //         (shift.StartTime < addShiftDto.StartTime && addShiftDto.StartTime < shift.EndTime) ||
-            //         (shift.StartTime < addShiftDto.EndTime && addShiftDto.EndTime < shift.EndTime) ||
-            //         (addShiftDto.StartTime < shift.StartTime && shift.EndTime < addShiftDto.EndTime)
-            //     ).ToListAsync();
+            var existingShift = await _unitOfWork.Shifts.UserHasExisting(addShiftDto);
 
-            // if (shiftClash.Count > 0)
-            // {
-            //     ModelState.AddModelError("401", "The new shift overlaps with an existing shift");
-            //     return ValidationProblem();
-            // }
-
-            var existingShift = await _context.Shifts
-                .Where(shift =>
-                    shift.UserId == addShiftDto.UserId && (shift.StartTime.Date == addShiftDto.StartTime.Date || shift.EndTime.Date == addShiftDto.EndTime.Date)
-                ).ToListAsync();
-
-            if (existingShift.Count > 0)
+            if (existingShift)
             {
                 ModelState.AddModelError("401", "Cannot add more than one shift per day. Try using split shift");
                 return ValidationProblem();
             }
 
-            var site = await _context.Sites.FindAsync(addShiftDto.SiteId);
+            var site = await _unitOfWork.Sites.GetByIdAsync(addShiftDto.SiteId);
             if (site == null) return BadRequest(new ProblemDetails { Title = "Site not found" });
 
-            var user = await _context.Users.FindAsync(addShiftDto.UserId);
+            var user = await _unitOfWork.Users.GetByIdAsync(addShiftDto.UserId);
             if (user == null) return BadRequest(new ProblemDetails { Title = "User not found" });
 
-            var group = await _context.Groups.FindAsync(addShiftDto.GroupId);
+            var group = await _unitOfWork.Groups.GetByIdAsync(addShiftDto.GroupId);
             if (group == null) return BadRequest(new ProblemDetails { Title = "Group not found" });
 
             var newShift = new Shift
@@ -71,9 +74,9 @@ namespace API.Controllers
                 Group = group,
             };
 
-            _context.Shifts.Add(newShift);
+            await _unitOfWork.Shifts.AddAsync(newShift);
 
-            var result = await _context.SaveChangesAsync() > 0;
+            var result = await _unitOfWork.CompleteAsync() > 0;
             if (result) return Ok(200);
 
             return BadRequest(new ProblemDetails { Title = "Problem Adding Shift" });
@@ -92,24 +95,21 @@ namespace API.Controllers
                     return ValidationProblem();
                 }
 
-                var existingShift = await _context.Shifts
-                    .Where(shift =>
-                        shift.UserId == addShiftDto.UserId && (shift.StartTime.Date == addShiftDto.StartTime.Date || shift.EndTime.Date == addShiftDto.EndTime.Date)
-                    ).ToListAsync();
+                var existingShift = await _unitOfWork.Shifts.UserHasExisting(addShiftDto);
 
-                if (existingShift.Count > 0)
+                if (existingShift)
                 {
                     ModelState.AddModelError("401", "Cannot add more than one shift per day. Try using split shift");
                     return ValidationProblem();
                 }
 
-                var site = await _context.Sites.FindAsync(addShiftDto.SiteId);
+                var site = await _unitOfWork.Sites.GetByIdAsync(addShiftDto.SiteId);
                 if (site == null) return BadRequest(new ProblemDetails { Title = "Site not found" });
 
-                var user = await _context.Users.FindAsync(addShiftDto.UserId);
+                var user = await _unitOfWork.Users.GetByIdAsync(addShiftDto.UserId);
                 if (user == null) return BadRequest(new ProblemDetails { Title = "User not found" });
 
-                var group = await _context.Groups.FindAsync(addShiftDto.GroupId);
+                var group = await _unitOfWork.Groups.GetByIdAsync(addShiftDto.GroupId);
                 if (group == null) return BadRequest(new ProblemDetails { Title = "Group not found" });
 
                 var newShift = new Shift
@@ -126,9 +126,9 @@ namespace API.Controllers
                 shifts.Add(newShift);
             }
 
-            _context.Shifts.AddRange(shifts);
+            _unitOfWork.Shifts.AddRange(shifts);
 
-            var result = await _context.SaveChangesAsync() > 0;
+            var result = await _unitOfWork.CompleteAsync() > 0;
             if (result) return Ok(200);
 
             return BadRequest(new ProblemDetails { Title = "Problem Adding Shift" });
@@ -137,11 +137,11 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteShift(string id)
         {
-            var shift = await _context.Shifts.FirstOrDefaultAsync(shift => shift.Id == id);
+            var shift = await _unitOfWork.Shifts.GetByIdAsync(id);
             if (shift == null) return BadRequest(new ProblemDetails { Title = "Shift not found" });
 
-            _context.Shifts.Remove(shift);
-            _context.SaveChanges();
+            _unitOfWork.Shifts.Remove(shift);
+            await _unitOfWork.CompleteAsync();
             return Ok(200);
         }
 
@@ -154,16 +154,16 @@ namespace API.Controllers
                 return ValidationProblem();
             }
 
-            var existingShift = await _context.Shifts.FindAsync(editShiftDto.Id);
+            var existingShift = await _unitOfWork.Shifts.GetByIdAsync(editShiftDto.Id);
             if (existingShift == null) return BadRequest(new ProblemDetails { Title = "Shift not found" });
 
-            var site = await _context.Sites.FindAsync(editShiftDto.SiteId);
+            var site = await _unitOfWork.Sites.GetByIdAsync(editShiftDto.SiteId);
             if (site == null) return BadRequest(new ProblemDetails { Title = "Site not found" });
 
-            var user = await _context.Users.FindAsync(editShiftDto.UserId);
+            var user = await _unitOfWork.Users.GetByIdAsync(editShiftDto.UserId);
             if (user == null) return BadRequest(new ProblemDetails { Title = "User not found" });
 
-            var group = await _context.Groups.FindAsync(editShiftDto.GroupId);
+            var group = await _unitOfWork.Groups.GetByIdAsync(editShiftDto.GroupId);
             if (group == null) return BadRequest(new ProblemDetails { Title = "Group not found" });
 
             existingShift.Pending = editShiftDto.Pending;
@@ -173,7 +173,7 @@ namespace API.Controllers
             existingShift.User = user;
             existingShift.Group = group;
 
-            var result = await _context.SaveChangesAsync() > 0;
+            var result = await _unitOfWork.CompleteAsync() > 0;
             if (result) return Ok(200);
 
             return BadRequest(new ProblemDetails { Title = "Problem Adding Shift" });

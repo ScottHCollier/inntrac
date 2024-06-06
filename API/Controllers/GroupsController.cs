@@ -1,34 +1,31 @@
 using API.Data;
 using API.DTO;
-using API.Entities;
-using API.Extensions;
+using API.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    public class GroupsController : BaseApiController
+    public class GroupsController(IUnitOfWork unitOfWork, IMapper mapper) : BaseApiController
     {
-        private readonly StoreContext _context;
-        public GroupsController(StoreContext context)
-        {
-            _context = context;
-        }
+        private readonly IMapper _mapper = mapper;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         [HttpGet]
-        public async Task<ActionResult<List<GroupDto>>> GetGroups(string siteId)
+        public async Task<ActionResult<List<GroupDto>>> GetGroups()
         {
-            var groups = await _context.Groups.Where(group => group.SiteId == siteId).ToListAsync();
-            return groups.Select(group => group.MapGroupToDto()).ToList();
+            var user = await _unitOfWork.Users.GetCurrentUserAsync(User.Identity.Name);
+            var groups = await _unitOfWork.Groups.GetAllAsync(user.Site.Id);
+            return _mapper.Map<List<GroupDto>>(groups);
         }
 
         [HttpPost]
         public async Task<ActionResult> AddGroup(AddGroupDto group)
         {
-            var site = await _context.Sites.FindAsync(group.SiteId);
+            var site = await _unitOfWork.Sites.GetByIdAsync(group.SiteId);
             if (site == null) return BadRequest(new ProblemDetails { Title = "Site not found" });
 
-            _context.Groups.Add(new Group
+            await _unitOfWork.Groups.AddAsync(new Group
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = group.Name,
@@ -36,7 +33,7 @@ namespace API.Controllers
                 Site = site
             });
 
-            var result = await _context.SaveChangesAsync() > 0;
+            var result = await _unitOfWork.CompleteAsync() > 0;
             if (result) return Ok(200);
 
             return BadRequest(new ProblemDetails { Title = "Problem Adding Group" });
