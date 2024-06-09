@@ -87,6 +87,16 @@ namespace API.Data.Repositories
       return user;
     }
 
+    public async Task<User> GetUserForQueryAsync(string userName)
+    {
+      var user = await _context.Users
+                .Include(user => user.Site)
+                .Include(user => user.Group)
+                .FirstOrDefaultAsync(user => user.UserName == userName);
+
+      return user;
+    }
+
     public IQueryable<User> GetShiftsQueryable(User currentUser, ShiftParams shiftParams)
     {
       var query = _context.Users
@@ -95,8 +105,8 @@ namespace API.Data.Repositories
         .Include(user => user.Site)
         .Include(user => user.Shifts
             .Where(shift =>
-                DateTimeOffset.Compare(shift.StartTime, DateTime.Parse(shiftParams.WeekStart)) >= 0
-                && DateTimeOffset.Compare(shift.EndTime, DateTime.Parse(shiftParams.WeekEnd)) < 0
+                shift.StartTime >= DateTime.Parse(shiftParams.WeekStart) &&
+                shift.EndTime <= DateTime.Parse(shiftParams.WeekEnd)
             ))
         .Where(user => shiftParams.GroupId.IsNullOrEmpty() || user.Group.Id == shiftParams.GroupId)
         .Include(user => user.Group)

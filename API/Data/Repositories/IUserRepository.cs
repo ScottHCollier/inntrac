@@ -12,6 +12,7 @@ namespace API.Data.Repositories
         Task<IdentityResult> SetAdminAsync(User user);
         Task<IdentityResult> SetPasswordAsync(User user, string password);
         Task<User> GetCurrentUserAsync(string userName);
+        Task<User> GetUserForQueryAsync(string userName);
         Task<bool> IsAdminAsync(User user);
         Task<bool> CheckUserPasswordAsync(User user, string password);
         Task<User> GetUserByEmailAsync(string email);

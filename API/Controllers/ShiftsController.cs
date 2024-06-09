@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using API.Extensions;
 using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 
 namespace API.Controllers
 {
@@ -19,7 +20,13 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<PagedList<UserShiftDto>>> GetShifts([FromQuery] ShiftParams shiftParams)
         {
-            var currentUser = await _unitOfWork.Users.GetCurrentUserAsync(User.Identity.Name);
+            var currentUser = await _unitOfWork.Users.GetUserForQueryAsync(User.Identity.Name);
+
+            if (!shiftParams.GroupId.IsNullOrEmpty())
+            {
+                var group = await _unitOfWork.Groups.GetByIdAsync(shiftParams.GroupId);
+                if (group == null) return BadRequest(new ProblemDetails { Title = "Group not found" });
+            }
 
             var query = _unitOfWork.Users.GetShiftsQueryable(currentUser, shiftParams);
 
