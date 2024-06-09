@@ -1,25 +1,16 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Skeleton from '@/components/custom/skeleton';
 import { Icons } from '@/components/icons';
-import { useAppSelector, useAppDispatch } from '@/store/configure-store';
-import { fetchUsersAsync, userSelectors } from '@/store/users-slice';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import useUsers from '../../../hooks/useUsers';
+import { useState } from 'react';
 
 const EmployeesTable = () => {
-  const users = useAppSelector(userSelectors.selectAll);
-  const { user } = useAppSelector((state) => state.account);
-  const { usersLoaded } = useAppSelector((state) => state.users);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    if (user && !users.length) {
-      dispatch(fetchUsersAsync(user?.site.id));
-    }
-  }, [dispatch, user, users]);
+  const [searchParams] = useState<URLSearchParams>(new URLSearchParams({}));
+  const { users, loading } = useUsers(searchParams);
   return (
     <div className='space-y-8'>
-      {usersLoaded
+      {!loading
         ? users.map((user) => (
             <div key={user.id} className='flex items-center justify-between'>
               <div className='flex items-center'>

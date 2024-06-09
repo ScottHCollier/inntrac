@@ -1,23 +1,13 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Skeleton from '@/components/custom/skeleton';
 import { Icons } from '@/components/icons';
-import { useAppSelector, useAppDispatch } from '@/store/configure-store';
-import { groupsSelectors, fetchGroupsAsync } from '@/store/groups-slice';
+import useGroups from '../../../hooks/useGroups';
 
 const GroupsTable = () => {
-  const groups = useAppSelector(groupsSelectors.selectAll);
-  const { groupsLoaded } = useAppSelector((state) => state.groups);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    if (!groups.length) {
-      dispatch(fetchGroupsAsync());
-    }
-  }, [dispatch, groups]);
+  const { groups } = useGroups();
   return (
     <div className='space-y-8'>
-      {groupsLoaded
+      {groups
         ? groups.map((group) => (
             <div key={group.id} className='flex items-center justify-between'>
               <div className='flex items-center'>

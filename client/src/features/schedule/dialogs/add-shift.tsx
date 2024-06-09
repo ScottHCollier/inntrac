@@ -8,12 +8,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Shift, User } from '@/models';
-import { useAppDispatch, useAppSelector } from '@/store/configure-store';
-import { setUsersLoaded, userSelectors } from '@/store/users-slice';
+import { Group, Shift, UserShift } from '@/models';
+import { useAppSelector } from '@/store/configure-store';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { groupsSelectors } from '@/store/groups-slice';
 import { addDays, format, parseISO } from 'date-fns';
 import { toast } from '@/components/ui/use-toast';
 import agent from '@/api/agent';
@@ -41,8 +39,10 @@ const FormSchema = z.object({
 });
 
 interface Props {
+  users: UserShift[];
+  groups: Group[];
   open: boolean;
-  selectedUser: User | null;
+  selectedUser: UserShift | null;
   selectedDate: Date | null;
   selectedShift: Shift | null;
   handleClose: () => void;
@@ -50,6 +50,8 @@ interface Props {
 }
 
 const AddShift = ({
+  users,
+  groups,
   open,
   selectedUser,
   selectedDate,
@@ -58,10 +60,6 @@ const AddShift = ({
   handleChangeUser,
 }: Props) => {
   const { user } = useAppSelector((state) => state.account);
-  const users = useAppSelector(userSelectors.selectAll);
-  const groups = useAppSelector(groupsSelectors.selectAll);
-  const dispatch = useAppDispatch();
-
   const [touched, setTouched] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -123,7 +121,6 @@ const AddShift = ({
           toast({
             title: 'Shift edited',
           });
-          dispatch(setUsersLoaded(false));
           handleClose();
         })
         .catch((error) => {
@@ -136,7 +133,6 @@ const AddShift = ({
           toast({
             title: 'Shift added',
           });
-          dispatch(setUsersLoaded(false));
           handleClose();
         })
         .catch((error) => {
@@ -154,7 +150,6 @@ const AddShift = ({
           toast({
             title: 'Shift deleted',
           });
-          dispatch(setUsersLoaded(false));
           handleClose();
           setDeleting(false);
         })
@@ -199,7 +194,10 @@ const AddShift = ({
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Select
-            items={users}
+            items={users.map((user) => ({
+              ...user,
+              name: `${user.firstName} ${user.surname}`,
+            }))}
             handleChange={(userId) => {
               handleChangeUser(userId);
               setTouched(true);

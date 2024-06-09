@@ -4,7 +4,7 @@ import {
   CardTitle,
   CardContent,
   CardDescription,
-} from '@/components/ui/card';
+} from '@/components/card';
 import { Icons } from '@/components/icons';
 import RecentNotifications from '@/components/recent-notifications';
 import { useAppSelector } from '../../../store/configure-store';

@@ -4,7 +4,7 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-} from '../../../components/ui/card';
+} from '../../../components/card';
 import GroupsTable from './groups-table';
 
 export function GroupsTab() {

@@ -44,7 +44,7 @@ export interface UserParams {
 export interface UserShiftsParams {
   weekStart: string;
   weekEnd: string;
-  searchTerm: string | null;
-  groupId: string | null;
-  userId: string | null;
+  searchTerm?: string;
+  groupId?: string;
+  userId?: string;
 }

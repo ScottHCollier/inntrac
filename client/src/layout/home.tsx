@@ -28,7 +28,7 @@ const tabs = [
   },
   {
     title: 'Notifications',
-    index: 5,
+    index: 4,
   },
 ];
 

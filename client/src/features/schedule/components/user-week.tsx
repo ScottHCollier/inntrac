@@ -1,15 +1,15 @@
 import { addDays, isSameDay, parseISO, startOfWeek } from 'date-fns';
 import { useEffect, useState } from 'react';
-import { Shift, User } from '@/models';
+import { Shift, UserShift } from '@/models';
 import ShiftCard from './shift-card';
 import NoShiftCard from './no-shift-card';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/card';
 
 interface Props {
-  user: User;
+  user: UserShift;
   date: Date;
-  handleAddShift: (user: User, date: Date) => void;
-  handleEditShift: (user: User, shift: Shift) => void;
+  handleAddShift: (user: UserShift, date: Date) => void;
+  handleEditShift: (user: UserShift, shift: Shift) => void;
   handleSelectShift: (shift: Shift) => void;
 }
 

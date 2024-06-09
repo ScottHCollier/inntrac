@@ -2,7 +2,7 @@ import { addHours, format, parseISO } from 'date-fns';
 // import { useState } from 'react';
 import { Shift } from '@/models';
 import { Icons } from '@/components/icons';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/card';
 
 interface Props {
   backgroundColor: string;

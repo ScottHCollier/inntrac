@@ -1,5 +1,5 @@
 import { Icons } from '@/components/icons';
-import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardContent, CardTitle } from '@/components/card';
 import EmployeesTable from './employees-table';
 
 function Employees() {

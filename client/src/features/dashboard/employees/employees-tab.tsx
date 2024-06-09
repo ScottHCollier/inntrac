@@ -4,7 +4,7 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-} from '../../../components/ui/card';
+} from '../../../components/card';
 import EmployeesTable from './employees-table';
 
 export function EmployeesTab() {

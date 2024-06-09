@@ -1,17 +1,12 @@
-import { UserShift } from '@/models';
 import { Card, CardContent } from '@/components/card';
 import Skeleton from '@/components/custom/skeleton';
 
-interface Props {
-  user: UserShift;
-}
-
-export default function UserSkeleton({ user }: Props) {
+export default function WeekSkeleton() {
   return (
-    <div key={user.id} className='grid grid-cols-8 gap-1'>
+    <div className='grid grid-cols-8 gap-1'>
       <Card>
         <CardContent className='py-1 px-2'>
-          <p className='text-sm font-bold'>{`${user.firstName} ${user.surname}`}</p>
+          <Skeleton className='w-[64px] h-[16px] rounded-full my-0.5' />
           <Skeleton className='w-[16px] h-[16px] rounded-full my-0.5' />
         </CardContent>
       </Card>

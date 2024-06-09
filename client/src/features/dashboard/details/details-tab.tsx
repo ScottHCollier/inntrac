@@ -1,5 +1,5 @@
 import RecentSales from '@/components/recent-sales';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/card';
 import { Icons } from '@/components/icons';
 import BarOverview from '@/components/bar-overview';
 

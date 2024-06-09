@@ -1,27 +1,20 @@
 import { AccountForm } from '../../admin/components/account-form';
-import { useAppDispatch, useAppSelector } from '@/store/configure-store';
-import { fetchGroupsAsync, groupsSelectors } from '@/store/groups-slice';
 import { useEffect, useState } from 'react';
 import { Group } from '@/models';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardContent, CardTitle } from '@/components/card';
 import { Icons } from '@/components/icons';
+import useGroups from '../../../hooks/useGroups';
 
 const Groups = () => {
-  const groups = useAppSelector(groupsSelectors.selectAll);
+  const { groups } = useGroups();
+
   const [group, setGroup] = useState<Group | null>(null);
-  const dispatch = useAppDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!groups.length) {
-      dispatch(fetchGroupsAsync());
-    }
-  }, [dispatch, groups]);
-
-  useEffect(() => {
-    if (id) {
+    if (id && groups) {
       const group = groups.find((group) => group.id === id);
       if (group) {
         setGroup(group);

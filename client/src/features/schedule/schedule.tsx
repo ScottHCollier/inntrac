@@ -1,14 +1,6 @@
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/card';
 import PageHeader from '@/components/page-header';
-import { useAppDispatch, useAppSelector } from '@/store/configure-store';
-import {
-  fetchShiftsAsync,
-  setShiftParams,
-  setShiftsLoaded,
-  shiftSelectors,
-} from '@/store/shifts-slice';
-import { useEffect, useState } from 'react';
-import { fetchGroupsAsync, groupsSelectors } from '@/store/groups-slice';
+import { useState } from 'react';
 import {
   addDays,
   addWeeks,
@@ -19,66 +11,64 @@ import {
   subWeeks,
 } from 'date-fns';
 import agent from '@/api/agent';
-import Loading from '@/layout/loading';
-import { Shift, User } from '@/models';
+import { Shift, UserShift, UserShiftsParams } from '@/models';
 import UserWeek from './components/user-week';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import AddShift from './dialogs/add-shift';
 import { ConfirmDialog } from './dialogs/confirm-dialog';
 import { toast } from '@/components/ui/use-toast';
-import UserSkeleton from './components/user-skeleton';
 import Select from '@/components/custom/select';
-import { fetchUsersAsync, userSelectors } from '../../store/users-slice';
+import useShifts from '@/hooks/useShifts';
+import useGroups from '@/hooks/useGroups';
+import Loading from '../../layout/loading';
+import WeekSkeleton from './components/week-skeleton';
 
 export function Schedule() {
-  const groups = useAppSelector(groupsSelectors.selectAll);
-  const { groupsLoaded } = useAppSelector((state) => state.groups);
+  const setRequestParams = (params: UserShiftsParams) => {
+    const newSearchParams = new URLSearchParams();
+    newSearchParams.set('weekStart', params.weekStart);
+    newSearchParams.set('weekEnd', params.weekEnd);
+    if (params.searchTerm) {
+      newSearchParams.set('searchTerm', params.searchTerm);
+    }
+    if (params.groupId) {
+      newSearchParams.set('groupId', params.groupId);
+    }
+    if (params.userId) {
+      newSearchParams.set('userId', params.userId);
+    }
+    setSearchParams(newSearchParams);
+  };
 
-  // const [weekOffset, setWeekOffset] = useState<number>(0);
+  const weekStartDate = startOfWeek(Date.now(), { weekStartsOn: 1 });
+  const [searchParams, setSearchParams] = useState<URLSearchParams>(
+    new URLSearchParams({
+      weekStart: weekStartDate.toISOString(),
+      weekEnd: addDays(weekStartDate, 7).toDateString(),
+    })
+  );
+  const { users, usersLoading } = useShifts(searchParams);
+  const { groups, groupsLoading } = useGroups();
+
   const [monday, setMonday] = useState<Date>(
     startOfWeek(new Date(), { weekStartsOn: 1 })
   );
 
-  const userShifts = useAppSelector(shiftSelectors.selectAll);
-
-  const dispatch = useAppDispatch();
-  const { shiftsLoaded } = useAppSelector((state) => state.shifts);
-
-  const users = useAppSelector(userSelectors.selectAll);
-
-  useEffect(() => {
-    if (!users.length) {
-      dispatch(fetchUsersAsync());
-    }
-  }, [dispatch, users]);
-
-  useEffect(() => {
-    if (!shiftsLoaded) {
-      dispatch(fetchShiftsAsync());
-    }
-  }, [dispatch, shiftsLoaded]);
-
-  useEffect(() => {
-    if (!groups.length) {
-      dispatch(fetchGroupsAsync());
-    }
-  }, [dispatch, groups]);
-
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUser, setSelectedUser] = useState<UserShift | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
   const [selectedShifts, setSelectedShifts] = useState<Shift[]>([]);
   const [open, setOpen] = useState(false);
   const [confirm, setConfirm] = useState(false);
 
-  const handleAddShift = (user: User, date: Date) => {
+  const handleAddShift = (user: UserShift, date: Date) => {
     setSelectedUser(user);
     setSelectedDate(date);
     setOpen(true);
   };
 
-  const handleEditShift = (user: User, shift: Shift) => {
+  const handleEditShift = (user: UserShift, shift: Shift) => {
     setSelectedUser(user);
     setSelectedShift(shift);
     setOpen(true);
@@ -99,67 +89,52 @@ export function Schedule() {
     setSelectedUser(null);
     setSelectedDate(null);
     setSelectedShift(null);
-    dispatch(setShiftsLoaded(false));
+    setRequestParams({
+      weekStart: monday.toISOString(),
+      weekEnd: addDays(monday, 7).toISOString(),
+    });
     setOpen(false);
   };
 
   const repeatSchedule = async () => {
-    const shifts = userShifts.reduce((shifts: Shift[], user: User) => {
-      return [
-        ...shifts,
-        ...user.shifts.map((shift) => {
-          return {
+    if (users) {
+      try {
+        const shifts = users.flatMap((user: UserShift) =>
+          user.shifts.map((shift) => ({
             ...shift,
             startTime: addWeeks(parseISO(shift.startTime), 1).toISOString(),
             endTime: addWeeks(parseISO(shift.endTime), 1).toISOString(),
-          };
-        }),
-      ];
-    }, []);
+          }))
+        );
 
-    await agent.Shifts.addBulkShifts(shifts)
-      .then(() => {
+        await agent.Shifts.addBulkShifts(shifts);
+
         toast({
           title: 'Success!',
           description: 'Shifts added',
         });
-        navigateNext();
-      })
-      .catch((error) => {
+        navigateWeek('next');
+      } catch (error) {
         console.log(error);
         toast({
           variant: 'destructive',
           title: 'Error',
-          description: error,
+          description: String(error),
         });
-        // handleApiErrors(error);
-      });
+        // handleApiErrors(error); // Uncomment if this function is defined
+      }
+    }
   };
 
-  const navigateNext = () => {
-    const weekStart = addWeeks(monday, 1);
+  const navigateWeek = (direction: 'next' | 'before') => {
+    const weekStart =
+      direction === 'next' ? addWeeks(monday, 1) : subWeeks(monday, 1);
     const weekEnd = addDays(weekStart, 7);
 
-    dispatch(
-      setShiftParams({
-        weekStart: weekStart.toISOString(),
-        weekEnd: weekEnd.toISOString(),
-      })
-    );
-
-    setMonday(weekStart);
-  };
-
-  const navigateBefore = () => {
-    const weekStart = subWeeks(monday, 1);
-    const weekEnd = addDays(weekStart, 8);
-
-    dispatch(
-      setShiftParams({
-        weekStart: weekStart.toISOString(),
-        weekEnd: weekEnd.toISOString(),
-      })
-    );
+    setRequestParams({
+      weekStart: weekStart.toISOString(),
+      weekEnd: weekEnd.toDateString(),
+    });
 
     setMonday(weekStart);
   };
@@ -177,11 +152,19 @@ export function Schedule() {
   };
 
   const handleGroupChange = (groupId: string) => {
-    dispatch(setShiftParams({ groupId }));
+    setRequestParams({
+      weekStart: monday.toISOString(),
+      weekEnd: addDays(monday, 7).toISOString(),
+      groupId,
+    });
   };
 
   const handleUserChange = (userId: string) => {
-    dispatch(setShiftParams({ userId }));
+    setRequestParams({
+      weekStart: monday.toISOString(),
+      weekEnd: addDays(monday, 7).toISOString(),
+      userId,
+    });
   };
 
   const handleConfirm = () => {
@@ -189,7 +172,7 @@ export function Schedule() {
     repeatSchedule();
   };
 
-  if (!groupsLoaded) return <Loading message='Loading users...' />;
+  if (groupsLoading) return <Loading />;
 
   return (
     <>
@@ -200,14 +183,21 @@ export function Schedule() {
             <div className='flex'>
               <Select
                 className='mr-1 w-48 p-0'
-                items={groups}
+                items={groups || []}
                 placeholder='Group'
                 handleChange={handleGroupChange}
                 clearable
               />
               <Select
                 className='w-48 p-0'
-                items={userShifts}
+                items={
+                  users
+                    ? users.map((user) => ({
+                        ...user,
+                        name: `${user.firstName} ${user.surname}`,
+                      }))
+                    : []
+                }
                 placeholder='User'
                 handleChange={handleUserChange}
                 clearable
@@ -226,13 +216,13 @@ export function Schedule() {
               <Button className='ml-1' variant='outline' size='icon'>
                 <Icons.chevronLeft
                   className='w-4 h-4'
-                  onClick={() => navigateBefore()}
+                  onClick={() => navigateWeek('before')}
                 />
               </Button>
               <Button className='ml-1' variant='outline' size='icon'>
                 <Icons.chevronRight
                   className='w-4 h-4'
-                  onClick={() => navigateNext()}
+                  onClick={() => navigateWeek('next')}
                 />
               </Button>
             </div>
@@ -314,20 +304,20 @@ export function Schedule() {
           </CardContent>
         </Card>
       </div>
-      {userShifts.map((user) =>
-        shiftsLoaded ? (
-          <UserWeek
-            key={user.id}
-            user={user}
-            date={monday}
-            handleAddShift={(user, date) => handleAddShift(user, date)}
-            handleEditShift={(user, shift) => handleEditShift(user, shift)}
-            handleSelectShift={(shift) => handleSelectShift(shift)}
-          />
-        ) : (
-          <UserSkeleton key={user.id} user={user} />
-        )
-      )}
+      {usersLoading
+        ? Array.from({ length: 7 }).map(() => {
+            return <WeekSkeleton />;
+          })
+        : users!.map((user) => (
+            <UserWeek
+              key={user.id}
+              user={user}
+              date={monday}
+              handleAddShift={(user, date) => handleAddShift(user, date)}
+              handleEditShift={(user, shift) => handleEditShift(user, shift)}
+              handleSelectShift={(shift) => handleSelectShift(shift)}
+            />
+          ))}
       <AddShift
         open={open}
         selectedUser={selectedUser}
@@ -335,8 +325,12 @@ export function Schedule() {
         selectedShift={selectedShift}
         handleClose={onClose}
         handleChangeUser={(userId: string) =>
-          setSelectedUser(userShifts.find((user) => user.id === userId) || null)
+          setSelectedUser(
+            users ? users.find((user) => user.id === userId) || null : null
+          )
         }
+        users={users}
+        groups={groups}
       />
       <ConfirmDialog
         open={confirm}
