@@ -1,6 +1,6 @@
 import { ProfileForm } from './profile-form';
 
-export function Profile() {
+const Profile = () => {
   return (
     <>
       <div>
@@ -12,4 +12,6 @@ export function Profile() {
       <ProfileForm />
     </>
   );
-}
+};
+
+export default Profile;

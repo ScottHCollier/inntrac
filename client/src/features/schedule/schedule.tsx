@@ -15,7 +15,7 @@ import { Shift, UserShift, UserShiftsParams } from '@/models';
 import UserWeek from './components/user-week';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
-import AddShift from './dialogs/add-shift';
+import ShiftDialog from './dialogs/shift-dialog';
 import { ConfirmDialog } from './dialogs/confirm-dialog';
 import { toast } from '@/components/ui/use-toast';
 import Select from '@/components/custom/select';
@@ -24,7 +24,7 @@ import useGroups from '@/hooks/useGroups';
 import Loading from '../../layout/loading';
 import WeekSkeleton from './components/week-skeleton';
 
-export function Schedule() {
+const Schedule = () => {
   const setRequestParams = (params: UserShiftsParams) => {
     const newSearchParams = new URLSearchParams();
     newSearchParams.set('weekStart', params.weekStart);
@@ -65,6 +65,12 @@ export function Schedule() {
   const handleAddShift = (user: UserShift, date: Date) => {
     setSelectedUser(user);
     setSelectedDate(date);
+    setOpen(true);
+  };
+
+  const handleAddShiftNoUser = () => {
+    setSelectedUser(null);
+    setSelectedDate(null);
     setOpen(true);
   };
 
@@ -207,23 +213,36 @@ export function Schedule() {
               <p className='text-lg font-bold'>{formattedWeekDisplay()}</p>
             </div>
             <div className='flex justify-end items-center'>
-              <Button variant='outline' size='icon'>
-                <Icons.repeat
-                  className='w-4 h-4'
-                  onClick={() => setConfirm(true)}
-                />
+              <Button
+                variant='outline'
+                size='icon'
+                onClick={() => setConfirm(true)}
+              >
+                <Icons.repeat className='w-4 h-4' />
               </Button>
-              <Button className='ml-1' variant='outline' size='icon'>
-                <Icons.chevronLeft
-                  className='w-4 h-4'
-                  onClick={() => navigateWeek('before')}
-                />
+              <Button
+                className='ml-1'
+                variant='outline'
+                size='icon'
+                onClick={() => navigateWeek('before')}
+              >
+                <Icons.chevronLeft className='w-4 h-4' />
               </Button>
-              <Button className='ml-1' variant='outline' size='icon'>
-                <Icons.chevronRight
-                  className='w-4 h-4'
-                  onClick={() => navigateWeek('next')}
-                />
+              <Button
+                className='ml-1'
+                variant='outline'
+                size='icon'
+                onClick={() => navigateWeek('next')}
+              >
+                <Icons.chevronRight className='w-4 h-4' />
+              </Button>
+              <Button
+                className='ml-1 bg-indigo-300'
+                variant='outline'
+                size='icon'
+                onClick={() => handleAddShiftNoUser()}
+              >
+                <Icons.add className='w-4 h-4' />
               </Button>
             </div>
           </CardContent>
@@ -305,8 +324,8 @@ export function Schedule() {
         </Card>
       </div>
       {usersLoading
-        ? Array.from({ length: 7 }).map(() => {
-            return <WeekSkeleton />;
+        ? Array.from({ length: 7 }).map((_, index) => {
+            return <WeekSkeleton key={index} />;
           })
         : users!.map((user) => (
             <UserWeek
@@ -318,7 +337,7 @@ export function Schedule() {
               handleSelectShift={(shift) => handleSelectShift(shift)}
             />
           ))}
-      <AddShift
+      <ShiftDialog
         open={open}
         selectedUser={selectedUser}
         selectedDate={selectedDate}
@@ -339,4 +358,6 @@ export function Schedule() {
       />
     </>
   );
-}
+};
+
+export default Schedule;

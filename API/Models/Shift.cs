@@ -12,5 +12,6 @@ namespace API.Models
         public User User { get; set; }
         public string GroupId { get; set; }
         public Group Group { get; set; }
+        public int Type { get; set; }
     }
 }

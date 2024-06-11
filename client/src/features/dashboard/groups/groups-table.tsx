@@ -4,11 +4,23 @@ import { Icons } from '@/components/icons';
 import useGroups from '../../../hooks/useGroups';
 
 const GroupsTable = () => {
-  const { groups } = useGroups();
+  const { groups, groupsLoading } = useGroups();
   return (
     <div className='space-y-8'>
-      {groups
-        ? groups.map((group) => (
+      {groupsLoading
+        ? [1, 2, 3, 4].map((item) => (
+            <div key={item} className='flex items-center justify-between'>
+              <div className='flex items-center'>
+                <Skeleton className='h-9 w-9 rounded-full' />
+                <div className='ml-4 space-y-1'>
+                  <Skeleton className='h-3 w-16 rounded-full mb-2' />
+                  <Skeleton className='h-3 w-44 rounded-full' />
+                </div>
+              </div>
+              <Skeleton className='w-8 h-8 rounded-full' />
+            </div>
+          ))
+        : groups.map((group) => (
             <div key={group.id} className='flex items-center justify-between'>
               <div className='flex items-center'>
                 <div
@@ -27,18 +39,6 @@ const GroupsTable = () => {
               <Link to={`/dashboard/groups/${group.id}`}>
                 <Icons.edit className='w-8 h-8' />
               </Link>
-            </div>
-          ))
-        : [1, 2, 3, 4].map((item) => (
-            <div key={item} className='flex items-center justify-between'>
-              <div className='flex items-center'>
-                <Skeleton className='h-9 w-9 rounded-full' />
-                <div className='ml-4 space-y-1'>
-                  <Skeleton className='h-3 w-16 rounded-full mb-2' />
-                  <Skeleton className='h-3 w-44 rounded-full' />
-                </div>
-              </div>
-              <Skeleton className='w-8 h-8 rounded-full' />
             </div>
           ))}
     </div>

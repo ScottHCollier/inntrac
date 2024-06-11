@@ -1,6 +1,6 @@
 import { AccountForm } from './account-form';
 
-export function Account() {
+const Account = () => {
   return (
     <div className='space-y-6'>
       <div>
@@ -13,4 +13,6 @@ export function Account() {
       <AccountForm />
     </div>
   );
-}
+};
+
+export default Account;

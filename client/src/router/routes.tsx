@@ -1,27 +1,19 @@
 import { Navigate, createBrowserRouter } from 'react-router-dom';
 import App from '@/layout/app';
-// import ServerError from '../errors/ServerError';
-// import NotFound from '../errors/NotFound';
 import RequireAuth from './require-auth';
-import { Schedule } from '@/features/schedule/schedule';
-import { Admin } from '@/features/admin/admin';
-import { Profile } from '@/features/admin/components/profile';
-import { Account } from '@/features/admin/components/account';
-import { Assistant } from '@/features/assistant/assistant';
-import Group from '../features/dashboard/groups/group';
-import { OverviewTab } from '../features/dashboard/overview/overview-tab';
-import { DetailsTab } from '../features/dashboard/details/details-tab';
-import { NotificationsTab } from '../features/dashboard/notifications/notifications-tab';
-import { GroupsTab } from '../features/dashboard/groups/groups-tab';
-import Home from '../layout/home';
-import Groups from '../features/dashboard/groups/groups';
-import Employees from '../features/dashboard/employees/employees';
-import Employee from '../features/dashboard/employees/employee';
-import { EmployeesTab } from '../features/dashboard/employees/employees-tab';
-import Login from '../features/login/login';
-import Register from '../features/register/register';
-import Setup from '../features/register/setup';
-import AddUsers from '../features/register/add-users';
+import Layout from '@/layout/layout';
+import Dashboard from '@/features/dashboard/dashboard';
+import Schedule from '@/features/schedule/schedule';
+import Assistant from '@/features/assistant/assistant';
+import Admin from '@/features/admin/admin';
+import Profile from '@/features/admin/components/profile';
+import Account from '@/features/admin/components/account';
+import Setup from '@/features/register/setup';
+import AddUsers from '@/features/register/add-users';
+import Login from '@/features/login/login';
+import Register from '@/features/register/register';
+import ServerError from '@/errors/server-error';
+import NotFound from '@/errors/not-found';
 
 export const router = createBrowserRouter([
   {
@@ -29,117 +21,81 @@ export const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: 'login',
-        element: <Login />,
-      },
-      {
-        path: 'register',
-        element: <Register />,
-      },
-      {
-        path: 'setup',
-        element: <Setup />,
-      },
-      {
-        path: 'setup/add-users',
-        element: <AddUsers />,
-      },
-      {
         element: <RequireAuth />,
         children: [
           {
-            path: '',
-            element: <Home />,
+            element: <Layout />,
             children: [
               {
                 path: '',
-                element: <OverviewTab />,
+                element: <Dashboard />,
               },
               {
-                path: 'details',
-                element: <DetailsTab />,
+                path: 'schedule',
+                element: <Schedule />,
               },
               {
-                path: 'groups',
-                element: <GroupsTab />,
+                path: 'assistant',
+                element: <Assistant />,
+              },
+              {
+                path: 'admin',
+                element: <Admin />,
                 children: [
                   {
                     path: '',
-                    element: <Groups />,
+                    element: <Profile />,
                   },
                   {
-                    path: ':id',
-                    element: <Group />,
+                    path: 'account',
+                    element: <Account />,
+                  },
+                  {
+                    path: 'appearance',
+                    element: <Account />,
+                  },
+                  {
+                    path: 'notifications',
+                    element: <Account />,
+                  },
+                  {
+                    path: 'display',
+                    element: <Account />,
                   },
                 ],
-              },
-              {
-                path: 'employees',
-                element: <EmployeesTab />,
-                children: [
-                  {
-                    path: '',
-                    element: <Employees />,
-                  },
-                  {
-                    path: ':id',
-                    element: <Employee />,
-                  },
-                ],
-              },
-              {
-                path: 'notifications',
-                element: <NotificationsTab />,
               },
             ],
           },
           {
-            path: 'schedule',
-            element: <Schedule />,
+            path: 'setup',
+            element: <Setup />,
           },
           {
-            path: 'assistant',
-            element: <Assistant />,
-          },
-          {
-            path: 'admin',
-            element: <Admin />,
-            children: [
-              {
-                path: '',
-                element: <Profile />,
-              },
-              {
-                path: 'account',
-                element: <Account />,
-              },
-              {
-                path: 'appearance',
-                element: <Account />,
-              },
-              {
-                path: 'notifications',
-                element: <Account />,
-              },
-              {
-                path: 'display',
-                element: <Account />,
-              },
-            ],
+            path: 'setup/add-users',
+            element: <AddUsers />,
           },
         ],
       },
-      //   path: 'server-error',
-      //   element: <ServerError />,
-      // },
-      // {
-      //   path: 'not-found',
-      //   element: <NotFound />,
-      // },
-      {
-        path: '/*',
-        element: <Navigate replace to='/not-found' />,
-      },
     ],
+  },
+  {
+    path: 'login',
+    element: <Login />,
+  },
+  {
+    path: 'register',
+    element: <Register />,
+  },
+  {
+    path: 'server-error',
+    element: <ServerError />,
+  },
+  {
+    path: 'not-found',
+    element: <NotFound />,
+  },
+  {
+    path: '/*',
+    element: <Navigate replace to='/not-found' />,
   },
 ]);

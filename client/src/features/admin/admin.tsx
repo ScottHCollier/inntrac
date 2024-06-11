@@ -25,7 +25,7 @@ const sidebarNavItems = [
   },
 ];
 
-export function Admin() {
+const Admin = () => {
   return (
     <>
       <PageHeader title='Admin' />
@@ -41,4 +41,6 @@ export function Admin() {
       </div>
     </>
   );
-}
+};
+
+export default Admin;

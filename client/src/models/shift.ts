@@ -6,4 +6,5 @@ export interface Shift {
   hours: number;
   groupId: string;
   siteId: string;
+  type: number;
 }

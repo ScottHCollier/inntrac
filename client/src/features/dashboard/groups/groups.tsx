@@ -1,10 +1,15 @@
-import { Icons } from '@/components/icons';
-import { Card, CardHeader, CardContent, CardTitle } from '@/components/card';
+import { Icons } from '../../../components/icons';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from '../../../components/card';
 import GroupsTable from './groups-table';
 
-function Groups() {
+const Groups = () => {
   return (
-    <>
+    <div className='space-y-4'>
       <Card>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
           <CardTitle className='text-sm font-medium'>Groups</CardTitle>
@@ -20,8 +25,8 @@ function Groups() {
       <Card className='p-6'>
         <GroupsTable />
       </Card>
-    </>
+    </div>
   );
-}
+};
 
 export default Groups;

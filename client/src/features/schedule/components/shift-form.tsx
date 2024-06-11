@@ -2,12 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { Group, Shift, UserShift } from '@/models';
 import { useAppSelector } from '@/store/configure-store';
 import { useCallback, useEffect, useState } from 'react';
@@ -41,7 +35,6 @@ const FormSchema = z.object({
 interface Props {
   users: UserShift[];
   groups: Group[];
-  open: boolean;
   selectedUser: UserShift | null;
   selectedDate: Date | null;
   selectedShift: Shift | null;
@@ -49,10 +42,9 @@ interface Props {
   handleChangeUser: (userId: string) => void;
 }
 
-const AddShift = ({
+const ShiftForm = ({
   users,
   groups,
-  open,
   selectedUser,
   selectedDate,
   selectedShift,
@@ -110,6 +102,7 @@ const AddShift = ({
       pending: false,
       startTime: st,
       endTime: et,
+      type: 1,
     };
 
     if (selectedShift) {
@@ -164,16 +157,16 @@ const AddShift = ({
   const getInitialValues = useCallback(() => {
     if (selectedShift) {
       return {
-        userId: selectedUser?.id || '',
-        groupId: selectedShift.groupId,
+        userId: selectedUser?.id || undefined,
+        groupId: selectedShift.groupId || undefined,
         date: parseISO(selectedShift.startTime),
         start: format(parseISO(selectedShift.startTime), 'HH:mm'),
         end: format(parseISO(selectedShift.endTime), 'HH:mm'),
       };
     }
     return {
-      userId: selectedUser?.id || '',
-      groupId: selectedUser?.group.id || '',
+      userId: selectedUser?.id || undefined,
+      groupId: selectedUser?.group.id || undefined,
       date: selectedDate || new Date(),
       start: getTimeString(new Date().getHours()),
       end: getTimeString(new Date().getHours() + 4),
@@ -185,107 +178,96 @@ const AddShift = ({
   }, [getInitialValues, reset]);
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className='sm:max-w-[425px]'>
-        <DialogHeader>
-          <DialogTitle>
-            {selectedShift ? 'Edit Shift' : 'Add Shift'}
-          </DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Select
-            items={users.map((user) => ({
-              ...user,
-              name: `${user.firstName} ${user.surname}`,
-            }))}
-            handleChange={(userId) => {
-              handleChangeUser(userId);
-              setTouched(true);
-            }}
-            value={getInitialValues().userId}
-            errors={errors}
-            fieldName={'userId'}
-            placeholder={'User'}
-            loaded={!!selectedUser}
-          />
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Select
+        items={users.map((user) => ({
+          ...user,
+          name: `${user.firstName} ${user.surname}`,
+        }))}
+        handleChange={(userId) => {
+          handleChangeUser(userId);
+          setTouched(true);
+        }}
+        value={getInitialValues().userId}
+        errors={errors}
+        fieldName={'userId'}
+        placeholder={'User'}
+      />
 
-          <Select
-            items={groups}
-            handleChange={(groupId) => {
-              setValue('groupId', groupId);
-              setTouched(true);
-            }}
-            value={getInitialValues().groupId}
-            errors={errors}
-            fieldName={'groupId'}
-            placeholder={'Group'}
-            loaded={!!selectedUser}
-          />
+      <Select
+        items={groups}
+        handleChange={(groupId) => {
+          setValue('groupId', groupId);
+          setTouched(true);
+        }}
+        value={getInitialValues().groupId}
+        errors={errors}
+        fieldName={'groupId'}
+        placeholder={'Group'}
+      />
 
-          <Input
-            onChange={(e) => {
-              setValue('date', parseISO(e.target.value));
-              setTouched(true);
-            }}
-            type='date'
-            fieldName='date'
-            defaultValue={format(getInitialValues().date, 'yyyy-LL-dd')}
-            errors={errors}
-          />
+      <Input
+        onChange={(e) => {
+          setValue('date', parseISO(e.target.value));
+          setTouched(true);
+        }}
+        type='date'
+        fieldName='date'
+        defaultValue={format(getInitialValues().date, 'yyyy-LL-dd')}
+        errors={errors}
+      />
 
-          <Input
-            onChange={(e) => {
-              setValue('start', e.target.value);
-              setTouched(true);
-            }}
-            type='time'
-            fieldName='start'
-            defaultValue={getInitialValues().start}
-            errors={errors}
-          />
+      <Input
+        onChange={(e) => {
+          setValue('start', e.target.value);
+          setTouched(true);
+        }}
+        type='time'
+        fieldName='start'
+        defaultValue={getInitialValues().start}
+        errors={errors}
+      />
 
-          <Input
-            onChange={(e) => {
-              setValue('end', e.target.value);
-              setTouched(true);
-            }}
-            type='time'
-            fieldName='end'
-            defaultValue={getInitialValues().end}
-            errors={errors}
-          />
+      <Input
+        onChange={(e) => {
+          setValue('end', e.target.value);
+          setTouched(true);
+        }}
+        type='time'
+        fieldName='end'
+        defaultValue={getInitialValues().end}
+        errors={errors}
+      />
 
-          <div className='flex justify-end mt-6'>
-            {selectedShift && (
-              <Button
-                className='mr-4'
-                variant='destructive'
-                onClick={handleSubmit(deleteShift)}
-              >
-                {isSubmitting && deleting ? (
-                  <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
-                ) : (
-                  <Icons.cross className='mr-2 h-4 w-4' />
-                )}
-                Delete
-              </Button>
+      <div className='flex justify-end mt-6'>
+        {selectedShift && (
+          <Button
+            className='mr-4'
+            variant='destructive'
+            onClick={handleSubmit(deleteShift)}
+          >
+            {isSubmitting && deleting ? (
+              <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+            ) : (
+              <Icons.cross className='mr-2 h-4 w-4' />
             )}
-            <Button
-              type='submit'
-              disabled={isSubmitting || (selectedShift !== null && !touched)}
-            >
-              {isSubmitting && !deleting ? (
-                <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
-              ) : (
-                <Icons.add className='mr-2 h-4 w-4' />
-              )}
-              {selectedShift ? 'Update' : 'Save'}
-            </Button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+            Delete
+          </Button>
+        )}
+        <Button
+          type='submit'
+          disabled={isSubmitting || (selectedShift !== null && !touched)}
+        >
+          {isSubmitting && !deleting ? (
+            <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+          ) : (
+            <Icons.add className='mr-2 h-4 w-4' />
+          )}
+          {selectedShift ? 'Update' : 'Save'}
+        </Button>
+      </div>
+    </form>
   );
 };
 
-export default AddShift;
+export default ShiftForm;

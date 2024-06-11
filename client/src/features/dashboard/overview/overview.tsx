@@ -11,7 +11,7 @@ import { useAppSelector } from '../../../store/configure-store';
 import { parseISO, addHours, format } from 'date-fns';
 import { Shift } from '../../../models';
 
-export function OverviewTab() {
+const Overview = () => {
   const { user } = useAppSelector((state) => state.account);
 
   const formattedShiftTime = (shift: Shift) => {
@@ -79,4 +79,6 @@ export function OverviewTab() {
       </div>
     </>
   );
-}
+};
+
+export default Overview;

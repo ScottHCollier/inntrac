@@ -1,49 +1,35 @@
+import React, { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { ThemeProvider } from '../components/theme-provider';
-import { useCallback, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../store/configure-store';
+import { useAppDispatch } from '../store/configure-store';
 import { fetchCurrentUser } from '../store/account-slice';
 import Loading from './loading';
-import Header from './header';
 import { Toaster } from '../components/ui/toaster';
 
-function App() {
+const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state) => state.account);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const initApp = useCallback(async () => {
-    try {
-      await dispatch(fetchCurrentUser());
-    } catch (error: unknown) {
-      console.log(error);
-    }
+  useEffect(() => {
+    const initApp = async () => {
+      try {
+        await dispatch(fetchCurrentUser());
+      } catch (error: unknown) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initApp();
   }, [dispatch]);
 
-  useEffect(() => {
-    initApp().then(() => setLoading(false));
-  }, [initApp]);
   return (
-    <>
-      <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
-        <Toaster />
-        {loading ? (
-          <Loading />
-        ) : user && user.status === 6 ? (
-          <>
-            <div className='flex flex-col'>
-              <Header />
-              <div className='flex-1 space-y-1 p-4'>
-                <Outlet />
-              </div>
-            </div>
-          </>
-        ) : (
-          <Outlet />
-        )}
-      </ThemeProvider>
-    </>
+    <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
+      <Toaster />
+      {loading ? <Loading /> : <Outlet />}
+    </ThemeProvider>
   );
-}
+};
 
 export default App;

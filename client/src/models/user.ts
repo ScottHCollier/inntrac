@@ -33,6 +33,7 @@ export interface UserShift {
   shifts: Shift[];
   group: Group;
   isAdmin: boolean;
+  type: number;
 }
 
 export interface UserParams {

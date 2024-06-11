@@ -1,9 +1,11 @@
 import PageHeader from '@/components/page-header';
 
-export function Assistant() {
+const Assistant = () => {
   return (
     <>
       <PageHeader title='Assistant' />
     </>
   );
-}
+};
+
+export default Assistant;

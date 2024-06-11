@@ -1,10 +1,15 @@
-import { Icons } from '@/components/icons';
-import { Card, CardHeader, CardContent, CardTitle } from '@/components/card';
+import { Icons } from '../../../components/icons';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from '../../../components/card';
 import EmployeesTable from './employees-table';
 
-function Employees() {
+const Employees = () => {
   return (
-    <>
+    <div className='space-y-4'>
       <Card>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
           <CardTitle className='text-sm font-medium'>Employees</CardTitle>
@@ -20,8 +25,8 @@ function Employees() {
       <Card className='p-6'>
         <EmployeesTable />
       </Card>
-    </>
+    </div>
   );
-}
+};
 
 export default Employees;

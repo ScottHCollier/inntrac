@@ -102,6 +102,8 @@ const Shifts = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   addShift: (values: any) => requests.post('shifts', values),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  requestTimeOff: (values: any) => requests.post('shifts/timeOff', values),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   addBulkShifts: (values: any) => requests.post('shifts/addBulk', values),
   delete: (id: string) => requests.delete(`shifts/${id}`),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

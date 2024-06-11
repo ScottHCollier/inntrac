@@ -1,28 +1,15 @@
 import { useState, useEffect } from 'react';
 import agent from '../api/agent';
-import { Site, Shift, Group } from '../models';
-
-interface User {
-  id: string;
-  firstName: string;
-  surname: string;
-  name: string;
-  email: string;
-  token: string;
-  site: Site;
-  shifts: Shift[];
-  group: Group;
-  isAdmin: boolean;
-}
+import { UserShift } from '../models';
 
 interface UseUsersResult {
-  users: User[];
+  users: UserShift[];
   usersLoading: boolean;
   usersError: Error | null;
 }
 
 const useUserShifts = (params: URLSearchParams): UseUsersResult => {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<UserShift[]>([]);
   const [usersLoading, setLoading] = useState<boolean>(true);
   const [usersError, setError] = useState<Error | null>(null);
 

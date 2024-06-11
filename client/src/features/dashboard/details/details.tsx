@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/card';
 import { Icons } from '@/components/icons';
 import BarOverview from '@/components/bar-overview';
 
-export function DetailsTab() {
+const Details = () => {
   return (
     <>
       <div className='space-y-4'>
@@ -82,4 +82,6 @@ export function DetailsTab() {
       </div>
     </>
   );
-}
+};
+
+export default Details;

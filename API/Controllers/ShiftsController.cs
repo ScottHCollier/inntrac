@@ -79,6 +79,43 @@ namespace API.Controllers
                 Site = site,
                 User = user,
                 Group = group,
+                Type = addShiftDto.Type,
+            };
+
+            await _unitOfWork.Shifts.AddAsync(newShift);
+
+            var result = await _unitOfWork.CompleteAsync() > 0;
+            if (result) return Ok(200);
+
+            return BadRequest(new ProblemDetails { Title = "Problem Adding Shift" });
+        }
+
+        [HttpPost("requestTimeOff")]
+        public async Task<ActionResult> RequestTimeOff(AddShiftDto addShiftDto)
+        {
+            var existingShift = await _unitOfWork.Shifts.UserHasExisting(addShiftDto);
+
+            if (existingShift)
+            {
+                ModelState.AddModelError("401", "Cannot add more than one shift per day. Try using split shift");
+                return ValidationProblem();
+            }
+
+            var site = await _unitOfWork.Sites.GetByIdAsync(addShiftDto.SiteId);
+            if (site == null) return BadRequest(new ProblemDetails { Title = "Site not found" });
+
+            var user = await _unitOfWork.Users.GetByIdAsync(addShiftDto.UserId);
+            if (user == null) return BadRequest(new ProblemDetails { Title = "User not found" });
+
+            var newShift = new Shift
+            {
+                Id = Guid.NewGuid().ToString(),
+                Pending = addShiftDto.Pending,
+                StartTime = addShiftDto.StartTime,
+                EndTime = addShiftDto.EndTime,
+                Site = site,
+                User = user,
+                Type = addShiftDto.Type,
             };
 
             await _unitOfWork.Shifts.AddAsync(newShift);
@@ -128,6 +165,7 @@ namespace API.Controllers
                     Site = site,
                     User = user,
                     Group = group,
+                    Type = addShiftDto.Type,
                 };
 
                 shifts.Add(newShift);
