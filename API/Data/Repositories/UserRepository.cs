@@ -54,9 +54,9 @@ namespace API.Data.Repositories
 
       if (user != null)
       {
-        user.Shifts = await _context.Shifts
-            .Where(shift => shift.UserId == user.Id && shift.StartTime > DateTime.Today)
-            .OrderBy(shift => shift.StartTime)
+        user.Schedules = await _context.Schedules
+            .Where(schedule => schedule.UserId == user.Id && schedule.StartTime > DateTime.Today)
+            .OrderBy(schedule => schedule.StartTime)
             .Take(5)
             .ToListAsync();
       }
@@ -77,9 +77,9 @@ namespace API.Data.Repositories
 
       if (user != null)
       {
-        user.Shifts = await _context.Shifts
-            .Where(shift => shift.UserId == user.Id && shift.StartTime > DateTime.Today)
-            .OrderBy(shift => shift.StartTime)
+        user.Schedules = await _context.Schedules
+            .Where(schedule => schedule.UserId == user.Id && schedule.StartTime > DateTime.Today)
+            .OrderBy(schedule => schedule.StartTime)
             .Take(5)
             .ToListAsync();
       }
@@ -97,18 +97,18 @@ namespace API.Data.Repositories
       return user;
     }
 
-    public IQueryable<User> GetShiftsQueryable(User currentUser, ShiftParams shiftParams)
+    public IQueryable<User> GetSchedulesQueryable(User currentUser, ScheduleParams ScheduleParams)
     {
       var query = _context.Users
         .Where(user => user.Site == currentUser.Site)
-        .Where(user => shiftParams.UserId.IsNullOrEmpty() || user.Id == shiftParams.UserId)
+        .Where(user => ScheduleParams.UserId.IsNullOrEmpty() || user.Id == ScheduleParams.UserId)
         .Include(user => user.Site)
-        .Include(user => user.Shifts
-            .Where(shift =>
-                shift.StartTime >= DateTime.Parse(shiftParams.WeekStart) &&
-                shift.EndTime <= DateTime.Parse(shiftParams.WeekEnd)
+        .Include(user => user.Schedules
+            .Where(schedule =>
+                schedule.StartTime >= DateTime.Parse(ScheduleParams.WeekStart) &&
+                schedule.EndTime <= DateTime.Parse(ScheduleParams.WeekEnd)
             ))
-        .Where(user => shiftParams.GroupId.IsNullOrEmpty() || user.Group.Id == shiftParams.GroupId)
+        .Where(user => ScheduleParams.GroupId.IsNullOrEmpty() || user.Group.Id == ScheduleParams.GroupId)
         .Include(user => user.Group)
         .AsQueryable();
       return query;

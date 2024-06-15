@@ -9,16 +9,16 @@ import { Icons } from '@/components/icons';
 import RecentNotifications from '@/components/recent-notifications';
 import { useAppSelector } from '../../../store/configure-store';
 import { parseISO, addHours, format } from 'date-fns';
-import { Shift } from '../../../models';
+import { Schedule } from '../../../models';
 
 const Overview = () => {
   const { user } = useAppSelector((state) => state.account);
 
-  const formattedShiftTime = (shift: Shift) => {
+  const formattedScheduleTime = (schedule: Schedule) => {
     const timeZoneOffset =
-      (parseISO(shift.startTime).getTimezoneOffset() / 60) * -1;
-    const startTime = addHours(parseISO(shift.startTime), timeZoneOffset);
-    const endTime = addHours(parseISO(shift.endTime), timeZoneOffset);
+      (parseISO(schedule.startTime).getTimezoneOffset() / 60) * -1;
+    const startTime = addHours(parseISO(schedule.startTime), timeZoneOffset);
+    const endTime = addHours(parseISO(schedule.endTime), timeZoneOffset);
     return `${format(startTime, 'HH:mm')} - ${format(endTime, 'HH:mm')}`;
   };
 
@@ -35,11 +35,11 @@ const Overview = () => {
             <Icons.users className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            {user?.shifts.length ? (
+            {user?.schedules.length ? (
               <>
                 <div className='flex justify-between items-center h-[24px]'>
                   <p className='text-sm font-bold'>
-                    {formattedShiftTime(user?.shifts[0])}
+                    {formattedScheduleTime(user?.schedules[0])}
                   </p>
                 </div>
                 <div className='flex justify-between items-center h-[24px]'>
@@ -49,7 +49,7 @@ const Overview = () => {
               </>
             ) : (
               <div className='text-2xl font-bold'>
-                You do have any shifts scheduled
+                You do not have any shifts scheduled
               </div>
             )}
             {/* <p className='text-xs text-muted-foreground'>

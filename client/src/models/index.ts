@@ -1,16 +1,16 @@
 import { Group } from './groups';
 import { PaginatedResponse, MetaData } from './pagination';
-import { Shift } from './shift';
+import { Schedule } from './schedule';
 import { Site } from './site';
-import { User, UserParams, UserShift, UserShiftsParams } from './user';
+import { User, UserParams, UserSchedule, UserScheduleParams } from './user';
 
 export type {
   Group,
-  Shift,
+  Schedule,
   Site,
   User,
-  UserShift,
-  UserShiftsParams,
+  UserSchedule,
+  UserScheduleParams,
   UserParams,
   MetaData,
 };

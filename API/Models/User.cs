@@ -11,6 +11,6 @@ namespace API.Models
         public Site Site { get; set; }
         public string GroupId { get; set; }
         public Group Group { get; set; } = new();
-        public List<Shift> Shifts { get; set; } = [];
+        public List<Schedule> Schedules { get; set; } = [];
     }
 }

@@ -1,70 +1,70 @@
 import { addDays, isSameDay, parseISO, startOfWeek } from 'date-fns';
 import { useEffect, useState } from 'react';
-import { Shift, UserShift } from '@/models';
-import ShiftCard from './shift-card';
-import NoShiftCard from './no-shift-card';
+import { Schedule, UserSchedule } from '@/models';
+import ScheduleCard from './schedule-card';
+import NoScheduleCard from './no-schedule-card';
 import { Card, CardContent } from '@/components/card';
 
 interface Props {
-  user: UserShift;
+  user: UserSchedule;
   date: Date;
-  handleAddShift: (user: UserShift, date: Date) => void;
-  handleEditShift: (user: UserShift, shift: Shift) => void;
-  handleSelectShift: (shift: Shift) => void;
+  handleAddSchedule: (user: UserSchedule, date: Date) => void;
+  handleEditSchedule: (user: UserSchedule, schedule: Schedule) => void;
+  handleSelectSchedule: (schedule: Schedule) => void;
 }
 
 interface Day {
   date: Date;
-  shift: Shift | null;
+  schedule: Schedule | null;
 }
 
 export default function UserWeek({
   user,
   date,
-  handleAddShift,
-  handleEditShift,
-  handleSelectShift,
+  handleAddSchedule,
+  handleEditSchedule,
+  handleSelectSchedule,
 }: Props) {
   const [totalHours, setTotalHours] = useState<number>(0);
   const [schedule, setSchedule] = useState<Day[]>([
     {
       date: new Date(startOfWeek(date, { weekStartsOn: 1 })),
-      shift: null,
+      schedule: null,
     },
     {
       date: addDays(new Date(startOfWeek(date, { weekStartsOn: 1 })), 1),
-      shift: null,
+      schedule: null,
     },
     {
       date: addDays(new Date(startOfWeek(date, { weekStartsOn: 1 })), 2),
-      shift: null,
+      schedule: null,
     },
     {
       date: addDays(new Date(startOfWeek(date, { weekStartsOn: 1 })), 3),
-      shift: null,
+      schedule: null,
     },
     {
       date: addDays(new Date(startOfWeek(date, { weekStartsOn: 1 })), 4),
-      shift: null,
+      schedule: null,
     },
     {
       date: addDays(new Date(startOfWeek(date, { weekStartsOn: 1 })), 5),
-      shift: null,
+      schedule: null,
     },
     {
       date: addDays(new Date(startOfWeek(date, { weekStartsOn: 1 })), 6),
-      shift: null,
+      schedule: null,
     },
   ]);
 
   useEffect(() => {
-    if (!user.shifts) return;
+    if (!user.schedules) return;
     setSchedule((schedule) =>
       schedule.map((day) => ({
         date: day.date,
-        shift:
-          user.shifts.find((shift) =>
-            isSameDay(parseISO(shift.startTime), day.date)
+        schedule:
+          user.schedules.find((schedule) =>
+            isSameDay(parseISO(schedule.startTime), day.date)
           ) || null,
       }))
     );
@@ -72,7 +72,7 @@ export default function UserWeek({
 
   useEffect(() => {
     const total = schedule.reduce((total, day) => {
-      if (day.shift?.hours) return total + day.shift.hours;
+      if (day.schedule?.hours) return total + day.schedule.hours;
       return total;
     }, 0);
 
@@ -88,19 +88,21 @@ export default function UserWeek({
         </CardContent>
       </Card>
       {schedule?.map((day, index) => {
-        return day.shift ? (
-          <ShiftCard
-            key={day.shift.id}
+        return day.schedule ? (
+          <ScheduleCard
+            key={day.schedule.id}
             backgroundColor={user.group.color || '#999'}
-            shift={day.shift}
-            handleEditShift={(shift) => handleEditShift(user, shift)}
-            handleSelect={(shift) => handleSelectShift(shift)}
+            schedule={day.schedule}
+            handleEditSchedule={(schedule) =>
+              handleEditSchedule(user, schedule)
+            }
+            handleSelect={(schedule) => handleSelectSchedule(schedule)}
           />
         ) : (
-          <NoShiftCard
+          <NoScheduleCard
             key={index}
             date={day.date}
-            handleAddShift={(date) => handleAddShift(user, date)}
+            handleAddSchedule={(date) => handleAddSchedule(user, date)}
           />
         );
       })}

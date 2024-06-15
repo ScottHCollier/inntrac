@@ -11,21 +11,21 @@ import {
   subWeeks,
 } from 'date-fns';
 import agent from '@/api/agent';
-import { Shift, UserShift, UserShiftsParams } from '@/models';
+import { Schedule, UserSchedule, UserScheduleParams } from '@/models';
 import UserWeek from './components/user-week';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
-import ShiftDialog from './dialogs/shift-dialog';
+import ScheduleDialog from './dialogs/schedule-dialog';
 import { ConfirmDialog } from './dialogs/confirm-dialog';
 import { toast } from '@/components/ui/use-toast';
 import Select from '@/components/custom/select';
-import useShifts from '@/hooks/useShifts';
+import useSchedules from '@/hooks/useSchedules';
 import useGroups from '@/hooks/useGroups';
 import Loading from '../../layout/loading';
 import WeekSkeleton from './components/week-skeleton';
 
-const Schedule = () => {
-  const setRequestParams = (params: UserShiftsParams) => {
+const ScheduleOverview = () => {
+  const setRequestParams = (params: UserScheduleParams) => {
     const newSearchParams = new URLSearchParams();
     newSearchParams.set('weekStart', params.weekStart);
     newSearchParams.set('weekEnd', params.weekEnd);
@@ -48,45 +48,50 @@ const Schedule = () => {
       weekEnd: addDays(weekStartDate, 7).toDateString(),
     })
   );
-  const { users, usersLoading } = useShifts(searchParams);
+  const { users, usersLoading } = useSchedules(searchParams);
   const { groups, groupsLoading } = useGroups();
 
   const [monday, setMonday] = useState<Date>(
     startOfWeek(new Date(), { weekStartsOn: 1 })
   );
 
-  const [selectedUser, setSelectedUser] = useState<UserShift | null>(null);
+  const [selectedUser, setSelectedUser] = useState<UserSchedule | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
-  const [selectedShifts, setSelectedShifts] = useState<Shift[]>([]);
+  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
+    null
+  );
+  const [selectedSchedules, setSelectedSchedules] = useState<Schedule[]>([]);
   const [open, setOpen] = useState(false);
   const [confirm, setConfirm] = useState(false);
 
-  const handleAddShift = (user: UserShift, date: Date) => {
+  const handleAddSchedule = (user: UserSchedule, date: Date) => {
     setSelectedUser(user);
     setSelectedDate(date);
     setOpen(true);
   };
 
-  const handleAddShiftNoUser = () => {
+  const handleAddScheduleNoUser = () => {
     setSelectedUser(null);
     setSelectedDate(null);
     setOpen(true);
   };
 
-  const handleEditShift = (user: UserShift, shift: Shift) => {
+  const handleEditSchedule = (user: UserSchedule, schedule: Schedule) => {
     setSelectedUser(user);
-    setSelectedShift(shift);
+    setSelectedSchedule(schedule);
     setOpen(true);
   };
 
-  const handleSelectShift = (shift: Shift) => {
-    const exists = selectedShifts.find((s) => s.id === shift.id);
+  const handleSelectSchedule = (schedule: Schedule) => {
+    const exists = selectedSchedules.find((s) => s.id === schedule.id);
     if (exists === undefined) {
-      setSelectedShifts((selectedShifts) => [...selectedShifts, shift]);
+      setSelectedSchedules((selectedSchedules) => [
+        ...selectedSchedules,
+        schedule,
+      ]);
     } else {
-      setSelectedShifts((selectedShifts) =>
-        selectedShifts.filter((s) => s.id !== shift.id)
+      setSelectedSchedules((selectedSchedules) =>
+        selectedSchedules.filter((s) => s.id !== schedule.id)
       );
     }
   };
@@ -94,7 +99,7 @@ const Schedule = () => {
   const onClose = () => {
     setSelectedUser(null);
     setSelectedDate(null);
-    setSelectedShift(null);
+    setSelectedSchedule(null);
     setRequestParams({
       weekStart: monday.toISOString(),
       weekEnd: addDays(monday, 7).toISOString(),
@@ -105,19 +110,19 @@ const Schedule = () => {
   const repeatSchedule = async () => {
     if (users) {
       try {
-        const shifts = users.flatMap((user: UserShift) =>
-          user.shifts.map((shift) => ({
-            ...shift,
-            startTime: addWeeks(parseISO(shift.startTime), 1).toISOString(),
-            endTime: addWeeks(parseISO(shift.endTime), 1).toISOString(),
+        const schedules = users.flatMap((user: UserSchedule) =>
+          user.schedules.map((schedule) => ({
+            ...schedule,
+            startTime: addWeeks(parseISO(schedule.startTime), 1).toISOString(),
+            endTime: addWeeks(parseISO(schedule.endTime), 1).toISOString(),
           }))
         );
 
-        await agent.Shifts.addBulkShifts(shifts);
+        await agent.Schedules.addBulkSchedules(schedules);
 
         toast({
           title: 'Success!',
-          description: 'Shifts added',
+          description: 'Schedules added',
         });
         navigateWeek('next');
       } catch (error) {
@@ -240,7 +245,7 @@ const Schedule = () => {
                 className='ml-1 bg-indigo-300'
                 variant='outline'
                 size='icon'
-                onClick={() => handleAddShiftNoUser()}
+                onClick={() => handleAddScheduleNoUser()}
               >
                 <Icons.add className='w-4 h-4' />
               </Button>
@@ -332,16 +337,20 @@ const Schedule = () => {
               key={user.id}
               user={user}
               date={monday}
-              handleAddShift={(user, date) => handleAddShift(user, date)}
-              handleEditShift={(user, shift) => handleEditShift(user, shift)}
-              handleSelectShift={(shift) => handleSelectShift(shift)}
+              handleAddSchedule={(user, date) => handleAddSchedule(user, date)}
+              handleEditSchedule={(user, schedule) =>
+                handleEditSchedule(user, schedule)
+              }
+              handleSelectSchedule={(schedule) =>
+                handleSelectSchedule(schedule)
+              }
             />
           ))}
-      <ShiftDialog
+      <ScheduleDialog
         open={open}
         selectedUser={selectedUser}
         selectedDate={selectedDate}
-        selectedShift={selectedShift}
+        selectedSchedule={selectedSchedule}
         handleClose={onClose}
         handleChangeUser={(userId: string) =>
           setSelectedUser(
@@ -360,4 +369,4 @@ const Schedule = () => {
   );
 };
 
-export default Schedule;
+export default ScheduleOverview;

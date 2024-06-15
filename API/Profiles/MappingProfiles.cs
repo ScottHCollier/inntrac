@@ -10,10 +10,10 @@ namespace API.Profiles
     {
       CreateMap<Site, SiteDto>();
       CreateMap<Group, GroupDto>();
-      CreateMap<Shift, ShiftDto>()
+      CreateMap<Schedule, ScheduleDto>()
         .ForMember(dest => dest.Hours, opt => opt.MapFrom<HoursResolver>()); ;
       CreateMap<User, UserDto>();
-      CreateMap<User, UserShiftDto>();
+      CreateMap<User, UserScheduleDto>();
       CreateMap<User, AccountDto>()
         .ForMember(dest => dest.IsAdmin, opt => opt.Ignore());
     }

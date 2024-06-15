@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import agent from '../api/agent';
-import { UserShift } from '../models';
+import { UserSchedule } from '../models';
 
 interface UseUsersResult {
-  users: UserShift[];
+  users: UserSchedule[];
   usersLoading: boolean;
   usersError: Error | null;
 }
 
-const useUserShifts = (params: URLSearchParams): UseUsersResult => {
-  const [users, setUsers] = useState<UserShift[]>([]);
+const useUserSchedules = (params: URLSearchParams): UseUsersResult => {
+  const [users, setUsers] = useState<UserSchedule[]>([]);
   const [usersLoading, setLoading] = useState<boolean>(true);
   const [usersError, setError] = useState<Error | null>(null);
 
@@ -17,7 +17,7 @@ const useUserShifts = (params: URLSearchParams): UseUsersResult => {
     const fetchUsers = async () => {
       setLoading(true);
       try {
-        const response = await agent.Shifts.getShifts(params);
+        const response = await agent.Schedules.getSchedules(params);
         setUsers(response.items);
       } catch (err) {
         setError(err as Error);
@@ -31,4 +31,4 @@ const useUserShifts = (params: URLSearchParams): UseUsersResult => {
   return { users, usersLoading, usersError };
 };
 
-export default useUserShifts;
+export default useUserSchedules;

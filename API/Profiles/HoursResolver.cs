@@ -4,11 +4,11 @@ using AutoMapper;
 
 namespace API.Profiles
 {
-  public class HoursResolver : IValueResolver<Shift, ShiftDto, double>
+  public class HoursResolver : IValueResolver<Schedule, ScheduleDto, double>
   {
-    public double Resolve(Shift shift, ShiftDto shiftDto, double time, ResolutionContext context)
+    public double Resolve(Schedule schedule, ScheduleDto scheduleDto, double time, ResolutionContext context)
     {
-      var minutes = shift.EndTime.Subtract(shift.StartTime).TotalMinutes;
+      var minutes = schedule.EndTime.Subtract(schedule.StartTime).TotalMinutes;
       var hours = Math.Round(minutes / 15) * 0.25;
 
       return hours;

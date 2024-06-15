@@ -1,29 +1,29 @@
 import { addHours, format, parseISO } from 'date-fns';
 // import { useState } from 'react';
-import { Shift } from '@/models';
+import { Schedule } from '@/models';
 import { Icons } from '@/components/icons';
 import { Card, CardContent } from '@/components/card';
 
 interface Props {
   backgroundColor: string;
-  shift: Shift;
-  handleEditShift: (shift: Shift) => void;
-  handleSelect: (shift: Shift) => void;
+  schedule: Schedule;
+  handleEditSchedule: (schedule: Schedule) => void;
+  handleSelect: (schedule: Schedule) => void;
 }
 
-const ShiftCard = ({
+const ScheduleCard = ({
   backgroundColor,
-  shift,
-  handleEditShift,
+  schedule,
+  handleEditSchedule,
 }: // handleSelect,
 Props) => {
   // const [selected, setSelected] = useState<boolean>(false);
 
-  const formattedShiftTime = (shift: Shift) => {
+  const formattedScheduleTime = (schedule: Schedule) => {
     const timeZoneOffset =
-      (parseISO(shift.startTime).getTimezoneOffset() / 60) * -1;
-    const startTime = addHours(parseISO(shift.startTime), timeZoneOffset);
-    const endTime = addHours(parseISO(shift.endTime), timeZoneOffset);
+      (parseISO(schedule.startTime).getTimezoneOffset() / 60) * -1;
+    const startTime = addHours(parseISO(schedule.startTime), timeZoneOffset);
+    const endTime = addHours(parseISO(schedule.endTime), timeZoneOffset);
     return `${format(startTime, 'HH:mm')} - ${format(endTime, 'HH:mm')}`;
   };
 
@@ -31,10 +31,16 @@ Props) => {
     <Card>
       <CardContent className='py-1 px-2'>
         <div className='flex justify-between items-center h-[24px]'>
-          <p className='text-sm font-bold'>{formattedShiftTime(shift)}</p>
+          {schedule.type === 3 || schedule.type === 4 ? (
+            <p className='text-sm font-bold'>HOLIDAY</p>
+          ) : (
+            <p className='text-sm font-bold'>
+              {formattedScheduleTime(schedule)}
+            </p>
+          )}
           <Icons.edit
             className='w-4 h-4 text-muted-foreground'
-            onClick={() => handleEditShift(shift)}
+            onClick={() => handleEditSchedule(schedule)}
           />
         </div>
         <div className='flex justify-between items-center h-[24px]'>
@@ -49,4 +55,4 @@ Props) => {
   );
 };
 
-export default ShiftCard;
+export default ScheduleCard;

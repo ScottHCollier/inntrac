@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20240610084501_AddShiftType")]
-    partial class AddShiftType
+    [Migration("20240615081100_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -92,7 +92,7 @@ namespace API.Data.Migrations
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("API.Models.Shift", b =>
+            modelBuilder.Entity("API.Models.Schedule", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -103,14 +103,14 @@ namespace API.Data.Migrations
                     b.Property<string>("GroupId")
                         .HasColumnType("text");
 
-                    b.Property<bool>("Pending")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("SiteId")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.Property<int>("Type")
                         .HasColumnType("integer");
@@ -126,7 +126,7 @@ namespace API.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Shifts");
+                    b.ToTable("Schedules");
                 });
 
             modelBuilder.Entity("API.Models.Site", b =>
@@ -253,13 +253,13 @@ namespace API.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "b97a8fd1-4e14-4362-90c7-b7c378cb3814",
+                            Id = "2293bfb7-8a0e-4eb0-9715-6d147eedf750",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "31cb0272-ac1a-4f18-91cb-3dbb5f690c4c",
+                            Id = "a4831a61-fc06-4fa3-afe6-40ce5f9eb338",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         });
@@ -380,18 +380,18 @@ namespace API.Data.Migrations
                     b.Navigation("Site");
                 });
 
-            modelBuilder.Entity("API.Models.Shift", b =>
+            modelBuilder.Entity("API.Models.Schedule", b =>
                 {
                     b.HasOne("API.Models.Group", "Group")
                         .WithMany()
                         .HasForeignKey("GroupId");
 
                     b.HasOne("API.Models.Site", "Site")
-                        .WithMany("Shifts")
+                        .WithMany("Schedules")
                         .HasForeignKey("SiteId");
 
                     b.HasOne("API.Models.User", "User")
-                        .WithMany("Shifts")
+                        .WithMany("Schedules")
                         .HasForeignKey("UserId");
 
                     b.Navigation("Group");
@@ -476,14 +476,14 @@ namespace API.Data.Migrations
                 {
                     b.Navigation("Groups");
 
-                    b.Navigation("Shifts");
+                    b.Navigation("Schedules");
 
                     b.Navigation("Users");
                 });
 
             modelBuilder.Entity("API.Models.User", b =>
                 {
-                    b.Navigation("Shifts");
+                    b.Navigation("Schedules");
                 });
 #pragma warning restore 612, 618
         }

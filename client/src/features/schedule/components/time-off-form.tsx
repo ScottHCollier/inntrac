@@ -2,31 +2,32 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
-import { UserShift } from '@/models';
+import { UserSchedule } from '@/models';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { format, parseISO } from 'date-fns';
+import { addDays, eachDayOfInterval, format, parseISO } from 'date-fns';
 import { toast } from '@/components/ui/use-toast';
 import agent from '@/api/agent';
 import { Icons } from '@/components/icons';
 import Select from '@/components/custom/select';
 import Input from '@/components/custom/input';
+import { AddScheduleTimeOff } from '../../../models/schedule';
 
 const FormSchema = z.object({
   userId: z.string({
     required_error: 'User is required.',
   }),
-  startDate: z.date({
+  startTime: z.date({
     required_error: 'Date is required.',
   }),
-  endDate: z.date({
+  endTime: z.date({
     required_error: 'Date is required.',
   }),
 });
 
 interface Props {
-  users: UserShift[];
-  selectedUser: UserShift | null;
+  users: UserSchedule[];
+  selectedUser: UserSchedule | null;
   selectedDate: Date | null;
   handleClose: () => void;
   handleChangeUser: (userId: string) => void;
@@ -56,47 +57,63 @@ const TimeOffForm = ({
   function handleApiErrors(errors: any) {
     if (errors) {
       errors.forEach((error: string) => {
-        if (error.includes('startDate')) {
-          setError('startDate', { message: error });
+        if (error.includes('startTime')) {
+          setError('startTime', { message: error });
         }
       });
     }
   }
 
   const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = async (data) => {
-    const { userId, startDate, endDate } = data;
+    if (selectedUser) {
+      const { userId, startTime, endTime } = data;
 
-    const body = {
-      userId,
-      pending: false,
-      startDate,
-      endDate,
-      type: 3,
-    };
+      // Check if startDate is after endDate
+      if (startTime > endTime) {
+        throw new Error(
+          'The start date must be before or the same as the end date.'
+        );
+      }
 
-    console.log(body);
-    return;
-
-    await agent.Shifts.requestTimeOff(body)
-      .then(() => {
-        toast({
-          title: 'Request Submitted',
-        });
-        handleClose();
-      })
-      .catch((error) => {
-        console.log(error);
-        handleApiErrors(error);
+      // Get each day in the interval
+      const dates = eachDayOfInterval({
+        start: startTime,
+        end: addDays(endTime, 1),
       });
+
+      // Format the dates as 'yyyy-MM-dd'
+      const formattedDates = dates.map((date) => date.toISOString());
+
+      const body: AddScheduleTimeOff = {
+        userId,
+        status: 3,
+        dates: formattedDates,
+        type: 3,
+        siteId: selectedUser.site.id,
+        groupId: selectedUser.group.id,
+      };
+
+      await agent.Schedules.requestTimeOff(body)
+        .then(() => {
+          toast({
+            title: 'Request Submitted',
+          });
+          handleClose();
+        })
+        .catch((error) => {
+          console.log(error);
+          handleApiErrors(error);
+        });
+    }
   };
 
-  // async function deleteShift() {
-  //   if (selectedShift) {
+  // async function deleteSchedule() {
+  //   if (selectedSchedule) {
   //     setDeleting(true);
-  //     await agent.Shifts.delete(selectedShift?.id)
+  //     await agent.Schedules.delete(selectedSchedule?.id)
   //       .then(() => {
   //         toast({
-  //           title: 'Shift deleted',
+  //           title: 'Schedule deleted',
   //         });
   //         handleClose();
   //         setDeleting(false);
@@ -112,8 +129,8 @@ const TimeOffForm = ({
   const getInitialValues = useCallback(() => {
     return {
       userId: selectedUser?.id || undefined,
-      startDate: selectedDate || new Date(),
-      endDate: selectedDate || new Date(),
+      startTime: selectedDate || new Date(),
+      endTime: selectedDate || new Date(),
     };
   }, [selectedDate, selectedUser]);
 
@@ -140,32 +157,32 @@ const TimeOffForm = ({
 
       <Input
         onChange={(e) => {
-          setValue('startDate', parseISO(e.target.value));
+          setValue('startTime', parseISO(e.target.value));
           setTouched(true);
         }}
         type='date'
-        fieldName='startDate'
-        defaultValue={format(getInitialValues().startDate, 'yyyy-LL-dd')}
+        fieldName='startTime'
+        defaultValue={format(getInitialValues().startTime, 'yyyy-LL-dd')}
         errors={errors}
       />
 
       <Input
         onChange={(e) => {
-          setValue('endDate', parseISO(e.target.value));
+          setValue('endTime', parseISO(e.target.value));
           setTouched(true);
         }}
         type='date'
-        fieldName='endDate'
-        defaultValue={format(getInitialValues().endDate, 'yyyy-LL-dd')}
+        fieldName='endTime'
+        defaultValue={format(getInitialValues().endTime, 'yyyy-LL-dd')}
         errors={errors}
       />
 
       <div className='flex justify-end mt-6'>
-        {/* {selectedShift && (
+        {/* {selectedSchedule && (
           <Button
             className='mr-4'
             variant='destructive'
-            onClick={handleSubmit(deleteShift)}
+            onClick={handleSubmit(deleteSchedule)}
           >
             {isSubmitting && deleting ? (
               <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />

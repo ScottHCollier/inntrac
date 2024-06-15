@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
-import { Group, Shift, UserShift } from '@/models';
+import { Group, Schedule, UserSchedule } from '@/models';
 import { useAppSelector } from '@/store/configure-store';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,7 @@ import { Icons } from '@/components/icons';
 import Select from '@/components/custom/select';
 import Input from '@/components/custom/input';
 import { getTimeString } from '@/lib/utils';
+import { AddSchedule } from '../../../models/schedule';
 
 const FormSchema = z.object({
   userId: z.string({
@@ -33,21 +34,21 @@ const FormSchema = z.object({
 });
 
 interface Props {
-  users: UserShift[];
+  users: UserSchedule[];
   groups: Group[];
-  selectedUser: UserShift | null;
+  selectedUser: UserSchedule | null;
   selectedDate: Date | null;
-  selectedShift: Shift | null;
+  selectedSchedule: Schedule | null;
   handleClose: () => void;
   handleChangeUser: (userId: string) => void;
 }
 
-const ShiftForm = ({
+const ScheduleForm = ({
   users,
   groups,
   selectedUser,
   selectedDate,
-  selectedShift,
+  selectedSchedule,
   handleClose,
   handleChangeUser,
 }: Props) => {
@@ -95,24 +96,24 @@ const ShiftForm = ({
     et.setSeconds(0);
     et.setMilliseconds(0);
 
-    const body = {
-      siteId: user?.site.id,
+    const body: AddSchedule = {
+      siteId: user!.site.id,
       groupId,
       userId,
-      pending: false,
-      startTime: st,
-      endTime: et,
+      status: 0,
+      startTime: st.toISOString(),
+      endTime: et.toISOString(),
       type: 1,
     };
 
-    if (selectedShift) {
-      await agent.Shifts.updateShift({
-        id: selectedShift.id,
+    if (selectedSchedule) {
+      await agent.Schedules.updateSchedule({
+        id: selectedSchedule.id,
         ...body,
       })
         .then(() => {
           toast({
-            title: 'Shift edited',
+            title: 'Schedule edited',
           });
           handleClose();
         })
@@ -121,10 +122,10 @@ const ShiftForm = ({
           handleApiErrors(error);
         });
     } else {
-      await agent.Shifts.addShift(body)
+      await agent.Schedules.addSchedule(body)
         .then(() => {
           toast({
-            title: 'Shift added',
+            title: 'Schedule added',
           });
           handleClose();
         })
@@ -135,13 +136,13 @@ const ShiftForm = ({
     }
   };
 
-  async function deleteShift() {
-    if (selectedShift) {
+  async function deleteSchedule() {
+    if (selectedSchedule && selectedSchedule.id) {
       setDeleting(true);
-      await agent.Shifts.delete(selectedShift?.id)
+      await agent.Schedules.delete(selectedSchedule.id)
         .then(() => {
           toast({
-            title: 'Shift deleted',
+            title: 'Schedule deleted',
           });
           handleClose();
           setDeleting(false);
@@ -155,13 +156,13 @@ const ShiftForm = ({
   }
 
   const getInitialValues = useCallback(() => {
-    if (selectedShift) {
+    if (selectedSchedule) {
       return {
         userId: selectedUser?.id || undefined,
-        groupId: selectedShift.groupId || undefined,
-        date: parseISO(selectedShift.startTime),
-        start: format(parseISO(selectedShift.startTime), 'HH:mm'),
-        end: format(parseISO(selectedShift.endTime), 'HH:mm'),
+        groupId: selectedSchedule.groupId || undefined,
+        date: parseISO(selectedSchedule.startTime),
+        start: format(parseISO(selectedSchedule.startTime), 'HH:mm'),
+        end: format(parseISO(selectedSchedule.endTime), 'HH:mm'),
       };
     }
     return {
@@ -171,7 +172,7 @@ const ShiftForm = ({
       start: getTimeString(new Date().getHours()),
       end: getTimeString(new Date().getHours() + 4),
     };
-  }, [selectedDate, selectedShift, selectedUser]);
+  }, [selectedDate, selectedSchedule, selectedUser]);
 
   useEffect(() => {
     reset(getInitialValues());
@@ -240,11 +241,11 @@ const ShiftForm = ({
       />
 
       <div className='flex justify-end mt-6'>
-        {selectedShift && (
+        {selectedSchedule && (
           <Button
             className='mr-4'
             variant='destructive'
-            onClick={handleSubmit(deleteShift)}
+            onClick={handleSubmit(deleteSchedule)}
           >
             {isSubmitting && deleting ? (
               <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
@@ -256,18 +257,18 @@ const ShiftForm = ({
         )}
         <Button
           type='submit'
-          disabled={isSubmitting || (selectedShift !== null && !touched)}
+          disabled={isSubmitting || (selectedSchedule !== null && !touched)}
         >
           {isSubmitting && !deleting ? (
             <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
           ) : (
             <Icons.add className='mr-2 h-4 w-4' />
           )}
-          {selectedShift ? 'Update' : 'Save'}
+          {selectedSchedule ? 'Update' : 'Save'}
         </Button>
       </div>
     </form>
   );
 };
 
-export default ShiftForm;
+export default ScheduleForm;

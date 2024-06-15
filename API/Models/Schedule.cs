@@ -1,9 +1,8 @@
 namespace API.Models
 {
-    public class Shift
+    public class Schedule
     {
         public string Id { get; set; }
-        public bool Pending { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public string SiteId { get; set; }
@@ -13,5 +12,6 @@ namespace API.Models
         public string GroupId { get; set; }
         public Group Group { get; set; }
         public int Type { get; set; }
+        public int Status { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace API.Data
 
         public DbSet<Site> Sites { get; set; }
         public DbSet<Group> Groups { get; set; }
-        public DbSet<Shift> Shifts { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
         public DbSet<Email> Emails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

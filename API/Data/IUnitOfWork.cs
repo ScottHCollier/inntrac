@@ -7,7 +7,7 @@ namespace API.Data
     IUserRepository Users { get; }
     ISiteRepository Sites { get; }
     IGroupRepository Groups { get; }
-    IShiftRepository Shifts { get; }
+    IScheduleRepository Schedules { get; }
     IEmailRepository Emails { get; }
     Task<int> CompleteAsync();
   }

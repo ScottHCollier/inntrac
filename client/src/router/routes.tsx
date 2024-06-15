@@ -3,7 +3,7 @@ import App from '@/layout/app';
 import RequireAuth from './require-auth';
 import Layout from '@/layout/layout';
 import Dashboard from '@/features/dashboard/dashboard';
-import Schedule from '@/features/schedule/schedule';
+import ScheduleOverview from '@/features/schedule/schedule-overview';
 import Assistant from '@/features/assistant/assistant';
 import Admin from '@/features/admin/admin';
 import Profile from '@/features/admin/components/profile';
@@ -32,7 +32,7 @@ export const router = createBrowserRouter([
               },
               {
                 path: 'schedule',
-                element: <Schedule />,
+                element: <ScheduleOverview />,
               },
               {
                 path: 'assistant',

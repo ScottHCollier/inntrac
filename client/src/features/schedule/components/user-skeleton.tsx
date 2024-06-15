@@ -1,9 +1,9 @@
-import { UserShift } from '@/models';
+import { UserSchedule } from '@/models';
 import { Card, CardContent } from '@/components/card';
 import Skeleton from '@/components/custom/skeleton';
 
 interface Props {
-  user: UserShift;
+  user: UserSchedule;
 }
 
 export default function UserSkeleton({ user }: Props) {

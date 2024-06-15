@@ -21,7 +21,7 @@ export function ConfirmDialog({ open, close, handleConfirm }: Props) {
         <DialogHeader>
           <DialogTitle>Confirm</DialogTitle>
           <DialogDescription>
-            Would you like to repeat the shift schedule for next week?
+            Would you like to repeat the schedule for next week?
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

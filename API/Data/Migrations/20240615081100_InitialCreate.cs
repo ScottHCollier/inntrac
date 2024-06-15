@@ -229,32 +229,33 @@ namespace API.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Shifts",
+                name: "Schedules",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
-                    Pending = table.Column<bool>(type: "boolean", nullable: false),
                     StartTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     EndTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     SiteId = table.Column<string>(type: "text", nullable: true),
                     UserId = table.Column<string>(type: "text", nullable: true),
-                    GroupId = table.Column<string>(type: "text", nullable: true)
+                    GroupId = table.Column<string>(type: "text", nullable: true),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Shifts", x => x.Id);
+                    table.PrimaryKey("PK_Schedules", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Shifts_AspNetUsers_UserId",
+                        name: "FK_Schedules_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Shifts_Groups_GroupId",
+                        name: "FK_Schedules_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Shifts_Sites_SiteId",
+                        name: "FK_Schedules_Sites_SiteId",
                         column: x => x.SiteId,
                         principalTable: "Sites",
                         principalColumn: "Id");
@@ -265,8 +266,8 @@ namespace API.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "6dd64e85-65f9-4fec-8fa8-0a2fe558c57f", null, "Admin", "ADMIN" },
-                    { "fdd37619-4b96-467a-97fe-d8cb51edd38d", null, "Member", "MEMBER" }
+                    { "2293bfb7-8a0e-4eb0-9715-6d147eedf750", null, "Admin", "ADMIN" },
+                    { "a4831a61-fc06-4fa3-afe6-40ce5f9eb338", null, "Member", "MEMBER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -322,18 +323,18 @@ namespace API.Data.Migrations
                 column: "SiteId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Shifts_GroupId",
-                table: "Shifts",
+                name: "IX_Schedules_GroupId",
+                table: "Schedules",
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Shifts_SiteId",
-                table: "Shifts",
+                name: "IX_Schedules_SiteId",
+                table: "Schedules",
                 column: "SiteId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Shifts_UserId",
-                table: "Shifts",
+                name: "IX_Schedules_UserId",
+                table: "Schedules",
                 column: "UserId");
         }
 
@@ -359,7 +360,7 @@ namespace API.Data.Migrations
                 name: "Emails");
 
             migrationBuilder.DropTable(
-                name: "Shifts");
+                name: "Schedules");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

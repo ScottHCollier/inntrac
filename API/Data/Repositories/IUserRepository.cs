@@ -16,6 +16,6 @@ namespace API.Data.Repositories
         Task<bool> IsAdminAsync(User user);
         Task<bool> CheckUserPasswordAsync(User user, string password);
         Task<User> GetUserByEmailAsync(string email);
-        IQueryable<User> GetShiftsQueryable(User currentUser, ShiftParams shiftParams);
+        IQueryable<User> GetSchedulesQueryable(User currentUser, ScheduleParams ScheduleParams);
     }
 }

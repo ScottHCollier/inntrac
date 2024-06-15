@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import agent from '../api/agent';
-import { Site, Shift, Group } from '../models';
+import { Site, Schedule, Group } from '../models';
 
 interface User {
   id: string;
@@ -10,7 +10,7 @@ interface User {
   email: string;
   token: string;
   site: Site;
-  shifts: Shift[];
+  schedules: Schedule[];
   group: Group;
   isAdmin: boolean;
   status: number;

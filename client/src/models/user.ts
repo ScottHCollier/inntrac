@@ -1,5 +1,5 @@
 import { Group } from './groups';
-import { Shift } from './shift';
+import { Schedule } from './schedule';
 import { Site } from './site';
 
 export interface User {
@@ -8,7 +8,7 @@ export interface User {
   surname: string;
   email: string;
   site: Site;
-  shifts: Shift[];
+  schedules: Schedule[];
   group: Group;
   isAdmin: boolean;
   status: number;
@@ -22,7 +22,7 @@ export interface RegisterAccount {
   phoneNumber: string;
 }
 
-export interface UserShift {
+export interface UserSchedule {
   id: string;
   firstName: string;
   surname: string;
@@ -30,7 +30,7 @@ export interface UserShift {
   email: string;
   token: string;
   site: Site;
-  shifts: Shift[];
+  schedules: Schedule[];
   group: Group;
   isAdmin: boolean;
   type: number;
@@ -42,7 +42,7 @@ export interface UserParams {
   userId: string | null;
 }
 
-export interface UserShiftsParams {
+export interface UserScheduleParams {
   weekStart: string;
   weekEnd: string;
   searchTerm?: string;

@@ -4,30 +4,30 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Group, Shift, UserShift } from '@/models';
+import { Group, Schedule, UserSchedule } from '@/models';
 import Tab from '../../../components/tab';
 import Tabs from '../../../components/tabs';
-import ShiftForm from '../components/shift-form';
+import ScheduleForm from '../components/schedule-form';
 import TimeOffForm from '../components/time-off-form';
 
 interface Props {
-  users: UserShift[];
+  users: UserSchedule[];
   groups: Group[];
   open: boolean;
-  selectedUser: UserShift | null;
+  selectedUser: UserSchedule | null;
   selectedDate: Date | null;
-  selectedShift: Shift | null;
+  selectedSchedule: Schedule | null;
   handleClose: () => void;
   handleChangeUser: (userId: string) => void;
 }
 
-const ShiftDialog = ({
+const ScheduleDialog = ({
   users,
   groups,
   open,
   selectedUser,
   selectedDate,
-  selectedShift,
+  selectedSchedule,
   handleClose,
   handleChangeUser,
 }: Props) => {
@@ -38,13 +38,13 @@ const ShiftDialog = ({
           <DialogTitle>Schedule Entry</DialogTitle>
         </DialogHeader>
         <Tabs>
-          <Tab title={selectedShift ? 'Edit Shift' : 'Add Shift'}>
-            <ShiftForm
+          <Tab title={selectedSchedule ? 'Edit Schedule' : 'Add Schedule'}>
+            <ScheduleForm
               users={users}
               groups={groups}
               selectedUser={selectedUser}
               selectedDate={selectedDate}
-              selectedShift={selectedShift}
+              selectedSchedule={selectedSchedule}
               handleClose={handleClose}
               handleChangeUser={handleChangeUser}
             />
@@ -64,4 +64,4 @@ const ShiftDialog = ({
   );
 };
 
-export default ShiftDialog;
+export default ScheduleDialog;

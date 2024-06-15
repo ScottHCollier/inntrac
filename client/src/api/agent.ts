@@ -98,17 +98,18 @@ const Account = {
   currentUser: () => requests.get('account'),
 };
 
-const Shifts = {
+const Schedules = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  addShift: (values: any) => requests.post('shifts', values),
+  addSchedule: (values: any) => requests.post('schedules', values),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  requestTimeOff: (values: any) => requests.post('shifts/timeOff', values),
+  requestTimeOff: (values: any) =>
+    requests.post('schedules/requestTimeOff', values),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  addBulkShifts: (values: any) => requests.post('shifts/addBulk', values),
-  delete: (id: string) => requests.delete(`shifts/${id}`),
+  addBulkSchedules: (values: any) => requests.post('schedules/addBulk', values),
+  delete: (id: string) => requests.delete(`schedules/${id}`),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  updateShift: (values: any) => requests.put('shifts', values),
-  getShifts: (params: URLSearchParams) => requests.get('shifts', params),
+  updateSchedule: (values: any) => requests.put('schedules', values),
+  getSchedules: (params: URLSearchParams) => requests.get('schedules', params),
 };
 
 const Users = {
@@ -128,7 +129,7 @@ const Sites = {
 const agent = {
   TestErrors,
   Account,
-  Shifts,
+  Schedules,
   Groups,
   Sites,
   Users,
