@@ -41,10 +41,10 @@ namespace API.Data.Migrations
                     Subject = table.Column<string>(type: "text", nullable: true),
                     Body = table.Column<string>(type: "text", nullable: true),
                     Status = table.Column<int>(type: "integer", nullable: false),
-                    DateSent = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DateSent = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Attachments = table.Column<string>(type: "text", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -233,13 +233,15 @@ namespace API.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
-                    StartTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    EndTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     SiteId = table.Column<string>(type: "text", nullable: true),
                     UserId = table.Column<string>(type: "text", nullable: true),
                     GroupId = table.Column<string>(type: "text", nullable: true),
                     Type = table.Column<int>(type: "integer", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false)
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -266,8 +268,8 @@ namespace API.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "2293bfb7-8a0e-4eb0-9715-6d147eedf750", null, "Admin", "ADMIN" },
-                    { "a4831a61-fc06-4fa3-afe6-40ce5f9eb338", null, "Member", "MEMBER" }
+                    { "efcd8f9c-ecaf-45c9-9641-fb8527e350c3", null, "Member", "MEMBER" },
+                    { "fd5f96b9-2c2e-4d31-b40d-167f5ee76de8", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(

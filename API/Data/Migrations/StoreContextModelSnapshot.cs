@@ -40,10 +40,10 @@ namespace API.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("DateSent")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("From")
                         .HasColumnType("text");
@@ -61,7 +61,7 @@ namespace API.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -94,8 +94,11 @@ namespace API.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTime>("EndTime")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("GroupId")
                         .HasColumnType("text");
@@ -104,13 +107,16 @@ namespace API.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("StartTime")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
                     b.Property<int>("Type")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserId")
                         .HasColumnType("text");
@@ -250,13 +256,13 @@ namespace API.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2293bfb7-8a0e-4eb0-9715-6d147eedf750",
+                            Id = "fd5f96b9-2c2e-4d31-b40d-167f5ee76de8",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "a4831a61-fc06-4fa3-afe6-40ce5f9eb338",
+                            Id = "efcd8f9c-ecaf-45c9-9641-fb8527e350c3",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         });

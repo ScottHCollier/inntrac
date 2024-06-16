@@ -1,4 +1,5 @@
 using System.Text.Json;
+using API.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Middleware
@@ -28,12 +29,7 @@ namespace API.Middleware
                     Title = ex.Message
                 };
 
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                };
-
-                var json = JsonSerializer.Serialize(response, options);
+                var json = JsonSerializer.Serialize(response, JsonSerializerOptionsCache.Options);
 
                 await context.Response.WriteAsync(json);
             }

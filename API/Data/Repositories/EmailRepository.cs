@@ -15,7 +15,7 @@ namespace API.Data.Repositories
         Template = "Welcome",
         Subject = "Welcome to Inntrac",
         Status = 0,
-        CreatedAt = DateTime.UtcNow,
+        DateSent = DateTime.UtcNow,
       };
 
       _context.Emails.Add(email);

@@ -5,7 +5,7 @@ import * as z from 'zod';
 import { UserSchedule } from '@/models';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { addDays, eachDayOfInterval, format, parseISO } from 'date-fns';
+import { eachDayOfInterval, format, parseISO } from 'date-fns';
 import { toast } from '@/components/ui/use-toast';
 import agent from '@/api/agent';
 import { Icons } from '@/components/icons';
@@ -68,21 +68,20 @@ const TimeOffForm = ({
     if (selectedUser) {
       const { userId, startTime, endTime } = data;
 
-      // Check if startDate is after endDate
       if (startTime > endTime) {
         throw new Error(
           'The start date must be before or the same as the end date.'
         );
       }
 
-      // Get each day in the interval
       const dates = eachDayOfInterval({
         start: startTime,
-        end: addDays(endTime, 1),
+        end: endTime,
       });
 
-      // Format the dates as 'yyyy-MM-dd'
-      const formattedDates = dates.map((date) => date.toISOString());
+      const formattedDates = dates.map((date) =>
+        format(date, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")
+      );
 
       const body: AddScheduleTimeOff = {
         userId,

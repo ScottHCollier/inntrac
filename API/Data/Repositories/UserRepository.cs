@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using API.Models;
 using Microsoft.AspNetCore.Identity;
-using API.RequestHelpers;
 using Microsoft.IdentityModel.Tokens;
+using API.Helpers.Request;
 
 
 namespace API.Data.Repositories
@@ -55,7 +55,7 @@ namespace API.Data.Repositories
       if (user != null)
       {
         user.Schedules = await _context.Schedules
-            .Where(schedule => schedule.UserId == user.Id && schedule.StartTime > DateTime.Today)
+            .Where(schedule => schedule.UserId == user.Id && schedule.StartTime > DateTime.Today.ToUniversalTime())
             .OrderBy(schedule => schedule.StartTime)
             .Take(5)
             .ToListAsync();
@@ -78,7 +78,7 @@ namespace API.Data.Repositories
       if (user != null)
       {
         user.Schedules = await _context.Schedules
-            .Where(schedule => schedule.UserId == user.Id && schedule.StartTime > DateTime.Today)
+            .Where(schedule => schedule.UserId == user.Id && schedule.StartTime > DateTime.Today.ToUniversalTime())
             .OrderBy(schedule => schedule.StartTime)
             .Take(5)
             .ToListAsync();
@@ -97,18 +97,18 @@ namespace API.Data.Repositories
       return user;
     }
 
-    public IQueryable<User> GetSchedulesQueryable(User currentUser, ScheduleParams ScheduleParams)
+    public IQueryable<User> GetSchedulesQueryable(User currentUser, ScheduleParams scheduleParams)
     {
       var query = _context.Users
         .Where(user => user.Site == currentUser.Site)
-        .Where(user => ScheduleParams.UserId.IsNullOrEmpty() || user.Id == ScheduleParams.UserId)
+        .Where(user => scheduleParams.UserId.IsNullOrEmpty() || user.Id == scheduleParams.UserId)
         .Include(user => user.Site)
         .Include(user => user.Schedules
             .Where(schedule =>
-                schedule.StartTime >= DateTime.Parse(ScheduleParams.WeekStart) &&
-                schedule.EndTime <= DateTime.Parse(ScheduleParams.WeekEnd)
+                schedule.StartTime >= scheduleParams.GetUtcWeekStart().Value &&
+                schedule.EndTime <= scheduleParams.GetUtcWeekEnd().Value
             ))
-        .Where(user => ScheduleParams.GroupId.IsNullOrEmpty() || user.Group.Id == ScheduleParams.GroupId)
+        .Where(user => scheduleParams.GroupId.IsNullOrEmpty() || user.Group.Id == scheduleParams.GroupId)
         .Include(user => user.Group)
         .AsQueryable();
       return query;

@@ -8,8 +8,14 @@ namespace API.Profiles
   {
     public double Resolve(Schedule schedule, ScheduleDto scheduleDto, double time, ResolutionContext context)
     {
-      var minutes = schedule.EndTime.Subtract(schedule.StartTime).TotalMinutes;
-      var hours = Math.Round(minutes / 15) * 0.25;
+      double hours = 0;
+
+      if (schedule.Type == 1)
+      {
+        var minutes = schedule.EndTime.Subtract(schedule.StartTime).TotalMinutes;
+        hours = Math.Round(minutes / 15) * 0.25;
+
+      }
 
       return hours;
     }

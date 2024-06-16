@@ -1,5 +1,5 @@
 using API.Models;
-using API.RequestHelpers;
+using API.Helpers.Request;
 using Microsoft.AspNetCore.Identity;
 
 namespace API.Data.Repositories

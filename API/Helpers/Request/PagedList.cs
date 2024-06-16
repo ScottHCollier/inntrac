@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace API.RequestHelpers
+namespace API.Helpers.Request
 {
     public class PagedList<T> : List<T>
     {

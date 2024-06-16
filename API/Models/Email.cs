@@ -1,6 +1,6 @@
 namespace API.Models
 {
-    public class Email
+    public class Email : BaseEntity
     {
         public string Id { get; set; }
         public string From { get; set; }
@@ -11,9 +11,12 @@ namespace API.Models
         public string Subject { get; set; }
         public string Body { get; set; }
         public int Status { get; set; }
-        public DateTime DateSent { get; set; }
+        private DateTime _dateSent;
+        public DateTime DateSent
+        {
+            get => _dateSent;
+            set => _dateSent = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+        }
         public string Attachments { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
     }
 }

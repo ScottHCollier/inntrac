@@ -1,7 +1,7 @@
 using API.Data;
 using API.DTO;
 using API.Models;
-using API.RequestHelpers;
+using API.Helpers.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,25 +18,25 @@ namespace API.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<PagedList<UserScheduleDto>>> GetSchedules([FromQuery] ScheduleParams ScheduleParams)
+        public async Task<ActionResult<PagedList<UserScheduleDto>>> GetSchedules([FromQuery] ScheduleParams scheduleParams)
         {
             var currentUser = await _unitOfWork.Users.GetUserForQueryAsync(User.Identity.Name);
 
-            if (!ScheduleParams.GroupId.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(scheduleParams.GroupId))
             {
-                var group = await _unitOfWork.Groups.GetByIdAsync(ScheduleParams.GroupId);
+                var group = await _unitOfWork.Groups.GetByIdAsync(scheduleParams.GroupId);
                 if (group == null) return BadRequest(new ProblemDetails { Title = "Group not found" });
             }
 
-            var query = _unitOfWork.Users.GetSchedulesQueryable(currentUser, ScheduleParams);
+            var query = _unitOfWork.Users.GetSchedulesQueryable(currentUser, scheduleParams);
 
             var count = await query.CountAsync();
-            var schedules = await query.Skip((ScheduleParams.PageNumber - 1) * ScheduleParams.PageSize).Take(ScheduleParams.PageSize).ToListAsync();
+            var schedules = await query.Skip((scheduleParams.PageNumber - 1) * scheduleParams.PageSize).Take(scheduleParams.PageSize).ToListAsync();
 
             var schedulesDto = new PagedList<UserScheduleDto>
             (
                 _mapper.Map<List<UserScheduleDto>>(schedules),
-                count, ScheduleParams.PageNumber, ScheduleParams.PageSize
+                count, scheduleParams.PageNumber, scheduleParams.PageSize
             );
 
             Response.AddPaginationHeader(schedulesDto.MetaData);
@@ -47,14 +47,16 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult> AddSchedule(AddScheduleDto addScheduleDto)
         {
-            if (DateTime.Compare(addScheduleDto.StartTime, addScheduleDto.EndTime) >= 0)
+            var startTimeUtc = DateTime.SpecifyKind(addScheduleDto.StartTime, DateTimeKind.Utc);
+            var endTimeUtc = DateTime.SpecifyKind(addScheduleDto.EndTime, DateTimeKind.Utc);
+
+            if (DateTime.Compare(startTimeUtc, endTimeUtc) >= 0)
             {
                 ModelState.AddModelError("401", "Schedule start must be before schedule end");
                 return ValidationProblem();
             }
 
             var existingSchedule = await _unitOfWork.Schedules.UserHasExisting(addScheduleDto);
-
             if (existingSchedule)
             {
                 ModelState.AddModelError("401", "Cannot add more than one schedule per day. Try using split schedule");
@@ -74,8 +76,8 @@ namespace API.Controllers
             {
                 Id = Guid.NewGuid().ToString(),
                 Status = addScheduleDto.Status,
-                StartTime = addScheduleDto.StartTime,
-                EndTime = addScheduleDto.EndTime,
+                StartTime = startTimeUtc,
+                EndTime = endTimeUtc,
                 Site = site,
                 User = user,
                 Group = group,
@@ -95,9 +97,9 @@ namespace API.Controllers
         {
             foreach (var date in addScheduleTimeOffDto.Dates)
             {
-                DateTime startOfDay = new(date.Year, date.Month, date.Day, 0, 0, 0);
+                DateTime startOfDay = new(date.Year, date.Month, date.Day, 0, 0, 0, DateTimeKind.Utc);
 
-                DateTime endOfDay = new(date.Year, date.Month, date.Day, 23, 59, 59, 999);
+                DateTime endOfDay = new(date.Year, date.Month, date.Day, 23, 59, 59, 999, DateTimeKind.Utc);
 
                 var site = await _unitOfWork.Sites.GetByIdAsync(addScheduleTimeOffDto.SiteId);
                 if (site == null) return BadRequest(new ProblemDetails { Title = "Site not found" });
@@ -155,7 +157,10 @@ namespace API.Controllers
 
             foreach (var addScheduleDto in schedulesArray)
             {
-                if (DateTime.Compare(addScheduleDto.StartTime, addScheduleDto.EndTime) >= 0)
+                var startTimeUtc = DateTime.SpecifyKind(addScheduleDto.StartTime, DateTimeKind.Utc);
+                var endTimeUtc = DateTime.SpecifyKind(addScheduleDto.EndTime, DateTimeKind.Utc);
+
+                if (DateTime.Compare(startTimeUtc, endTimeUtc) >= 0)
                 {
                     ModelState.AddModelError("401", "Schedule start must be before schedule end");
                     return ValidationProblem();
@@ -182,8 +187,8 @@ namespace API.Controllers
                 {
                     Id = Guid.NewGuid().ToString(),
                     Status = addScheduleDto.Status,
-                    StartTime = addScheduleDto.StartTime,
-                    EndTime = addScheduleDto.EndTime,
+                    StartTime = startTimeUtc,
+                    EndTime = endTimeUtc,
                     Site = site,
                     User = user,
                     Group = group,
@@ -215,7 +220,10 @@ namespace API.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateSchedule(EditScheduleDto editScheduleDto)
         {
-            if (DateTime.Compare(editScheduleDto.StartTime, editScheduleDto.EndTime) >= 0)
+            var startTimeUtc = DateTime.SpecifyKind(editScheduleDto.StartTime, DateTimeKind.Utc);
+            var endTimeUtc = DateTime.SpecifyKind(editScheduleDto.EndTime, DateTimeKind.Utc);
+
+            if (DateTime.Compare(startTimeUtc, endTimeUtc) >= 0)
             {
                 ModelState.AddModelError("401", "Schedule start must be before schedule end");
                 return ValidationProblem();
@@ -234,8 +242,8 @@ namespace API.Controllers
             if (group == null) return BadRequest(new ProblemDetails { Title = "Group not found" });
 
             existingSchedule.Status = editScheduleDto.Status;
-            existingSchedule.StartTime = editScheduleDto.StartTime;
-            existingSchedule.EndTime = editScheduleDto.EndTime;
+            existingSchedule.StartTime = startTimeUtc;
+            existingSchedule.EndTime = endTimeUtc;
             existingSchedule.Site = site;
             existingSchedule.User = user;
             existingSchedule.Group = group;

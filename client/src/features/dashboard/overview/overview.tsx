@@ -8,17 +8,15 @@ import {
 import { Icons } from '@/components/icons';
 import RecentNotifications from '@/components/recent-notifications';
 import { useAppSelector } from '../../../store/configure-store';
-import { parseISO, addHours, format } from 'date-fns';
+import { format } from 'date-fns';
 import { Schedule } from '../../../models';
 
 const Overview = () => {
   const { user } = useAppSelector((state) => state.account);
 
   const formattedScheduleTime = (schedule: Schedule) => {
-    const timeZoneOffset =
-      (parseISO(schedule.startTime).getTimezoneOffset() / 60) * -1;
-    const startTime = addHours(parseISO(schedule.startTime), timeZoneOffset);
-    const endTime = addHours(parseISO(schedule.endTime), timeZoneOffset);
+    const startTime = new Date(schedule.startTime);
+    const endTime = new Date(schedule.endTime);
     return `${format(startTime, 'HH:mm')} - ${format(endTime, 'HH:mm')}`;
   };
 

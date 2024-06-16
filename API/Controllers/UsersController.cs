@@ -1,6 +1,6 @@
 using API.Data;
 using API.DTO;
-using API.RequestHelpers;
+using API.Helpers.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;

@@ -1,10 +1,20 @@
 namespace API.Models
 {
-    public class Schedule
+    public class Schedule : BaseEntity
     {
         public string Id { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        private DateTime _startTime;
+        public DateTime StartTime
+        {
+            get => _startTime;
+            set => _startTime = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+        }
+        private DateTime _endTime;
+        public DateTime EndTime
+        {
+            get => _endTime;
+            set => _endTime = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+        }
         public string SiteId { get; set; }
         public Site Site { get; set; }
         public string UserId { get; set; }

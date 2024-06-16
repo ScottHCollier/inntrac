@@ -1,8 +1,9 @@
-import { addHours, format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 // import { useState } from 'react';
 import { Schedule } from '@/models';
 import { Icons } from '@/components/icons';
 import { Card, CardContent } from '@/components/card';
+import { cn } from '../../../lib/utils';
 
 interface Props {
   backgroundColor: string;
@@ -20,15 +21,17 @@ Props) => {
   // const [selected, setSelected] = useState<boolean>(false);
 
   const formattedScheduleTime = (schedule: Schedule) => {
-    const timeZoneOffset =
-      (parseISO(schedule.startTime).getTimezoneOffset() / 60) * -1;
-    const startTime = addHours(parseISO(schedule.startTime), timeZoneOffset);
-    const endTime = addHours(parseISO(schedule.endTime), timeZoneOffset);
+    const startTime = new Date(schedule.startTime);
+    const endTime = new Date(schedule.endTime);
     return `${format(startTime, 'HH:mm')} - ${format(endTime, 'HH:mm')}`;
   };
 
   return (
-    <Card>
+    <Card
+      className={cn(
+        schedule.type === 3 || schedule.type === 4 ? 'bg-gray-200' : ''
+      )}
+    >
       <CardContent className='py-1 px-2'>
         <div className='flex justify-between items-center h-[24px]'>
           {schedule.type === 3 || schedule.type === 4 ? (
