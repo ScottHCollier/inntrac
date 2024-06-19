@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import Skeleton from '@/components/custom/skeleton';
 import { Icons } from '@/components/icons';
-import useGroups from '../../../hooks/useGroups';
+import useGroups from '@/hooks/useGroups';
 
 const GroupsTable = () => {
   const { groups, groupsLoading } = useGroups();

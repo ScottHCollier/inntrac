@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAppSelector } from '../store/configure-store';
+import { useAppSelector } from '@/store/configure-store';
 
 export default function RequireAuth() {
   const { user } = useAppSelector((state) => state.account);

@@ -1,6 +1,6 @@
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import '../index.css';
-import { cssVar } from '../lib/utils';
+import { cssVar } from '@/lib/utils';
 
 const data = [
   {

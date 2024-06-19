@@ -1,6 +1,7 @@
 using API.Models;
 using API.Helpers.Request;
 using Microsoft.AspNetCore.Identity;
+using API.DTO;
 
 namespace API.Data.Repositories
 {
@@ -17,5 +18,6 @@ namespace API.Data.Repositories
         Task<bool> CheckUserPasswordAsync(User user, string password);
         Task<User> GetUserByEmailAsync(string email);
         IQueryable<User> GetSchedulesQueryable(User currentUser, ScheduleParams ScheduleParams);
+        Task<List<(Schedule schedule, User user)>> GetNotificationsAsync(User user);
     }
 }

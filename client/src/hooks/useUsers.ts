@@ -1,29 +1,15 @@
 import { useState, useEffect } from 'react';
-import agent from '../api/agent';
-import { Site, Schedule, Group } from '../models';
-
-interface User {
-  id: string;
-  firstName: string;
-  surname: string;
-  name: string;
-  email: string;
-  token: string;
-  site: Site;
-  schedules: Schedule[];
-  group: Group;
-  isAdmin: boolean;
-  status: number;
-}
+import agent from '@/api/agent';
+import { IUser } from '@/models';
 
 interface UseUsersResult {
-  users: User[];
+  users: IUser[];
   loading: boolean;
   error: Error | null;
 }
 
 const useUsers = (params: URLSearchParams): UseUsersResult => {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<IUser[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 

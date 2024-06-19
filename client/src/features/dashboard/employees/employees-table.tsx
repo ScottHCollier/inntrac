@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import Skeleton from '@/components/custom/skeleton';
 import { Icons } from '@/components/icons';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import useUsers from '../../../hooks/useUsers';
+import useUsers from '@/hooks/useUsers';
 import { useState } from 'react';
 
 const EmployeesTable = () => {

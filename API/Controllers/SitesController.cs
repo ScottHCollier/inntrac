@@ -12,6 +12,7 @@ namespace API.Controllers
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
+        [Authorize]
         [HttpGet("{id}", Name = "GetSiteById")]
         public async Task<ActionResult<Site>> GetSiteById(string id)
         {
@@ -29,8 +30,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult> AddSite(AddSiteDto newSite)
         {
-
-            var user = await _unitOfWork.Users.GetByIdAsync(newSite.UserId);
+            var user = await _unitOfWork.Users.GetCurrentUserAsync(User.Identity.Name);
 
             if (user == null) return BadRequest();
 
@@ -79,10 +79,8 @@ namespace API.Controllers
 
             var site = await _unitOfWork.Sites.GetByIdAsync(siteToAdd.Id);
 
-            // Get the location header
             var locationHeader = new Uri(Url.Link("GetSiteById", new { id = site.Id }));
 
-            // Return the result
             return Created(locationHeader, site);
         }
     }

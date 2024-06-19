@@ -1,23 +1,22 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FieldValues, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Icons } from './icons';
 import Input from './custom/input';
-import agent from '../api/agent';
+import agent from '@/api/agent';
 import { useNavigate } from 'react-router-dom';
-import { useAppSelector } from '../store/configure-store';
+import { IAddSite } from '../models';
+import { useForm } from 'react-hook-form';
 
 const FormSchema = z.object({
-  teamName: z.string().min(1, { message: 'This field has to be filled.' }),
+  name: z.string().min(1, { message: 'This field has to be filled.' }),
 });
 
 const CreateTeamForm = () => {
-  const { user } = useAppSelector((state) => state.account);
   const navigate = useNavigate();
   const defaultValues = {
-    teamName: '',
+    name: '',
   };
 
   const {
@@ -30,13 +29,9 @@ const CreateTeamForm = () => {
     defaultValues,
   });
 
-  async function onSubmit(data: FieldValues) {
+  async function onSubmit(data: IAddSite) {
     try {
-      const body = {
-        userId: user?.id,
-        ...data,
-      };
-      await agent.Sites.addSite(body);
+      await agent.Sites.addSite(data);
       navigate('/setup/add-users');
     } catch (error) {
       console.log(error);
@@ -46,11 +41,11 @@ const CreateTeamForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Input
-        onChange={(e) => setValue('teamName', e.target.value)}
+        onChange={(e) => setValue('name', e.target.value)}
         type='text'
-        fieldName='teamName'
+        fieldName='name'
         placeholder='Team Name'
-        defaultValue={defaultValues.teamName}
+        defaultValue={defaultValues.name}
         errors={errors}
       />
 

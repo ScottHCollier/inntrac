@@ -1,5 +1,5 @@
 import { Pie, PieChart, ResponsiveContainer } from 'recharts';
-import { cssVar } from '../lib/utils';
+import { cssVar } from '@/lib/utils';
 
 const data = [
   { name: 'Group A', value: 400, fill: '#fb5607' },

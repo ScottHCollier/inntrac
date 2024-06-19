@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
-import { Group, Schedule, UserSchedule } from '@/models';
+import { IGroup, ISchedule, IUserSchedule, IAddSchedule } from '@/models';
 import { useAppSelector } from '@/store/configure-store';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -13,7 +13,6 @@ import { Icons } from '@/components/icons';
 import Select from '@/components/custom/select';
 import Input from '@/components/custom/input';
 import { getTimeString } from '@/lib/utils';
-import { AddSchedule } from '../../../models/schedule';
 
 const FormSchema = z.object({
   userId: z.string({
@@ -34,11 +33,11 @@ const FormSchema = z.object({
 });
 
 interface Props {
-  users: UserSchedule[];
-  groups: Group[];
-  selectedUser: UserSchedule | null;
+  users: IUserSchedule[];
+  groups: IGroup[];
+  selectedUser: IUserSchedule | null;
   selectedDate: Date | null;
-  selectedSchedule: Schedule | null;
+  selectedSchedule: ISchedule | null;
   handleClose: () => void;
   handleChangeUser: (userId: string) => void;
 }
@@ -67,9 +66,8 @@ const ScheduleForm = ({
     resolver: zodResolver(FormSchema),
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function handleApiErrors(errors: any) {
-    if (errors) {
+  function handleApiErrors(errors: unknown) {
+    if (errors && Array.isArray(errors)) {
       errors.forEach((error: string) => {
         if (error.includes('start')) {
           setError('start', { message: error });
@@ -96,7 +94,7 @@ const ScheduleForm = ({
     et.setSeconds(0);
     et.setMilliseconds(0);
 
-    const body: AddSchedule = {
+    const body: IAddSchedule = {
       siteId: user!.site.id,
       groupId,
       userId,

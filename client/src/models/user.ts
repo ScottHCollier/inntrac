@@ -1,20 +1,52 @@
-import { Group } from './groups';
-import { Schedule } from './schedule';
-import { Site } from './site';
+import { IGroup } from './groups';
+import { ISchedule } from './schedule';
+import { ISite } from './site';
 
-export interface User {
-  id: string;
+export interface ISetPassword {
+  token: string;
+  password: string;
+}
+
+export interface IAddUser {
   firstName: string;
   surname: string;
   email: string;
-  site: Site;
-  schedules: Schedule[];
-  group: Group;
+  site: ISite;
+  group: IGroup;
   isAdmin: boolean;
   status: number;
 }
 
-export interface RegisterAccount {
+export interface INotificationItem {
+  firstName: string;
+  surname: string;
+  schedules: ISchedule[];
+}
+
+export interface ILogin {
+  email: string;
+  password: string;
+}
+
+export interface ISession {
+  id: string;
+  token: string;
+}
+
+export interface IUser {
+  id: string;
+  firstName: string;
+  surname: string;
+  email: string;
+  site: ISite;
+  schedules: ISchedule[];
+  group: IGroup;
+  isAdmin: boolean;
+  status: number;
+  notifications: INotificationItem[];
+}
+
+export interface IRegisterAccount {
   id: string;
   firstName: string;
   surname: string;
@@ -22,27 +54,27 @@ export interface RegisterAccount {
   phoneNumber: string;
 }
 
-export interface UserSchedule {
+export interface IUserSchedule {
   id: string;
   firstName: string;
   surname: string;
   name: string;
   email: string;
   token: string;
-  site: Site;
-  schedules: Schedule[];
-  group: Group;
+  site: ISite;
+  schedules: ISchedule[];
+  group: IGroup;
   isAdmin: boolean;
   type: number;
 }
 
-export interface UserParams {
+export interface IUserParams {
   searchTerm: string | null;
   groupId: string | null;
   userId: string | null;
 }
 
-export interface UserScheduleParams {
+export interface IUserScheduleParams {
   weekStart: string;
   weekEnd: string;
   searchTerm?: string;

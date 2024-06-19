@@ -4,8 +4,8 @@ import * as z from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { registerUser, signInUser } from '../store/account-slice';
-import { useAppDispatch } from '../store/configure-store';
+import { registerUser, signInUser } from '@/store/account-slice';
+import { useAppDispatch } from '@/store/configure-store';
 import { Icons } from './icons';
 import Input from './custom/input';
 

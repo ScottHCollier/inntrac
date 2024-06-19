@@ -1,9 +1,9 @@
-import { UserSchedule } from '@/models';
+import { IUserSchedule } from '@/models';
 import { Card, CardContent } from '@/components/card';
 import Skeleton from '@/components/custom/skeleton';
 
 interface Props {
-  user: UserSchedule;
+  user: IUserSchedule;
 }
 
 export default function UserSkeleton({ user }: Props) {

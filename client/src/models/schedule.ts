@@ -1,4 +1,4 @@
-export interface Schedule {
+export interface ISchedule {
   id: string;
   startTime: string;
   endTime: string;
@@ -10,7 +10,7 @@ export interface Schedule {
   type: number;
 }
 
-export interface AddSchedule {
+export interface IAddSchedule {
   startTime: string;
   endTime: string;
   status: number;
@@ -19,11 +19,22 @@ export interface AddSchedule {
   siteId: string;
   type: number;
 }
-export interface AddScheduleTimeOff {
+export interface IAddScheduleTimeOff {
   dates: string[];
   status: number;
   userId: string;
   groupId: string;
   siteId: string;
   type: number;
+}
+
+export interface IEditSchedule {
+  type: number;
+  id: string;
+  startTime: string;
+  endTime: string;
+  status: number;
+  userId: string;
+  groupId: string;
+  siteId: string;
 }

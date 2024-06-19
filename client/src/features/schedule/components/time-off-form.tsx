@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
-import { UserSchedule } from '@/models';
+import { IUserSchedule, IAddScheduleTimeOff } from '@/models';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { eachDayOfInterval, format, parseISO } from 'date-fns';
@@ -11,7 +11,8 @@ import agent from '@/api/agent';
 import { Icons } from '@/components/icons';
 import Select from '@/components/custom/select';
 import Input from '@/components/custom/input';
-import { AddScheduleTimeOff } from '../../../models/schedule';
+import { updateNotifications } from '@/store/account-slice';
+import { useAppDispatch } from '@/store/configure-store';
 
 const FormSchema = z.object({
   userId: z.string({
@@ -26,8 +27,8 @@ const FormSchema = z.object({
 });
 
 interface Props {
-  users: UserSchedule[];
-  selectedUser: UserSchedule | null;
+  users: IUserSchedule[];
+  selectedUser: IUserSchedule | null;
   selectedDate: Date | null;
   handleClose: () => void;
   handleChangeUser: (userId: string) => void;
@@ -40,6 +41,7 @@ const TimeOffForm = ({
   handleClose,
   handleChangeUser,
 }: Props) => {
+  const dispatch = useAppDispatch();
   const [touched, setTouched] = useState(false);
 
   const {
@@ -53,9 +55,8 @@ const TimeOffForm = ({
     resolver: zodResolver(FormSchema),
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function handleApiErrors(errors: any) {
-    if (errors) {
+  function handleApiErrors(errors: unknown) {
+    if (errors && Array.isArray(errors)) {
       errors.forEach((error: string) => {
         if (error.includes('startTime')) {
           setError('startTime', { message: error });
@@ -83,7 +84,7 @@ const TimeOffForm = ({
         format(date, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx")
       );
 
-      const body: AddScheduleTimeOff = {
+      const body: IAddScheduleTimeOff = {
         userId,
         status: 3,
         dates: formattedDates,
@@ -103,6 +104,8 @@ const TimeOffForm = ({
           console.log(error);
           handleApiErrors(error);
         });
+
+      dispatch(updateNotifications());
     }
   };
 

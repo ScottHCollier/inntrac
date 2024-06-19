@@ -3,6 +3,7 @@ using API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using API.Helpers.Request;
+using API.DTO;
 
 
 namespace API.Data.Repositories
@@ -85,6 +86,21 @@ namespace API.Data.Repositories
       }
 
       return user;
+    }
+    public async Task<List<(Schedule schedule, User user)>> GetNotificationsAsync(User user)
+    {
+      var notifications = await _context.Schedules
+          .Where(schedule => schedule.SiteId == user.SiteId
+                             && schedule.StartTime > DateTime.Today.ToUniversalTime()
+                             && schedule.Type == 3)
+          .Join(_context.Users,
+                schedule => schedule.UserId,
+                u => u.Id,
+                (schedule, u) => new { schedule, user = u })
+          .OrderBy(n => n.schedule.StartTime)
+          .ToListAsync();
+
+      return notifications.Select(n => (n.schedule, n.user)).ToList();
     }
 
     public async Task<User> GetUserForQueryAsync(string userName)

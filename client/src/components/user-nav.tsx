@@ -10,8 +10,8 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAppDispatch, useAppSelector } from '../store/configure-store';
-import { signOut } from '../store/account-slice';
+import { useAppDispatch, useAppSelector } from '@/store/configure-store';
+import { signOut } from '@/store/account-slice';
 import { Link } from 'react-router-dom';
 
 const UserNav = () => {

@@ -4,19 +4,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Group, Schedule, UserSchedule } from '@/models';
-import Tab from '../../../components/tab';
-import Tabs from '../../../components/tabs';
+import { IGroup, ISchedule, IUserSchedule } from '@/models';
+import Tab from '@/components/tab';
+import Tabs from '@/components/tabs';
 import ScheduleForm from '../components/schedule-form';
 import TimeOffForm from '../components/time-off-form';
 
 interface Props {
-  users: UserSchedule[];
-  groups: Group[];
+  users: IUserSchedule[];
+  groups: IGroup[];
   open: boolean;
-  selectedUser: UserSchedule | null;
+  selectedUser: IUserSchedule | null;
   selectedDate: Date | null;
-  selectedSchedule: Schedule | null;
+  selectedSchedule: ISchedule | null;
   handleClose: () => void;
   handleChangeUser: (userId: string) => void;
 }

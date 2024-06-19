@@ -1,13 +1,13 @@
 import { AccountForm } from '../../admin/components/account-form';
 import { useEffect, useState } from 'react';
-import { User } from '@/models';
+import { IUser } from '@/models';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/card';
 import { Icons } from '@/components/icons';
-import useUsers from '../../../hooks/useUsers';
+import useUsers from '@/hooks/useUsers';
 
 const Employee = () => {
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
   const { id } = useParams();
   const navigate = useNavigate();
 

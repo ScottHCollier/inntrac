@@ -11,5 +11,6 @@ namespace API.DTO
         public GroupDto Group { get; set; }
         public SiteDto Site { get; set; }
         public List<ScheduleDto> Schedules { get; set; }
+        public List<ScheduleNotificationDto> Notifications { get; set; }
     }
 }

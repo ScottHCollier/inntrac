@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { ThemeProvider } from '../components/theme-provider';
-import { useAppDispatch } from '../store/configure-store';
-import { fetchCurrentUser } from '../store/account-slice';
+import { ThemeProvider } from '@/components/theme-provider';
+import { useAppDispatch } from '@/store/configure-store';
+import { fetchCurrentUser } from '@/store/account-slice';
 import Loading from './loading';
-import { Toaster } from '../components/ui/toaster';
+import { Toaster } from '@/components/ui/toaster';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();

@@ -16,6 +16,10 @@ namespace API.Profiles
       CreateMap<User, UserScheduleDto>();
       CreateMap<User, AccountDto>()
         .ForMember(dest => dest.IsAdmin, opt => opt.Ignore());
+      CreateMap<User, ScheduleNotificationDto>()
+        .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
+        .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.Surname))
+        .ForMember(dest => dest.Schedules, opt => opt.Ignore());
     }
   }
 }

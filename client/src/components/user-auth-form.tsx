@@ -1,13 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FieldValues, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { fetchCurrentUser, signInUser } from '../store/account-slice';
-import { useAppDispatch } from '../store/configure-store';
+import { fetchCurrentUser, signInUser } from '@/store/account-slice';
+import { useAppDispatch } from '@/store/configure-store';
 import { Icons } from './icons';
 import Input from './custom/input';
+import { ILogin } from '@/models';
 
 const FormSchema = z.object({
   email: z
@@ -46,7 +47,7 @@ const UserAuthForm = () => {
     defaultValues,
   });
 
-  async function onSubmit(data: FieldValues) {
+  async function onSubmit(data: ILogin) {
     try {
       await dispatch(signInUser(data));
       await dispatch(fetchCurrentUser());

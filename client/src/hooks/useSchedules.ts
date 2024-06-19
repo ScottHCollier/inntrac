@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
-import agent from '../api/agent';
-import { UserSchedule } from '../models';
+import agent from '@/api/agent';
+import { IUserSchedule } from '@/models';
 
 interface UseUsersResult {
-  users: UserSchedule[];
+  users: IUserSchedule[];
   usersLoading: boolean;
   usersError: Error | null;
 }
 
 const useUserSchedules = (params: URLSearchParams): UseUsersResult => {
-  const [users, setUsers] = useState<UserSchedule[]>([]);
+  const [users, setUsers] = useState<IUserSchedule[]>([]);
   const [usersLoading, setLoading] = useState<boolean>(true);
   const [usersError, setError] = useState<Error | null>(null);
 

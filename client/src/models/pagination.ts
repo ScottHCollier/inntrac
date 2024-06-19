@@ -1,4 +1,4 @@
-export interface MetaData {
+export interface IMetaData {
   currentPage: number;
   totalPages: number;
   pageSize: number;
@@ -7,9 +7,9 @@ export interface MetaData {
 
 export class PaginatedResponse<T> {
   items: T;
-  metaData: MetaData;
+  metaData: IMetaData;
 
-  constructor(items: T, metaData: MetaData) {
+  constructor(items: T, metaData: IMetaData) {
     this.items = items;
     this.metaData = metaData;
   }

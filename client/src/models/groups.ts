@@ -1,4 +1,4 @@
-export interface Group {
+export interface IGroup {
   id: string;
   name: string;
   color: string;

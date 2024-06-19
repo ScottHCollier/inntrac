@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, MutableRefObject } from 'react';
 import { Icons } from '../icons';
-import { cn } from '../../lib/utils';
+import { cn } from '@/lib/utils';
 import { FieldErrors } from 'react-hook-form';
 import Skeleton from './skeleton';
 
@@ -30,12 +30,10 @@ const Select = ({
   const [selectOpen, setSelectOpen] = useState(false);
   const [title, setTitle] = useState<string | null>(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function useOutsideAlerter(ref: any) {
+  function useOutsideAlerter(ref: MutableRefObject<HTMLDivElement | null>) {
     useEffect(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      function handleClickOutside(event: any) {
-        if (ref.current && !ref.current.contains(event.target)) {
+      function handleClickOutside(event: MouseEvent) {
+        if (ref.current && !ref.current.contains(event.target as Node)) {
           setSelectOpen(false);
         }
       }
@@ -60,8 +58,7 @@ const Select = ({
     setSelectOpen(false);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const clear = (e: any) => {
+  const clear = (e: React.MouseEvent) => {
     e.stopPropagation();
     handleChange('');
     setTitle(null);

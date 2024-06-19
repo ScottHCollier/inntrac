@@ -1,21 +1,21 @@
 import { addDays, isSameDay, parseISO, startOfWeek } from 'date-fns';
 import { useEffect, useState } from 'react';
-import { Schedule, UserSchedule } from '@/models';
+import { ISchedule, IUserSchedule } from '@/models';
 import ScheduleCard from './schedule-card';
 import NoScheduleCard from './no-schedule-card';
 import { Card, CardContent } from '@/components/card';
 
 interface Props {
-  user: UserSchedule;
+  user: IUserSchedule;
   date: Date;
-  handleAddSchedule: (user: UserSchedule, date: Date) => void;
-  handleEditSchedule: (user: UserSchedule, schedule: Schedule) => void;
-  handleSelectSchedule: (schedule: Schedule) => void;
+  handleAddSchedule: (user: IUserSchedule, date: Date) => void;
+  handleEditSchedule: (user: IUserSchedule, schedule: ISchedule) => void;
+  resetSchedule: () => void;
 }
 
 interface Day {
   date: Date;
-  schedule: Schedule | null;
+  schedule: ISchedule | null;
 }
 
 export default function UserWeek({
@@ -23,7 +23,7 @@ export default function UserWeek({
   date,
   handleAddSchedule,
   handleEditSchedule,
-  handleSelectSchedule,
+  resetSchedule,
 }: Props) {
   const [totalHours, setTotalHours] = useState<number>(0);
   const [schedule, setSchedule] = useState<Day[]>([
@@ -96,7 +96,7 @@ export default function UserWeek({
             handleEditSchedule={(schedule) =>
               handleEditSchedule(user, schedule)
             }
-            handleSelect={(schedule) => handleSelectSchedule(schedule)}
+            resetSchedule={resetSchedule}
           />
         ) : (
           <NoScheduleCard

@@ -6,7 +6,7 @@ namespace API.DTO
         public string SiteId { get; set; }
         public string UserId { get; set; }
         public string GroupId { get; set; }
-        public bool Status { get; set; }
+        public int Status { get; set; }
         public double Hours { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }

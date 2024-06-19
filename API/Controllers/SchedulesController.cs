@@ -44,6 +44,7 @@ namespace API.Controllers
             return schedulesDto;
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult> AddSchedule(AddScheduleDto addScheduleDto)
         {
@@ -92,6 +93,7 @@ namespace API.Controllers
             return BadRequest(new ProblemDetails { Title = "Problem Adding Schedule" });
         }
 
+        [Authorize]
         [HttpPost("requestTimeOff")]
         public async Task<ActionResult> RequestTimeOff(AddScheduleTimeOffDto addScheduleTimeOffDto)
         {
@@ -150,6 +152,7 @@ namespace API.Controllers
             return BadRequest(new ProblemDetails { Title = "Problem Adding Schedule" });
         }
 
+        [Authorize]
         [HttpPost("addBulk")]
         public async Task<ActionResult> AddBulkSchedules(AddScheduleDto[] schedulesArray)
         {
@@ -206,6 +209,7 @@ namespace API.Controllers
             return BadRequest(new ProblemDetails { Title = "Problem Adding Schedule" });
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteSchedule(string id)
         {
@@ -217,6 +221,7 @@ namespace API.Controllers
             return Ok(200);
         }
 
+        [Authorize]
         [HttpPut]
         public async Task<ActionResult> UpdateSchedule(EditScheduleDto editScheduleDto)
         {
@@ -247,11 +252,70 @@ namespace API.Controllers
             existingSchedule.Site = site;
             existingSchedule.User = user;
             existingSchedule.Group = group;
+            existingSchedule.Type = editScheduleDto.Type;
 
             var result = await _unitOfWork.CompleteAsync() > 0;
             if (result) return Ok(200);
 
             return BadRequest(new ProblemDetails { Title = "Problem Adding Schedule" });
+        }
+
+        [Authorize]
+        [HttpPut("updateBulk")]
+        public async Task<ActionResult> UpdateSchedules(List<EditScheduleDto> editScheduleDtos)
+        {
+            foreach (var editScheduleDto in editScheduleDtos)
+            {
+                var startTimeUtc = DateTime.SpecifyKind(editScheduleDto.StartTime, DateTimeKind.Utc);
+                var endTimeUtc = DateTime.SpecifyKind(editScheduleDto.EndTime, DateTimeKind.Utc);
+
+                if (DateTime.Compare(startTimeUtc, endTimeUtc) >= 0)
+                {
+                    ModelState.AddModelError("401", $"Schedule start must be before schedule end for Schedule ID {editScheduleDto.Id}");
+                    continue;
+                }
+
+                var existingSchedule = await _unitOfWork.Schedules.GetByIdAsync(editScheduleDto.Id);
+                if (existingSchedule == null)
+                {
+                    ModelState.AddModelError("404", $"Schedule not found for Schedule ID {editScheduleDto.Id}");
+                    continue;
+                }
+
+                var site = await _unitOfWork.Sites.GetByIdAsync(editScheduleDto.SiteId);
+                if (site == null)
+                {
+                    ModelState.AddModelError("404", $"Site not found for Site ID {editScheduleDto.SiteId}");
+                    continue;
+                }
+
+                var user = await _unitOfWork.Users.GetByIdAsync(editScheduleDto.UserId);
+                if (user == null)
+                {
+                    ModelState.AddModelError("404", $"User not found for User ID {editScheduleDto.UserId}");
+                    continue;
+                }
+
+                var group = await _unitOfWork.Groups.GetByIdAsync(editScheduleDto.GroupId);
+                if (group == null)
+                {
+                    ModelState.AddModelError("404", $"Group not found for Group ID {editScheduleDto.GroupId}");
+                    continue;
+                }
+
+                existingSchedule.Status = editScheduleDto.Status;
+                existingSchedule.StartTime = startTimeUtc;
+                existingSchedule.EndTime = endTimeUtc;
+                existingSchedule.Site = site;
+                existingSchedule.User = user;
+                existingSchedule.Group = group;
+                existingSchedule.Type = editScheduleDto.Type;
+            }
+
+            var result = await _unitOfWork.CompleteAsync() > 0;
+            if (result) return Ok(200);
+
+            return BadRequest(new ProblemDetails { Title = "Problem updating schedules" });
         }
     }
 }

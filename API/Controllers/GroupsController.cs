@@ -2,6 +2,7 @@ using API.Data;
 using API.DTO;
 using API.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -11,6 +12,7 @@ namespace API.Controllers
         private readonly IMapper _mapper = mapper;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<List<GroupDto>>> GetGroups()
         {
@@ -19,6 +21,7 @@ namespace API.Controllers
             return _mapper.Map<List<GroupDto>>(groups);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult> AddGroup(AddGroupDto group)
         {

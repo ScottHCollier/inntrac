@@ -1,15 +1,15 @@
 import { AccountForm } from '../../admin/components/account-form';
 import { useEffect, useState } from 'react';
-import { Group } from '@/models';
+import { IGroup } from '@/models';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/card';
 import { Icons } from '@/components/icons';
-import useGroups from '../../../hooks/useGroups';
+import useGroups from '@/hooks/useGroups';
 
 const Groups = () => {
   const { groups } = useGroups();
 
-  const [group, setGroup] = useState<Group | null>(null);
+  const [group, setGroup] = useState<IGroup | null>(null);
   const { id } = useParams();
   const navigate = useNavigate();
 

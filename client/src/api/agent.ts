@@ -1,8 +1,20 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { router } from '../router/routes';
-import { PaginatedResponse } from '@/models';
-import { store } from '../store/configure-store';
-import { toast } from '../components/ui/use-toast';
+import {
+  IAddSchedule,
+  IAddScheduleTimeOff,
+  IAddSite,
+  IAddUser,
+  IEditSchedule,
+  ISetPassword,
+  ILogin,
+  PaginatedResponse,
+  IRegisterAccount,
+  ISession,
+  IUser,
+} from '@/models';
+import { store } from '@/store/configure-store';
+import { toast } from '@/components/ui/use-toast';
 
 const sleep = () => new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -87,33 +99,31 @@ const TestErrors = {
 };
 
 const Account = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  login: (values: any) => requests.post('account/login', values),
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  register: (values: any) => requests.post('account/register', values),
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  addUser: (values: any) => requests.post('account', values),
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setPassword: (values: any) => requests.post('account/setPassword', values),
+  login: (body: ILogin): Promise<ISession> =>
+    requests.post('account/login', body),
+  register: (body: IRegisterAccount): Promise<IUser> =>
+    requests.post('account/register', body),
+  addUser: (body: IAddUser) => requests.post('account', body),
+  setPassword: (body: ISetPassword) =>
+    requests.post('account/setPassword', body),
   currentUser: () => requests.get('account'),
+  notifications: () => requests.get('account/notifications'),
 };
 
 const Schedules = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  addSchedule: (values: any) => requests.post('schedules', values),
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  requestTimeOff: (values: any) =>
-    requests.post('schedules/requestTimeOff', values),
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  addBulkSchedules: (values: any) => requests.post('schedules/addBulk', values),
+  addSchedule: (body: IAddSchedule) => requests.post('schedules', body),
+  requestTimeOff: (body: IAddScheduleTimeOff) =>
+    requests.post('schedules/requestTimeOff', body),
+  addBulkSchedules: (body: IAddSchedule[]) =>
+    requests.post('schedules/addBulk', body),
   delete: (id: string) => requests.delete(`schedules/${id}`),
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  updateSchedule: (values: any) => requests.put('schedules', values),
+  updateSchedule: (body: IEditSchedule) => requests.put('schedules', body),
+  updateSchedules: (body: IEditSchedule[]) =>
+    requests.put('schedules/updateBulk', body),
   getSchedules: (params: URLSearchParams) => requests.get('schedules', params),
 };
 
 const Users = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getUsers: (params: URLSearchParams) => requests.get('users', params),
 };
 
@@ -122,8 +132,7 @@ const Groups = {
 };
 
 const Sites = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  addSite: (values: any) => requests.post('sites', values),
+  addSite: (body: IAddSite) => requests.post('sites', body),
 };
 
 const agent = {

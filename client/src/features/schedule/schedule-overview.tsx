@@ -11,7 +11,7 @@ import {
   subWeeks,
 } from 'date-fns';
 import agent from '@/api/agent';
-import { Schedule, UserSchedule, UserScheduleParams } from '@/models';
+import { ISchedule, IUserSchedule, IUserScheduleParams } from '@/models';
 import UserWeek from './components/user-week';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
@@ -21,11 +21,11 @@ import { toast } from '@/components/ui/use-toast';
 import Select from '@/components/custom/select';
 import useSchedules from '@/hooks/useSchedules';
 import useGroups from '@/hooks/useGroups';
-import Loading from '../../layout/loading';
+import Loading from '@/layout/loading';
 import WeekSkeleton from './components/week-skeleton';
 
 const ScheduleOverview = () => {
-  const setRequestParams = (params: UserScheduleParams) => {
+  const setRequestParams = (params: IUserScheduleParams) => {
     const newSearchParams = new URLSearchParams();
     newSearchParams.set('weekStart', params.weekStart);
     newSearchParams.set('weekEnd', params.weekEnd);
@@ -55,16 +55,15 @@ const ScheduleOverview = () => {
     startOfWeek(new Date(), { weekStartsOn: 1 })
   );
 
-  const [selectedUser, setSelectedUser] = useState<UserSchedule | null>(null);
+  const [selectedUser, setSelectedUser] = useState<IUserSchedule | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
+  const [selectedSchedule, setSelectedSchedule] = useState<ISchedule | null>(
     null
   );
-  const [selectedSchedules, setSelectedSchedules] = useState<Schedule[]>([]);
   const [open, setOpen] = useState(false);
   const [confirm, setConfirm] = useState(false);
 
-  const handleAddSchedule = (user: UserSchedule, date: Date) => {
+  const handleAddSchedule = (user: IUserSchedule, date: Date) => {
     setSelectedUser(user);
     setSelectedDate(date);
     setOpen(true);
@@ -76,24 +75,10 @@ const ScheduleOverview = () => {
     setOpen(true);
   };
 
-  const handleEditSchedule = (user: UserSchedule, schedule: Schedule) => {
+  const handleEditSchedule = (user: IUserSchedule, schedule: ISchedule) => {
     setSelectedUser(user);
     setSelectedSchedule(schedule);
     setOpen(true);
-  };
-
-  const handleSelectSchedule = (schedule: Schedule) => {
-    const exists = selectedSchedules.find((s) => s.id === schedule.id);
-    if (exists === undefined) {
-      setSelectedSchedules((selectedSchedules) => [
-        ...selectedSchedules,
-        schedule,
-      ]);
-    } else {
-      setSelectedSchedules((selectedSchedules) =>
-        selectedSchedules.filter((s) => s.id !== schedule.id)
-      );
-    }
   };
 
   const onClose = () => {
@@ -110,7 +95,7 @@ const ScheduleOverview = () => {
   const repeatSchedule = async () => {
     if (users) {
       try {
-        const schedules = users.flatMap((user: UserSchedule) =>
+        const schedules = users.flatMap((user: IUserSchedule) =>
           user.schedules.map((schedule) => ({
             ...schedule,
             startTime: addWeeks(parseISO(schedule.startTime), 1).toISOString(),
@@ -181,6 +166,13 @@ const ScheduleOverview = () => {
   const handleConfirm = () => {
     setConfirm(false);
     repeatSchedule();
+  };
+
+  const resetSchedule = () => {
+    setRequestParams({
+      weekStart: monday.toISOString(),
+      weekEnd: addDays(monday, 7).toISOString(),
+    });
   };
 
   if (groupsLoading) return <Loading />;
@@ -341,9 +333,7 @@ const ScheduleOverview = () => {
               handleEditSchedule={(user, schedule) =>
                 handleEditSchedule(user, schedule)
               }
-              handleSelectSchedule={(schedule) =>
-                handleSelectSchedule(schedule)
-              }
+              resetSchedule={resetSchedule}
             />
           ))}
       <ScheduleDialog

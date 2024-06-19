@@ -35,6 +35,7 @@ namespace API.Controllers
             return session;
         }
 
+        [Authorize]
         [HttpGet("{id}", Name = "GetUserById")]
         public async Task<ActionResult<User>> GetUserById(string id)
         {
@@ -80,6 +81,7 @@ namespace API.Controllers
             return Created(locationHeader, user);
         }
 
+        [Authorize]
         [HttpPost("setPassword")]
         public async Task<ActionResult<Session>> SetPassword(SetPasswordDto setPasswordDto)
         {
@@ -158,7 +160,44 @@ namespace API.Controllers
             var accountDto = _mapper.Map<AccountDto>(user);
             accountDto.IsAdmin = isAdmin;
 
+            if (accountDto.IsAdmin)
+            {
+                var notifications = await _unitOfWork.Users.GetNotificationsAsync(user);
+
+                var scheduleNotifications = notifications
+                    .GroupBy(n => n.user)
+                    .Select(group =>
+                    {
+                        var dto = _mapper.Map<ScheduleNotificationDto>(group.Key);
+                        dto.Schedules = _mapper.Map<List<ScheduleDto>>(group.Select(g => g.schedule).ToList());
+                        return dto;
+                    }).ToList();
+
+                accountDto.Notifications = scheduleNotifications;
+            }
+
             return accountDto;
+        }
+
+        [Authorize]
+        [HttpGet("notifications")]
+        public async Task<ActionResult<List<ScheduleNotificationDto>>> GetUserNotifications()
+        {
+            var user = await _unitOfWork.Users.GetCurrentUserAsync(User.Identity.Name);
+
+            var notifications = await _unitOfWork.Users.GetNotificationsAsync(user);
+
+            var scheduleNotifications = notifications
+                .GroupBy(n => n.user)
+                .Select(group =>
+                {
+                    var dto = _mapper.Map<ScheduleNotificationDto>(group.Key);
+                    dto.Schedules = _mapper.Map<List<ScheduleDto>>(group.Select(g => g.schedule).ToList());
+                    return dto;
+                }).ToList();
+
+
+            return scheduleNotifications;
         }
     }
 }

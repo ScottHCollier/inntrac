@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
-import agent from '../api/agent';
-import { Group } from '../models';
+import agent from '@/api/agent';
+import { IGroup } from '@/models';
 
 interface UseGroupsResult {
-  groups: Group[];
+  groups: IGroup[];
   groupsLoading: boolean;
   groupsError: Error | null;
 }
 
 const useGroups = (): UseGroupsResult => {
-  const [groups, setUsers] = useState<Group[]>([]);
+  const [groups, setUsers] = useState<IGroup[]>([]);
   const [groupsLoading, setLoading] = useState<boolean>(true);
   const [groupsError, setError] = useState<Error | null>(null);
 

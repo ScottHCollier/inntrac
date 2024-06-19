@@ -1,10 +1,5 @@
-import { Icons } from '../../../components/icons';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from '../../../components/card';
+import { Icons } from '@/components/icons';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/card';
 import GroupsTable from './groups-table';
 
 const Groups = () => {
