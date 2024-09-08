@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FieldValues, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -28,6 +28,14 @@ const FormSchema = z.object({
   // ),
 });
 
+interface FormData {
+  firstName: string;
+  surname: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
+}
+
 const UsersAddForm = () => {
   const navigate = useNavigate();
   // const location = useLocation();
@@ -51,7 +59,7 @@ const UsersAddForm = () => {
     defaultValues,
   });
 
-  async function onSubmit(data: FieldValues) {
+  async function onSubmit(data: FormData) {
     try {
       await dispatch(registerUser(data));
       await dispatch(signInUser(data));

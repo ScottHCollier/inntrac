@@ -15,7 +15,10 @@ const EmployeesTable = () => {
             <div key={user.id} className='flex items-center justify-between'>
               <div className='flex items-center'>
                 <Avatar>
-                  <AvatarImage src='/avatars/01.png' alt={user?.name} />
+                  <AvatarImage
+                    src='/avatars/01.png'
+                    alt={`${user.firstName} ${user.surname}`}
+                  />
                   <AvatarFallback>
                     {`${user.firstName.charAt(0)}${user.surname.charAt(0)}`}
                   </AvatarFallback>

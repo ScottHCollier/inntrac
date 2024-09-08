@@ -47,7 +47,6 @@ export interface IUser {
 }
 
 export interface IRegisterAccount {
-  id: string;
   firstName: string;
   surname: string;
   email: string;

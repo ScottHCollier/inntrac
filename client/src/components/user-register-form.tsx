@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FieldValues, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 import { Button } from '@/components/ui/button';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { registerUser, signInUser } from '@/store/account-slice';
 import { useAppDispatch } from '@/store/configure-store';
 import { Icons } from './icons';
@@ -28,9 +28,16 @@ const FormSchema = z.object({
   // ),
 });
 
+interface FormData {
+  firstName: string;
+  surname: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
+}
+
 const UserRegisterForm = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const dispatch = useAppDispatch();
 
   const defaultValues = {
@@ -51,7 +58,7 @@ const UserRegisterForm = () => {
     defaultValues,
   });
 
-  async function onSubmit(data: FieldValues) {
+  async function onSubmit(data: FormData) {
     try {
       await dispatch(registerUser(data));
       await dispatch(signInUser(data));
