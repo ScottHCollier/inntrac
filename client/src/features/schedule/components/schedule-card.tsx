@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 // import { useState } from 'react';
 import { IEditSchedule, ISchedule } from '@/models';
-import { Icons } from '@/components/ui/icons';
+import { CrossIcon, EditIcon, TickIcon } from '@/components/ui/icons';
 import { Card, CardContent } from '@/components/ui/card/card';
 import { cn } from '@/utils/cn';
 
@@ -48,7 +48,7 @@ const ScheduleCard = ({
           {schedule.type === 1 && (
             <>
               <p className='text-sm'>{formattedScheduleTime(schedule)}</p>
-              <Icons.edit
+              <EditIcon
                 className='w-4 h-4 text-muted-foreground'
                 onClick={() => handleEditSchedule(schedule)}
               />
@@ -58,11 +58,11 @@ const ScheduleCard = ({
             <>
               <p className='text-sm'>REQUEST</p>
               <div className='flex'>
-                <Icons.tick
+                <TickIcon
                   className='w-4 h-4 text-muted-foreground'
                   onClick={handleAccept}
                 />
-                <Icons.cross
+                <CrossIcon
                   className='w-4 h-4 ml-2 text-muted-foreground'
                   onClick={() => console.log('REJECT')}
                 />

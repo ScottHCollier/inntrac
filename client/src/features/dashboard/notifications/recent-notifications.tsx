@@ -3,8 +3,8 @@ import {
   AvatarFallback,
   AvatarImage,
 } from '@/components/ui/avatar/avatar';
-import { Icons } from './ui/icons';
-import { Button } from './ui/button/button';
+import { Button } from '@/components/ui/button';
+import { CrossIcon, TickIcon } from '@/components/ui/icons';
 
 const RecentNotifications = () => {
   return (
@@ -22,10 +22,10 @@ const RecentNotifications = () => {
         </div>
         <div className='ml-auto font-medium'>
           <Button variant='outline' size='icon'>
-            <Icons.tick className='w-10 h-10' />
+            <TickIcon className='w-10 h-10' />
           </Button>
           <Button variant='outline' size='icon' className='ml-2'>
-            <Icons.cross className='w-10 h-10' />
+            <CrossIcon className='w-10 h-10' />
           </Button>
         </div>
       </div>

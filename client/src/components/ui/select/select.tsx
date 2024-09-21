@@ -1,5 +1,9 @@
 import { useState, useRef, useEffect, MutableRefObject } from 'react';
-import { Icons } from '@/components/ui/icons';
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  CrossIcon,
+} from '@/components/ui/icons';
 import { cn } from '@/utils/cn';
 import { FieldErrors } from 'react-hook-form';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -84,12 +88,12 @@ export const Select = ({
             </span>
             <div className='flex'>
               {clearable && (
-                <Icons.cross className='h-4 w-4 mr-2' onClick={clear} />
+                <CrossIcon className='h-4 w-4 mr-2' onClick={clear} />
               )}
               {selectOpen ? (
-                <Icons.chevronUp className='h-4 w-4' />
+                <ChevronUpIcon className='h-4 w-4' />
               ) : (
-                <Icons.chevronDown className='h-4 w-4' />
+                <ChevronDownIcon className='h-4 w-4' />
               )}
             </div>
           </div>

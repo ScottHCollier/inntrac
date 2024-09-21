@@ -1,4 +1,4 @@
-import { Icons } from '@/components/ui/icons';
+import { CrossIcon, TickIcon } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button/button';
 import { IEditSchedule, ISchedule } from '@/models';
 import { format, parseISO } from 'date-fns';
@@ -66,10 +66,10 @@ const NotificationItem = ({ firstName, surname, schedules }: Props) => {
           </div>
           <div className='ml-auto'>
             <Button variant='outline' size='icon'>
-              <Icons.tick className='w-10 h-10' />
+              <TickIcon className='w-10 h-10' />
             </Button>
             <Button variant='outline' size='icon' className='ml-2'>
-              <Icons.cross className='w-10 h-10' />
+              <CrossIcon className='w-10 h-10' />
             </Button>
           </div>
         </div>

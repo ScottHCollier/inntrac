@@ -1,4 +1,4 @@
-import { Icons } from '@/components/ui/icons';
+import { UsersIcon } from '@/components/ui/icons';
 import {
   Card,
   CardHeader,
@@ -13,7 +13,7 @@ const Groups = () => {
       <Card>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
           <CardTitle className='text-sm font-medium'>Groups</CardTitle>
-          <Icons.users className='h-4 w-4 text-muted-foreground' />
+          <UsersIcon className='h-4 w-4 text-muted-foreground' />
         </CardHeader>
         <CardContent>
           <div className='text-2xl font-bold'>All Groups</div>

@@ -4,8 +4,8 @@ import * as z from 'zod';
 
 import { Button } from '@/components/ui/button/button';
 import { useNavigate } from 'react-router-dom';
-import { Icons } from './ui/icons';
-import { Input } from './ui/input/input';
+import { SpinnerIcon, UsersIcon } from '@/components/ui/icons';
+import { Input } from '@/components/ui/input';
 
 const FormSchema = z.object({
   firstName: z.string().min(1, { message: 'This field has to be filled.' }),
@@ -109,14 +109,14 @@ const UsersAddForm = () => {
 
       <div className='flex justify-between mt-6'>
         <Button onClick={() => navigate('/')}>
-          <Icons.users className='mr-2 h-4 w-4' />
+          <UsersIcon className='mr-2 h-4 w-4' />
           Skip for now
         </Button>
         <Button type='submit' disabled={isSubmitting}>
           {isSubmitting ? (
-            <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+            <SpinnerIcon className='mr-2 h-4 w-4 animate-spin' />
           ) : (
-            <Icons.users className='mr-2 h-4 w-4' />
+            <UsersIcon className='mr-2 h-4 w-4' />
           )}
           Register
         </Button>

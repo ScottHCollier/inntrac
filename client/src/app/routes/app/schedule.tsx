@@ -10,23 +10,28 @@ import {
   subWeeks,
 } from 'date-fns';
 import { ISchedule, IUserSchedule, IUserScheduleParams } from '@/models';
-import { Icons } from '@/components/ui/icons';
-import { Button } from '../../../components/ui/button';
-import ScheduleDialog from '../../../features/schedule/dialogs/schedule-dialog';
-import { ConfirmDialog } from '../../../features/schedule/dialogs/confirm-dialog';
-import WeekSkeleton from '../../../features/schedule/components/week-skeleton';
-import UserWeek from '../../../features/schedule/components/user-week';
+import { Button } from '@/components/ui/button';
+import ScheduleDialog from '@/features/schedule/dialogs/schedule-dialog';
+import { ConfirmDialog } from '@/features/schedule/dialogs/confirm-dialog';
+import WeekSkeleton from '@/features/schedule/components/week-skeleton';
+import UserWeek from '@/features/schedule/components/user-week';
 import {
   getGroupsQueryOptions,
   useGroups,
-} from '../../../features/groups/api/get-groups';
+} from '@/features/groups/api/get-groups';
 import { QueryClient } from '@tanstack/react-query';
-import { Spinner } from '../../../components/ui/spinner/spinner';
+import { Spinner } from '@/components/ui/spinner';
 import {
   getSchedulesQueryOptions,
   useSchedules,
-} from '../../../features/users/api/get-users';
-import { Select } from '../../../components/ui/select/select';
+} from '@/features/users/api/get-users';
+import { Select } from '@/components/ui/select';
+import {
+  AddIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  RepeatIcon,
+} from '@/components/ui/icons';
 
 export const schedulesLoader = (queryClient: QueryClient) => async () => {
   // Fetch groups first
@@ -264,7 +269,7 @@ export const ScheduleRoute = () => {
                 size='icon'
                 onClick={() => setConfirm(true)}
               >
-                <Icons.repeat className='w-4 h-4' />
+                <RepeatIcon className='w-4 h-4' />
               </Button>
               <Button
                 className='ml-1'
@@ -272,7 +277,7 @@ export const ScheduleRoute = () => {
                 size='icon'
                 onClick={() => navigateWeek('before')}
               >
-                <Icons.chevronLeft className='w-4 h-4' />
+                <ChevronLeftIcon className='w-4 h-4' />
               </Button>
               <Button
                 className='ml-1'
@@ -280,7 +285,7 @@ export const ScheduleRoute = () => {
                 size='icon'
                 onClick={() => navigateWeek('next')}
               >
-                <Icons.chevronRight className='w-4 h-4' />
+                <ChevronRightIcon className='w-4 h-4' />
               </Button>
               <Button
                 className='ml-1 bg-indigo-300'
@@ -288,7 +293,7 @@ export const ScheduleRoute = () => {
                 size='icon'
                 onClick={() => handleAddScheduleNoUser()}
               >
-                <Icons.add className='w-4 h-4' />
+                <AddIcon className='w-4 h-4' />
               </Button>
             </div>
           </CardContent>

@@ -4,9 +4,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu/dropdown-menu';
-import { Icons } from './ui/icons';
-import { Button } from './ui/button/button';
-import { useTheme } from './layouts/theme-provider';
+import { DarkModeIcon, LightModeIcon } from '@/components/ui/icons';
+import { Button } from '@/components/ui/button/button';
+import { useTheme } from '@/components/layouts/theme-provider';
 
 const ModeToggle = () => {
   const { setTheme } = useTheme();
@@ -15,8 +15,8 @@ const ModeToggle = () => {
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Button variant='outline' size='icon'>
-          <Icons.darkMode className='absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100' />
-          <Icons.lightMode className='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
+          <DarkModeIcon className='absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100' />
+          <LightModeIcon className='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
           <span className='sr-only'>Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>

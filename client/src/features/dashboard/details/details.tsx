@@ -5,7 +5,7 @@ import {
   CardTitle,
   CardContent,
 } from '@/components/ui/card/card';
-import { Icons } from '@/components/ui/icons';
+import { ChartIcon, PoundIcon, UsersIcon } from '@/components/ui/icons';
 import BarOverview from '@/features/dashboard/overview/bar-overview';
 
 const Details = () => {
@@ -18,7 +18,7 @@ const Details = () => {
               <CardTitle className='text-sm font-medium'>
                 Last Weeks Sales
               </CardTitle>
-              <Icons.pound className='h-4 w-4 text-muted-foreground' />
+              <PoundIcon className='h-4 w-4 text-muted-foreground' />
             </CardHeader>
             <CardContent>
               <div className='text-2xl font-bold'>£5,231.89</div>
@@ -32,7 +32,7 @@ const Details = () => {
               <CardTitle className='text-sm font-medium'>
                 Last Weeks Labour
               </CardTitle>
-              <Icons.users className='h-4 w-4 text-muted-foreground' />
+              <UsersIcon className='h-4 w-4 text-muted-foreground' />
             </CardHeader>
             <CardContent>
               <div className='text-2xl font-bold'>190 Hours</div>
@@ -46,7 +46,7 @@ const Details = () => {
               <CardTitle className='text-sm font-medium'>
                 Last Weeks Gross Profit
               </CardTitle>
-              <Icons.chart className='h-4 w-4 text-muted-foreground' />
+              <ChartIcon className='h-4 w-4 text-muted-foreground' />
             </CardHeader>
             <CardContent>
               <div className='text-2xl font-bold'>72.3%</div>
@@ -58,7 +58,7 @@ const Details = () => {
           <Card>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
               <CardTitle className='text-sm font-medium'>Employees</CardTitle>
-              <Icons.users className='h-4 w-4 text-muted-foreground' />
+              <UsersIcon className='h-4 w-4 text-muted-foreground' />
             </CardHeader>
             <CardContent>
               <div className='text-2xl font-bold'>17</div>

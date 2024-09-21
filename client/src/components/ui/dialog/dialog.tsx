@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { cn } from '@/utils/cn';
 import { Button } from '@/components/ui/button';
-import { Icons } from '@/components/ui/icons';
+import { CloseIcon } from '@/components/ui/icons';
 
 interface DialogProps {
   isOpen: boolean;
@@ -57,7 +57,7 @@ export const Dialog: React.FC<DialogProps> = ({
         <div className='flex justify-between'>
           <div>{title}</div>
           <Button variant='outline' size='icon' onClick={onClose}>
-            <Icons.close className='w-10 h-10 fill-white' />
+            <CloseIcon className='w-10 h-10 fill-white' />
           </Button>
         </div>
         {children}

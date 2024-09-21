@@ -5,7 +5,7 @@ import {
   CardContent,
   CardDescription,
 } from '@/components/ui/card/card';
-import { Icons } from '@/components/ui/icons';
+import { UsersIcon } from '@/components/ui/icons';
 import { format } from 'date-fns';
 import { ISchedule } from '@/models';
 import NotificationItem from '../notifications/notification-item';
@@ -30,7 +30,7 @@ const Overview = () => {
         >
           <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
             <CardTitle className='text-sm font-medium'>Upcoming</CardTitle>
-            <Icons.users className='h-4 w-4 text-muted-foreground' />
+            <UsersIcon className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
             {user?.data.schedules.length ? (

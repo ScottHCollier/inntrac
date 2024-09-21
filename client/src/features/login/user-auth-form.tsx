@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 import { Button } from '@/components/ui/button/button';
-import { Icons } from '@/components/ui/icons';
+import { SpinnerIcon, UsersIcon } from '@/components/ui/icons';
 import { Input } from '@/components/ui/input';
 import { ILogin } from '@/models';
 import { useLogin } from '@/lib/auth';
@@ -80,9 +80,9 @@ const UserAuthForm = ({ onSuccess }: LoginFormProps) => {
       <div className='flex justify-end mt-6'>
         <Button type='submit' disabled={isSubmitting}>
           {isSubmitting ? (
-            <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+            <SpinnerIcon className='mr-2 h-4 w-4 animate-spin' />
           ) : (
-            <Icons.users className='mr-2 h-4 w-4' />
+            <UsersIcon className='mr-2 h-4 w-4' />
           )}
           Login
         </Button>

@@ -2,10 +2,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
 import { Button } from '@/components/ui/button/button';
-import { Icons } from './icons';
-import { Input } from './ui/input/input';
+import { Input } from '@/components/ui/input/';
 import { IAddSite } from '../models';
 import { useForm } from 'react-hook-form';
+import { SpinnerIcon, UsersIcon } from '@/components/ui/icons';
 
 const FormSchema = z.object({
   name: z.string().min(1, { message: 'This field has to be filled.' }),
@@ -44,9 +44,9 @@ const CreateTeamForm = () => {
       <div className='flex justify-end mt-6'>
         <Button type='submit' disabled={isSubmitting}>
           {isSubmitting ? (
-            <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+            <SpinnerIcon className='mr-2 h-4 w-4 animate-spin' />
           ) : (
-            <Icons.users className='mr-2 h-4 w-4' />
+            <UsersIcon className='mr-2 h-4 w-4' />
           )}
           Submit
         </Button>

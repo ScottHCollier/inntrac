@@ -6,9 +6,9 @@ import { IUserSchedule, IAddScheduleTimeOff } from '@/models';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button/button';
 import { eachDayOfInterval, format, parseISO } from 'date-fns';
-import { Icons } from '@/components/ui/icons';
+import { AddIcon, SpinnerIcon } from '@/components/ui/icons';
 import { Select } from '@/components/ui/select';
-import { Input } from '@/components/ui/input/input';
+import { Input } from '@/components/ui/input';
 
 const FormSchema = z.object({
   userId: z.string({
@@ -180,9 +180,9 @@ const TimeOffForm = ({
         )} */}
         <Button type='submit' disabled={isSubmitting || !touched}>
           {isSubmitting ? (
-            <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+            <SpinnerIcon className='mr-2 h-4 w-4 animate-spin' />
           ) : (
-            <Icons.add className='mr-2 h-4 w-4' />
+            <AddIcon className='mr-2 h-4 w-4' />
           )}
           {'Save'}
         </Button>

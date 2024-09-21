@@ -1,4 +1,4 @@
-import { Icons } from '@/components/ui/icons';
+import { UsersIcon } from '@/components/ui/icons';
 import { Button } from '@/components/ui/button/button';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import UserAuthForm from '../../../features/login/user-auth-form';
@@ -47,7 +47,7 @@ export const LoginRoute = () => {
               }
             />
             <Button onClick={() => navigate('/register')}>
-              <Icons.users className='mr-2 h-4 w-4' />
+              <UsersIcon className='mr-2 h-4 w-4' />
               Register
             </Button>
           </div>

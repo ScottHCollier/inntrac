@@ -1,15 +1,31 @@
 import { useState } from 'react';
-import { Icons } from '../ui/icons';
-import MainNavLink from '../main-nav-link';
-import ModeToggle from '../mode-toggle';
-import Search from '../search';
-import UserNav from '../user-nav';
+import MainNavLink from './dashboard/main-nav-link';
+import ModeToggle from './dashboard/mode-toggle';
+import Search from './dashboard/search';
+import UserNav from './dashboard/user-nav';
+import {
+  AssistantIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  DashboardIcon,
+  ScheduleIcon,
+  SettingsIcon,
+} from '@/components/ui/icons';
 
 interface SidebarProps {
   isOpen: boolean;
 }
 
 const Sidebar = ({ isOpen }: SidebarProps) => {
+  // const navigation = [
+  //   { name: 'Dashboard', to: '.', icon: Home },
+  //   { name: 'Discussions', to: './discussions', icon: Folder },
+  //   checkAccess({ allowedRoles: [ROLES.ADMIN] }) && {
+  //     name: 'Users',
+  //     to: './users',
+  //     icon: Users,
+  //   },
+  // ].filter(Boolean) as SideNavigationItem[];
   return (
     <div
       className={`fixed flex flex-col top-16 inset-y-0 left-0 transition-width duration-300 ease-in-out border-r ${
@@ -23,7 +39,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
               title='Dashboard'
               to={'/app'}
               isOpen={isOpen}
-              icon={<Icons.dashboard className='w-6 h-6' />}
+              icon={<DashboardIcon className='w-6 h-6' />}
               end
             />
           </li>
@@ -32,7 +48,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
               title='Schedule'
               to={'/app/schedule'}
               isOpen={isOpen}
-              icon={<Icons.schedule className='w-6 h-6' />}
+              icon={<ScheduleIcon className='w-6 h-6' />}
             />
           </li>
           <li className={`flex items-center`}>
@@ -40,7 +56,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
               title='Assistant'
               to={'/app/assistant'}
               isOpen={isOpen}
-              icon={<Icons.assistant className='w-6 h-6' />}
+              icon={<AssistantIcon className='w-6 h-6' />}
             />
           </li>
           <li className={`flex items-center`}>
@@ -48,7 +64,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
               title='Admin'
               to={'/app/admin'}
               isOpen={isOpen}
-              icon={<Icons.settings className='w-6 h-6' />}
+              icon={<SettingsIcon className='w-6 h-6' />}
             />
           </li>
         </ul>
@@ -78,9 +94,9 @@ export const DashboardLayout = ({
           >
             <button onClick={toggleSidebar}>
               {isOpen ? (
-                <Icons.chevronLeft className='w-6 h-6' />
+                <ChevronLeftIcon className='w-6 h-6' />
               ) : (
-                <Icons.chevronRight className='w-6 h-6' />
+                <ChevronRightIcon className='w-6 h-6' />
               )}
             </button>
           </div>

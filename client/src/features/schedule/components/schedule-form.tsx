@@ -6,9 +6,9 @@ import { IGroup, ISchedule, IUserSchedule } from '@/models';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button/button';
 import { addDays, format, parseISO } from 'date-fns';
-import { Icons } from '@/components/ui/icons';
+import { AddIcon, CrossIcon, SpinnerIcon } from '@/components/ui/icons';
 import { Select } from '@/components/ui/select';
-import { Input } from '@/components/ui/input/input';
+import { Input } from '@/components/ui/input';
 import { getTimeString } from '@/utils/format';
 
 const FormSchema = z.object({
@@ -190,9 +190,9 @@ const ScheduleForm = ({
             onClick={handleSubmit(deleteSchedule)}
           >
             {isSubmitting && deleting ? (
-              <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+              <SpinnerIcon className='mr-2 h-4 w-4 animate-spin' />
             ) : (
-              <Icons.cross className='mr-2 h-4 w-4' />
+              <CrossIcon className='mr-2 h-4 w-4' />
             )}
             Delete
           </Button>
@@ -202,9 +202,9 @@ const ScheduleForm = ({
           disabled={isSubmitting || (selectedSchedule !== null && !touched)}
         >
           {isSubmitting && !deleting ? (
-            <Icons.spinner className='mr-2 h-4 w-4 animate-spin' />
+            <SpinnerIcon className='mr-2 h-4 w-4 animate-spin' />
           ) : (
-            <Icons.add className='mr-2 h-4 w-4' />
+            <AddIcon className='mr-2 h-4 w-4' />
           )}
           {selectedSchedule ? 'Update' : 'Save'}
         </Button>
