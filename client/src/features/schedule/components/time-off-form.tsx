@@ -4,15 +4,11 @@ import * as z from 'zod';
 
 import { IUserSchedule, IAddScheduleTimeOff } from '@/models';
 import { useCallback, useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button/button';
 import { eachDayOfInterval, format, parseISO } from 'date-fns';
-import { toast } from '@/components/ui/use-toast';
-import agent from '@/api/agent';
-import { Icons } from '@/components/icons';
-import Select from '@/components/custom/select';
-import Input from '@/components/custom/input';
-import { updateNotifications } from '@/store/account-slice';
-import { useAppDispatch } from '@/store/configure-store';
+import { Icons } from '@/components/ui/icons';
+import { Select } from '@/components/ui/select';
+import { Input } from '@/components/ui/input/input';
 
 const FormSchema = z.object({
   userId: z.string({
@@ -41,7 +37,6 @@ const TimeOffForm = ({
   handleClose,
   handleChangeUser,
 }: Props) => {
-  const dispatch = useAppDispatch();
   const [touched, setTouched] = useState(false);
 
   const {
@@ -93,19 +88,8 @@ const TimeOffForm = ({
         groupId: selectedUser.group.id,
       };
 
-      await agent.Schedules.requestTimeOff(body)
-        .then(() => {
-          toast({
-            title: 'Request Submitted',
-          });
-          handleClose();
-        })
-        .catch((error) => {
-          console.log(error);
-          handleApiErrors(error);
-        });
-
-      dispatch(updateNotifications());
+      console.log(body);
+      handleClose();
     }
   };
 

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { ISchedule, IUserSchedule } from '@/models';
 import ScheduleCard from './schedule-card';
 import NoScheduleCard from './no-schedule-card';
-import { Card, CardContent } from '@/components/card';
+import { Card, CardContent } from '@/components/ui/card/card';
 
 interface Props {
   user: IUserSchedule;

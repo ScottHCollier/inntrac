@@ -1,12 +1,9 @@
 import { format } from 'date-fns';
 // import { useState } from 'react';
 import { IEditSchedule, ISchedule } from '@/models';
-import { Icons } from '@/components/icons';
-import { Card, CardContent } from '@/components/card';
-import { cn } from '@/lib/utils';
-import { useAppDispatch } from '@/store/configure-store';
-import agent from '@/api/agent';
-import { updateNotifications } from '@/store/account-slice';
+import { Icons } from '@/components/ui/icons';
+import { Card, CardContent } from '@/components/ui/card/card';
+import { cn } from '@/utils/cn';
 
 interface Props {
   backgroundColor: string;
@@ -21,16 +18,13 @@ const ScheduleCard = ({
   handleEditSchedule,
   resetSchedule,
 }: Props) => {
-  const dispatch = useAppDispatch();
-
   const handleAccept = async () => {
     try {
       const body: IEditSchedule = {
         ...schedule,
         type: 4,
       };
-      await agent.Schedules.updateSchedule(body);
-      dispatch(updateNotifications());
+      console.log(body);
       resetSchedule();
     } catch (error) {
       console.log(error);

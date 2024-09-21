@@ -1,16 +1,7 @@
-import { Link } from 'react-router-dom';
-import Skeleton from '@/components/custom/skeleton';
-import { Icons } from '@/components/icons';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import useUsers from '@/hooks/useUsers';
-import { useState } from 'react';
-
 const EmployeesTable = () => {
-  const [searchParams] = useState<URLSearchParams>(new URLSearchParams({}));
-  const { users, loading } = useUsers(searchParams);
   return (
     <div className='space-y-8'>
-      {!loading
+      {/* {!loading
         ? users.map((user) => (
             <div key={user.id} className='flex items-center justify-between'>
               <div className='flex items-center'>
@@ -46,7 +37,7 @@ const EmployeesTable = () => {
               </div>
               <Skeleton className='w-8 h-8 rounded-full' />
             </div>
-          ))}
+          ))} */}
     </div>
   );
 };

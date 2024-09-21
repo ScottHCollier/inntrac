@@ -1,28 +1,16 @@
 import { AccountForm } from '../../admin/components/account-form';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { IGroup } from '@/models';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Card, CardHeader, CardContent, CardTitle } from '@/components/card';
-import { Icons } from '@/components/icons';
-import useGroups from '@/hooks/useGroups';
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+} from '@/components/ui/card/card';
+import { Icons } from '@/components/ui/icons';
 
 const Groups = () => {
-  const { groups } = useGroups();
-
-  const [group, setGroup] = useState<IGroup | null>(null);
-  const { id } = useParams();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (id && groups) {
-      const group = groups.find((group) => group.id === id);
-      if (group) {
-        setGroup(group);
-      } else {
-        navigate('/dashboard/groups');
-      }
-    }
-  }, [groups, id, navigate]);
+  const [group] = useState<IGroup | null>(null);
 
   return (
     <>

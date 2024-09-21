@@ -1,6 +1,11 @@
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from '@/components/ui/card/card';
 import RecentNotifications from '@/components/recent-notifications';
-import { Icons } from '@/components/icons';
+import { Icons } from '@/components/ui/icons';
 
 const Notifications = () => {
   return (

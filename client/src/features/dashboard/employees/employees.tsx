@@ -1,5 +1,10 @@
-import { Icons } from '@/components/icons';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/card';
+import { Icons } from '@/components/ui/icons';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from '@/components/ui/card/card';
 import EmployeesTable from './employees-table';
 
 const Employees = () => {

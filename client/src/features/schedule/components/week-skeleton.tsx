@@ -1,5 +1,5 @@
-import { Card, CardContent } from '@/components/card';
-import Skeleton from '@/components/custom/skeleton';
+import { Card, CardContent } from '@/components/ui/card/card';
+import { Skeleton } from '@/components/ui/skeleton/skeleton';
 
 export default function WeekSkeleton() {
   return (

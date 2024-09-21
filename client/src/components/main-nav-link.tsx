@@ -1,10 +1,11 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils/cn';
 import { NavLink } from 'react-router-dom';
 
 interface Props extends React.HTMLAttributes<HTMLElement> {
   to: string;
   isOpen: boolean;
   icon: React.ReactNode;
+  end?: boolean;
 }
 
 const MainNavLink = ({
@@ -13,6 +14,7 @@ const MainNavLink = ({
   to,
   isOpen,
   icon,
+  end,
   ...props
 }: Props) => {
   return (
@@ -25,6 +27,7 @@ const MainNavLink = ({
           className
         )
       }
+      end={end}
       {...props}
       to={to}
     >

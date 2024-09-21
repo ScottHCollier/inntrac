@@ -1,7 +1,12 @@
 import RecentSales from '@/components/recent-sales';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/card';
-import { Icons } from '@/components/icons';
-import BarOverview from '@/components/bar-overview';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from '@/components/ui/card/card';
+import { Icons } from '@/components/ui/icons';
+import BarOverview from '@/features/dashboard/overview/bar-overview';
 
 const Details = () => {
   return (

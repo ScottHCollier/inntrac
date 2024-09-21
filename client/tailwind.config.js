@@ -79,11 +79,16 @@ module.exports = {
             transform: 'translate3d(4px, 0, 0)',
           },
         },
+        'fade-in-top': {
+          '0%': { opacity: '0', transform: 'translateY(-10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         shake: 'shake 420ms cubic-bezier(0.36, 0.7, 0.19, 0.97) both',
+        'fade-in-top': 'fade-in-top 0.1s ease-out',
       },
     },
   },

@@ -1,30 +1,32 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@/components/ui/avatar/avatar';
+import { Button } from '@/components/ui/button/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { useAppDispatch, useAppSelector } from '@/store/configure-store';
-import { signOut } from '@/store/account-slice';
+} from '@/components/ui/dropdown-menu/dropdown-menu';
 import { Link } from 'react-router-dom';
+import { useLogout, useUser } from '../lib/auth';
 
 const UserNav = () => {
-  const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state) => state.account);
+  const user = useUser();
+  const logout = useLogout();
 
   const userInitials = () => {
-    return `${user?.firstName.charAt(0)}${user?.surname.charAt(0)}`;
+    return `${user?.data.firstName.charAt(0)}${user?.data.surname.charAt(0)}`;
   };
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger>
         <Button variant='ghost' className='relative h-8 w-8 rounded-full'>
           <Avatar className='h-8 w-8'>
             <AvatarImage src='/avatars/01.png' alt='@shadcn' />
@@ -32,39 +34,34 @@ const UserNav = () => {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='w-56' align='end' forceMount>
-        <DropdownMenuLabel className='font-normal'>
+      {/* <DropdownMenuContent className='w-56'> */}
+      <DropdownMenuContent>
+        <DropdownMenuLabel>
           <div className='flex flex-col space-y-1'>
-            <p className='text-sm font-medium leading-none'>{`${user?.firstName} ${user?.surname}`}</p>
+            <p className='text-sm font-medium leading-none'>{`Scott Collier`}</p>
             <p className='text-xs leading-none text-muted-foreground'>
-              {user?.email}
+              scott.collier@test.com
             </p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <Link to='/admin'>
-            <DropdownMenuItem>
-              Profile
-              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-            </DropdownMenuItem>
-          </Link>
+        <Link to='/admin'>
           <DropdownMenuItem>
-            Billing
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+            Profile
+            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            Settings
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>New Team</DropdownMenuItem>
-        </DropdownMenuGroup>
+        </Link>
+        <DropdownMenuItem>
+          Billing
+          <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          Settings
+          <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+        </DropdownMenuItem>
+        <DropdownMenuItem>New Team</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() => {
-            dispatch(signOut());
-          }}
-        >
+        <DropdownMenuItem onClick={() => logout.mutate({})}>
           Log out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>

@@ -4,15 +4,15 @@ import {
   CardTitle,
   CardContent,
   CardDescription,
-} from '@/components/card';
-import { Icons } from '@/components/icons';
-import { useAppSelector } from '@/store/configure-store';
+} from '@/components/ui/card/card';
+import { Icons } from '@/components/ui/icons';
 import { format } from 'date-fns';
 import { ISchedule } from '@/models';
 import NotificationItem from '../notifications/notification-item';
+import { useUser } from '../../../lib/auth';
 
 const Overview = () => {
-  const { user } = useAppSelector((state) => state.account);
+  const user = useUser({});
 
   const formattedScheduleTime = (schedule: ISchedule) => {
     const startTime = new Date(schedule.startTime);
@@ -25,7 +25,7 @@ const Overview = () => {
       <div className='space-y-4'>
         <Card
           style={{
-            backgroundColor: user?.group?.color || '#999',
+            backgroundColor: user?.data.group?.color || '#999',
           }}
         >
           <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
@@ -33,11 +33,11 @@ const Overview = () => {
             <Icons.users className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            {user?.schedules.length ? (
+            {user?.data.schedules.length ? (
               <>
                 <div className='flex justify-between items-center h-[24px]'>
                   <p className='text-sm font-bold'>
-                    {formattedScheduleTime(user?.schedules[0])}
+                    {formattedScheduleTime(user?.data.schedules[0])}
                   </p>
                 </div>
                 <div className='flex justify-between items-center h-[24px]'>
@@ -56,15 +56,15 @@ const Overview = () => {
           <CardHeader>
             <CardTitle>Notifications</CardTitle>
             <CardDescription>
-              {user?.notifications.length
+              {user?.data.notifications.length
                 ? 'The following items need your attention'
                 : 'No notifications'}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {user?.notifications.length ? (
+            {user?.data.notifications.length ? (
               <div className=''>
-                {user?.notifications.map((notification) => (
+                {user?.data.notifications.map((notification) => (
                   <NotificationItem
                     key={notification.firstName}
                     firstName={notification.firstName}

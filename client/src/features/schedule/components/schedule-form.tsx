@@ -2,17 +2,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
-import { IGroup, ISchedule, IUserSchedule, IAddSchedule } from '@/models';
-import { useAppSelector } from '@/store/configure-store';
+import { IGroup, ISchedule, IUserSchedule } from '@/models';
 import { useCallback, useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button/button';
 import { addDays, format, parseISO } from 'date-fns';
-import { toast } from '@/components/ui/use-toast';
-import agent from '@/api/agent';
-import { Icons } from '@/components/icons';
-import Select from '@/components/custom/select';
-import Input from '@/components/custom/input';
-import { getTimeString } from '@/lib/utils';
+import { Icons } from '@/components/ui/icons';
+import { Select } from '@/components/ui/select';
+import { Input } from '@/components/ui/input/input';
+import { getTimeString } from '@/utils/format';
 
 const FormSchema = z.object({
   userId: z.string({
@@ -51,7 +48,6 @@ const ScheduleForm = ({
   handleClose,
   handleChangeUser,
 }: Props) => {
-  const { user } = useAppSelector((state) => state.account);
   const [touched, setTouched] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -93,63 +89,11 @@ const ScheduleForm = ({
     et.setMinutes(parseInt(end.split(':')[1]));
     et.setSeconds(0);
     et.setMilliseconds(0);
-
-    const body: IAddSchedule = {
-      siteId: user!.site.id,
-      groupId,
-      userId,
-      status: 0,
-      startTime: st.toISOString(),
-      endTime: et.toISOString(),
-      type: 1,
-    };
-
-    if (selectedSchedule) {
-      await agent.Schedules.updateSchedule({
-        id: selectedSchedule.id,
-        ...body,
-      })
-        .then(() => {
-          toast({
-            title: 'Schedule edited',
-          });
-          handleClose();
-        })
-        .catch((error) => {
-          console.log(error);
-          handleApiErrors(error);
-        });
-    } else {
-      await agent.Schedules.addSchedule(body)
-        .then(() => {
-          toast({
-            title: 'Schedule added',
-          });
-          handleClose();
-        })
-        .catch((error) => {
-          console.log(error);
-          handleApiErrors(error);
-        });
-    }
   };
 
   async function deleteSchedule() {
     if (selectedSchedule && selectedSchedule.id) {
       setDeleting(true);
-      await agent.Schedules.delete(selectedSchedule.id)
-        .then(() => {
-          toast({
-            title: 'Schedule deleted',
-          });
-          handleClose();
-          setDeleting(false);
-        })
-        .catch((error) => {
-          console.log(error);
-          handleApiErrors(error);
-          setDeleting(false);
-        });
     }
   }
 

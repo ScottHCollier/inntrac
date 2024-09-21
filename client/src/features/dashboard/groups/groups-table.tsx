@@ -1,13 +1,7 @@
-import { Link } from 'react-router-dom';
-import Skeleton from '@/components/custom/skeleton';
-import { Icons } from '@/components/icons';
-import useGroups from '@/hooks/useGroups';
-
 const GroupsTable = () => {
-  const { groups, groupsLoading } = useGroups();
   return (
     <div className='space-y-8'>
-      {groupsLoading
+      {/* {groupsLoading
         ? [1, 2, 3, 4].map((item) => (
             <div key={item} className='flex items-center justify-between'>
               <div className='flex items-center'>
@@ -40,7 +34,7 @@ const GroupsTable = () => {
                 <Icons.edit className='w-8 h-8' />
               </Link>
             </div>
-          ))}
+          ))} */}
     </div>
   );
 };

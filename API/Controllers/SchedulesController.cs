@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using API.Extensions;
 using AutoMapper;
-using Microsoft.IdentityModel.Tokens;
 
 namespace API.Controllers
 {

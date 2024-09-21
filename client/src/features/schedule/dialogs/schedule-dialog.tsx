@@ -1,14 +1,8 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { IGroup, ISchedule, IUserSchedule } from '@/models';
-import Tab from '@/components/tab';
-import Tabs from '@/components/tabs';
+import { Tabs, Tab } from '@/components/ui/tabs';
 import ScheduleForm from '../components/schedule-form';
 import TimeOffForm from '../components/time-off-form';
+import { Dialog } from '@/components/ui/dialog';
 
 interface Props {
   users: IUserSchedule[];
@@ -32,34 +26,29 @@ const ScheduleDialog = ({
   handleChangeUser,
 }: Props) => {
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className='sm:max-w-[425px]'>
-        <DialogHeader>
-          <DialogTitle>Schedule Entry</DialogTitle>
-        </DialogHeader>
-        <Tabs>
-          <Tab title={selectedSchedule ? 'Edit Schedule' : 'Add Schedule'}>
-            <ScheduleForm
-              users={users}
-              groups={groups}
-              selectedUser={selectedUser}
-              selectedDate={selectedDate}
-              selectedSchedule={selectedSchedule}
-              handleClose={handleClose}
-              handleChangeUser={handleChangeUser}
-            />
-          </Tab>
-          <Tab title='Time Off'>
-            <TimeOffForm
-              users={users}
-              selectedUser={selectedUser}
-              selectedDate={selectedDate}
-              handleClose={handleClose}
-              handleChangeUser={handleChangeUser}
-            />
-          </Tab>
-        </Tabs>
-      </DialogContent>
+    <Dialog title='Schedule Entry' isOpen={open} onClose={handleClose}>
+      <Tabs>
+        <Tab title={selectedSchedule ? 'Edit Schedule' : 'Add Schedule'}>
+          <ScheduleForm
+            users={users}
+            groups={groups}
+            selectedUser={selectedUser}
+            selectedDate={selectedDate}
+            selectedSchedule={selectedSchedule}
+            handleClose={handleClose}
+            handleChangeUser={handleChangeUser}
+          />
+        </Tab>
+        <Tab title='Time Off'>
+          <TimeOffForm
+            users={users}
+            selectedUser={selectedUser}
+            selectedDate={selectedDate}
+            handleClose={handleClose}
+            handleChangeUser={handleChangeUser}
+          />
+        </Tab>
+      </Tabs>
     </Dialog>
   );
 };

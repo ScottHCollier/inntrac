@@ -1,12 +1,14 @@
-import './index.css';
-import ReactDOM from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
-import { router } from './router/routes.tsx';
-import { Provider } from 'react-redux';
-import { store } from './store/configure-store.ts';
+import * as React from 'react';
+import { createRoot } from 'react-dom/client';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <Provider store={store}>
-    <RouterProvider router={router} />
-  </Provider>
+import './index.css';
+import { App } from './app';
+
+const root = document.getElementById('root');
+if (!root) throw new Error('No root element found');
+
+createRoot(root).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
 );

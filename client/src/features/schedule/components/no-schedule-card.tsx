@@ -1,5 +1,5 @@
-import { Icons } from '@/components/icons';
-import { Card, CardContent } from '@/components/card';
+import { Icons } from '@/components/ui/icons';
+import { Card, CardContent } from '@/components/ui/card/card';
 
 interface Props {
   date: Date;

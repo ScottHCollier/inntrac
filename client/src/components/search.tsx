@@ -1,4 +1,4 @@
-import Input from './custom/input';
+import { Input } from './ui/input/input';
 
 const Search = () => {
   return (

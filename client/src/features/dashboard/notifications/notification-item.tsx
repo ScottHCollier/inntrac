@@ -1,11 +1,12 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Icons } from '@/components/icons';
-import { Button } from '@/components/ui/button';
+import { Icons } from '@/components/ui/icons';
+import { Button } from '@/components/ui/button/button';
 import { IEditSchedule, ISchedule } from '@/models';
 import { format, parseISO } from 'date-fns';
-import agent from '@/api/agent';
-import { updateNotifications } from '@/store/account-slice';
-import { useAppDispatch } from '@/store/configure-store';
+import {
+  Avatar,
+  AvatarImage,
+  AvatarFallback,
+} from '../../../components/ui/avatar/avatar';
 
 interface Props {
   firstName: string;
@@ -14,8 +15,6 @@ interface Props {
 }
 
 const NotificationItem = ({ firstName, surname, schedules }: Props) => {
-  const dispatch = useAppDispatch();
-
   const handleAcceptAll = async () => {
     try {
       const body: IEditSchedule[] = schedules.map((schedule) => {
@@ -24,8 +23,9 @@ const NotificationItem = ({ firstName, surname, schedules }: Props) => {
           type: 4,
         };
       });
-      await agent.Schedules.updateSchedules(body);
-      dispatch(updateNotifications());
+      console.log(body);
+      // await agent.Schedules.updateSchedules(body);
+      // dispatch(updateNotifications());
     } catch (error) {
       console.log(error);
     }
